@@ -1,0 +1,6 @@
+For automation:
+
+- Must keep lambda in the lambda VPC
+- Must create VPC Endpoint that points to the Subnets that the Database is in (just do private subnet)
+- Must enable RDS to accept lambda
+- Lambda may need CreateNetworkInterface permission (I doubt this)
