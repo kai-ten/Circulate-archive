@@ -47,42 +47,50 @@ type Profile struct {
 
 func upsertUsers(ctx context.Context, tx pgx.Tx, client okta.Client, users []*okta.User) error {
 
-	var parsedUsers [][]interface{}
-
 	// How to convert struct to [][]any, then create temp table to handle inserts
 	// https://blog.devgenius.io/performing-bulk-insert-using-pgx-and-copyfrom-ce34c8b12bac
 	// https://github.com/jackc/pgx/issues/992
 
-	for _, user := range users {
-		userProfileStr, err := json.Marshal(user.Profile)
-		if err != nil {
-			log.Fatal(err)
-		}
+	// createTemp := `
+	// 	CREATE TEMPORARY TABLE _temp_okta_users(
+	// 		LIKE cs.okta_users INCLUDING ALL
+	// 	) ON COMMIT DROP;
+	// `
 
-		var userProfile Profile
-		if err := json.Unmarshal(userProfileStr, &userProfile); err != nil {
-			log.Fatal(err)
-		}
-
-		parsedUsers = append(parsedUsers, []interface{}{
-			user.Id,
-			user.Created,
-			userProfile.Email,
-		})
+	usersCount := len(users)
+	if usersCount == 0 {
+		log.Fatal("Users count cannot be 0")
 	}
 
 	copyCount, queryErr := tx.CopyFrom(
 		context.Background(),
 		pgx.Identifier{"cs", "okta_user"},
 		[]string{"id", "created", "email"},
-		pgx.CopyFromRows(parsedUsers),
+		pgx.CopyFromSlice(usersCount, func(i int) ([]interface{}, error) {
+			user := users[i]
+			userProfileStr, err := json.Marshal(user.Profile)
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			var userProfile Profile
+			if err := json.Unmarshal(userProfileStr, &userProfile); err != nil {
+				log.Fatal(err)
+			}
+
+			return []interface{}{
+				user.Id,
+				user.Created,
+				userProfile.Email,
+			}, nil
+		}),
 	)
 
 	if queryErr != nil {
 		log.Fatal(queryErr)
 	}
 
-	if int(copyCount) != len(parsedUsers) {
+	if int(copyCount) != usersCount {
 		log.Fatal("Copied rows does not equal the size of the users array")
 	}
 
