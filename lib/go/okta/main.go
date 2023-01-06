@@ -45,27 +45,31 @@ type Profile struct {
 	PrimaryRelationship string `json:"primaryRelationship"`
 }
 
+// These links help describe the method
+// https://blog.devgenius.io/performing-bulk-insert-using-pgx-and-copyfrom-ce34c8b12bac
+// https://github.com/jackc/pgx/issues/992
 func upsertUsers(ctx context.Context, tx pgx.Tx, client okta.Client, users []*okta.User) error {
 
-	// How to convert struct to [][]any, then create temp table to handle inserts
-	// https://blog.devgenius.io/performing-bulk-insert-using-pgx-and-copyfrom-ce34c8b12bac
-	// https://github.com/jackc/pgx/issues/992
+	createTemp := `
+		CREATE TEMPORARY TABLE temp_okta_users(
+			LIKE "cs"."okta_user" INCLUDING ALL
+		) ON COMMIT DROP;
+	`
 
-	// createTemp := `
-	// 	CREATE TEMPORARY TABLE _temp_okta_users(
-	// 		LIKE cs.okta_users INCLUDING ALL
-	// 	) ON COMMIT DROP;
-	// `
+	_, err := tx.Exec(context.Background(), createTemp)
+	if err != nil {
+		log.Fatalf("Create temp table: %v", err)
+	}
 
 	usersCount := len(users)
 	if usersCount == 0 {
-		log.Fatal("Users count cannot be 0")
+		log.Fatal("Users array length cannot be 0")
 	}
 
 	copyCount, queryErr := tx.CopyFrom(
 		context.Background(),
-		pgx.Identifier{"cs", "okta_user"},
-		[]string{"id", "created", "email"},
+		pgx.Identifier{"temp_okta_users"},
+		[]string{"id", "created", "email", "first_name"},
 		pgx.CopyFromSlice(usersCount, func(i int) ([]interface{}, error) {
 			user := users[i]
 			userProfileStr, err := json.Marshal(user.Profile)
@@ -82,16 +86,137 @@ func upsertUsers(ctx context.Context, tx pgx.Tx, client okta.Client, users []*ok
 				user.Id,
 				user.Created,
 				userProfile.Email,
+				userProfile.FirstName,
 			}, nil
 		}),
 	)
 
 	if queryErr != nil {
-		log.Fatal(queryErr)
+		log.Fatalf("Error yo: %v", queryErr)
 	}
 
 	if int(copyCount) != usersCount {
 		log.Fatal("Copied rows does not equal the size of the users array")
+	}
+
+	if _, err := tx.Exec(ctx,
+		`INSERT INTO cs.okta_user (
+			id,
+			created,
+			activated,
+			status,
+			status_changed,
+			last_login,
+			last_updated,
+			password_changed,
+			login,
+			first_name,
+			last_name,
+			email,
+			email_verified,
+			second_email,
+			second_email_verified,
+			phone,
+			phone_verified,
+			second_phone,
+			second_phone_verified,
+			display_name,
+			nickname,
+			profile_url,
+			title,
+			user_type,
+			preferred_language,
+			perferred_timezone,
+			locale,
+			timezone,
+			organization,
+			cost_center,
+			department,
+			division,
+			employee_number,
+			employee_type,
+			manager,
+			manager_id,
+			primary_relationship
+		)
+		SELECT
+			id,
+			created,
+			activated,
+			status,
+			status_changed,
+			last_login,
+			last_updated,
+			password_changed,
+			login,
+			first_name,
+			last_name,
+			email,
+			email_verified,
+			second_email,
+			second_email_verified,
+			phone,
+			phone_verified,
+			second_phone,
+			second_phone_verified,
+			display_name,
+			nickname,
+			profile_url,
+			title,
+			user_type,
+			preferred_language,
+			perferred_timezone,
+			locale,
+			timezone,
+			organization,
+			cost_center,
+			department,
+			division,
+			employee_number,
+			employee_type,
+			manager,
+			manager_id,
+			primary_relationship
+		FROM temp_okta_users ON CONFLICT (id) DO UPDATE SET
+			created = excluded.created,
+			activated = excluded.activated,
+			status = excluded.status,
+			status_changed = excluded.status_changed,
+			last_login = excluded.last_login,
+			last_updated = excluded.last_updated,
+			password_changed = excluded.password_changed,
+			login = excluded.login,
+			first_name = excluded.first_name,
+			last_name = excluded.last_name,
+			email = excluded.email,
+			email_verified = excluded.email_verified,
+			second_email = excluded.second_email,
+			second_email_verified = excluded.second_email_verified,
+			phone = excluded.phone,
+			phone_verified = excluded.phone_verified,
+			second_phone = excluded.second_phone,
+			second_phone_verified = excluded.second_phone_verified,
+			display_name = excluded.display_name,
+			nickname = excluded.nickname,
+			profile_url = excluded.profile_url,
+			title = excluded.title,
+			user_type = excluded.user_type,
+			preferred_language = excluded.preferred_language,
+			perferred_timezone = excluded.perferred_timezone,
+			locale = excluded.locale,
+			timezone = excluded.timezone,
+			organization = excluded.organization,
+			cost_center = excluded.cost_center,
+			department = excluded.department,
+			division = excluded.division,
+			employee_number = excluded.employee_number,
+			employee_type = excluded.employee_type,
+			manager = excluded.manager,
+			manager_id = excluded.manager_id,
+			primary_relationship = excluded.primary_relationship;
+		`,
+	); err != nil {
+		return err
 	}
 
 	return nil
@@ -123,11 +248,10 @@ func handleRequest(lambdaCtx context.Context) {
 	}
 
 	// TODO: https://github.com/okta/okta-sdk-golang#pagination
-	users, resp, err := client.User.ListUsers(ctx, nil)
+	users, _, err := client.User.ListUsers(ctx, nil)
 	if err != nil {
 		fmt.Printf("Error Getting Users: %v\n", err)
 	}
-	log.Printf("Response: %+v\n", resp)
 
 	// Check and see if Okta Pagination has any more results here
 	err = pgx.BeginTxFunc(context.Background(), conn, pgx.TxOptions{}, func(tx pgx.Tx) error {
