@@ -69,7 +69,15 @@ func upsertUsers(ctx context.Context, tx pgx.Tx, client okta.Client, users []*ok
 	copyCount, queryErr := tx.CopyFrom(
 		context.Background(),
 		pgx.Identifier{"temp_okta_users"},
-		[]string{"id", "created", "email", "first_name"},
+		[]string{
+			"id", "created", "activated", "status", "status_changed", "last_login",
+			"last_updated", "password_changed", "login", "first_name", "last_name", "email",
+			"email_verified", "second_email", "second_email_verified", "phone", "phone_verified",
+			"second_phone", "second_phone_verified", "display_name", "nickname", "profile_url",
+			"title", "user_type", "preferred_language", "perferred_timezone", "locale", "timezone",
+			"organization", "cost_center", "department", "division", "employee_number", "employee_type",
+			"manager", "manager_id", "primary_relationship",
+		},
 		pgx.CopyFromSlice(usersCount, func(i int) ([]interface{}, error) {
 			user := users[i]
 			userProfileStr, err := json.Marshal(user.Profile)
@@ -85,14 +93,47 @@ func upsertUsers(ctx context.Context, tx pgx.Tx, client okta.Client, users []*ok
 			return []interface{}{
 				user.Id,
 				user.Created,
-				userProfile.Email,
+				user.Activated,
+				user.Status,
+				user.StatusChanged,
+				user.LastLogin,
+				user.LastUpdated,
+				user.PasswordChanged,
+				userProfile.Login,
 				userProfile.FirstName,
+				userProfile.LastName,
+				userProfile.Email,
+				userProfile.EmailVerified,
+				userProfile.SecondEmail,
+				userProfile.SecondEmailVerified,
+				userProfile.Phone,
+				userProfile.PhoneVerified,
+				userProfile.SecondPhone,
+				userProfile.SecondPhoneVerified,
+				userProfile.DisplayName,
+				userProfile.NickName,
+				userProfile.ProfileUrl,
+				userProfile.Title,
+				userProfile.UserType,
+				userProfile.PreferredLanguage,
+				userProfile.PreferredTimeZone,
+				userProfile.Locale,
+				userProfile.TimeZone,
+				userProfile.Organization,
+				userProfile.CostCenter,
+				userProfile.Department,
+				userProfile.Division,
+				userProfile.EmployeeNumber,
+				userProfile.EmployeeType,
+				userProfile.Manager,
+				userProfile.ManagerId,
+				userProfile.PrimaryRelationship,
 			}, nil
 		}),
 	)
 
 	if queryErr != nil {
-		log.Fatalf("Error yo: %v", queryErr)
+		log.Fatalf("CopyFrom error: %v", queryErr)
 	}
 
 	if int(copyCount) != usersCount {
@@ -222,6 +263,19 @@ func upsertUsers(ctx context.Context, tx pgx.Tx, client okta.Client, users []*ok
 	return nil
 }
 
+func dbTx(ctx context.Context, conn *pgx.Conn, client okta.Client, users []*okta.User) error {
+	err := pgx.BeginTxFunc(context.Background(), conn, pgx.TxOptions{}, func(tx pgx.Tx) error {
+		return upsertUsers(context.Background(), tx, client, users)
+	})
+	if err == nil {
+		log.Println("Users upsert completed.")
+	} else {
+		log.Fatal("error: ", err)
+	}
+
+	return nil
+}
+
 func handleRequest(lambdaCtx context.Context) {
 	dsn := "postgres://root:TsyFzgSdGrEsWOoTn78E@circulate-postgresql.cfnt2r7lvj4b.us-east-2.rds.amazonaws.com:5432/circulatedb"
 
@@ -244,23 +298,27 @@ func handleRequest(lambdaCtx context.Context) {
 	)
 
 	if err != nil {
-		log.Printf("Error: %v\n", err)
+		log.Printf("Error connecting to Okta Client: %v\n", err)
 	}
 
-	// TODO: https://github.com/okta/okta-sdk-golang#pagination
-	users, _, err := client.User.ListUsers(ctx, nil)
+	// Default queries 200 users per page
+	users, resp, err := client.User.ListUsers(ctx, nil)
 	if err != nil {
 		fmt.Printf("Error Getting Users: %v\n", err)
 	}
+	dbTx(context.Background(), conn, *client, users)
 
-	// Check and see if Okta Pagination has any more results here
-	err = pgx.BeginTxFunc(context.Background(), conn, pgx.TxOptions{}, func(tx pgx.Tx) error {
-		return upsertUsers(context.Background(), tx, *client, users)
-	})
-	if err == nil {
-		log.Println("New rows created.")
-	} else {
-		log.Fatal("error: ", err)
+	hasNextPage := resp.HasNextPage()
+
+	for hasNextPage {
+		var nextUserSet []*okta.User
+		resp, err = resp.Next(ctx, &nextUserSet)
+		if err != nil {
+			log.Fatalf("Okta results nextPage: %v", err)
+		}
+
+		dbTx(context.Background(), conn, *client, nextUserSet)
+		hasNextPage = resp.HasNextPage()
 	}
 
 }
