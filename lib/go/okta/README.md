@@ -43,9 +43,6 @@ aws lambda update-function-code --function-name okta-golang --zip-file fileb://m
 Not every endpoint has a method, must create struct for these:
 - https://github.com/okta/okta-sdk-golang#call-other-api-endpoints
 
-MUST PAGINATE FOR REQUESTS LARGER THAN DEFAULT / CONFIGURED RESPONSE:
-- https://github.com/okta/okta-sdk-golang#pagination
-
 OKTA TYPES
 - https://github.com/okta/okta-sdk-golang/tree/e9ca83359ec20bbd5785067ac6a1d45c765a52b4/okta
 
