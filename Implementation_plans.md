@@ -4,14 +4,21 @@ In order to make this project more automated, must do the following:
 
 <br />
 
+
+## VPC:
+- ~~Deploy VPC with public and private subnets into us-east-2~~
+- Create VPC endpoint for Lambda deployment region
+    - Assign to private subnets that database gets deployed to
+
+<br />
+
+
 ## RDS Postgres Instance(s):
 
 - Deploy RDS with Terraform
     - If dev environment, make publicly accessible to access locally
     - In Security group, add home IP address if in dev
 - Store root user credentials in AWS Secrets Manager
-- Create VPC endpoint for Lambda deployment region
-    - Assign to private subnets that database gets deployed to
 - AWSServiceRoleForRDS IAM role for instance
 - Ensure there is an easy way to deploy Multi-AZ via TF
 - [Research] Deploy RDS Proxy
@@ -75,7 +82,7 @@ In order to make this project more automated, must do the following:
     - URL Decoder
 - Crowdstrike
 - Airwatch
-- Sailpoint
+- [Sailpoint](https://developer.sailpoint.com/idn/api/v3)
 - Tenable
 - Veracode
 - Office365 - API call
