@@ -4,7 +4,7 @@ resource "null_resource" "gobuild" {
   }
 
   provisioner "local-exec" {
-    command = "cd ${var.src_path} && CGO_ENABLED=0 go build -o ./assets && zip -r ./assets/${random_uuid.lambda_src_hash.result}.zip ./assets/main"
+    command = "cd ${var.src_path} && rm -r ./assets/*.zip && CGO_ENABLED=0 go build -o ./assets && zip -r ./assets/${random_uuid.lambda_src_hash.result}.zip ./assets/main"
   }
 }
 
