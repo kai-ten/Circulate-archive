@@ -14,6 +14,7 @@ module "vpc" {
   azs             = local.azs
   public_subnets  = [for k, v in local.azs : cidrsubnet(var.vpc_cidr, 8, k)]
   private_subnets = [for k, v in local.azs : cidrsubnet(var.vpc_cidr, 8, k + 3)]
+  database_subnets = [for k, v in local.azs : cidrsubnet(var.vpc_cidr, 8, k + 6)]
 
   create_database_subnet_group           = var.is_public
   create_database_subnet_route_table     = var.is_public
@@ -47,7 +48,7 @@ module "endpoints" {
 
   vpc_id             = module.vpc.vpc_id
   security_group_ids = [module.security_group.security_group_id]
-  subnet_ids = module.vpc.private_subnets
+  subnet_ids = module.vpc.database_subnets
 
   endpoints = {
     lambda = {
@@ -55,4 +56,16 @@ module "endpoints" {
       tags    = { Name = "circulate-lambda-vpc-endpoint" }
     }
   }
+}
+
+resource "aws_ssm_parameter" "private_subnet_group_name_output" {
+  name  = "circulate-private-subnet-group-name"
+  type  = "String"
+  value = module.vpc.database_subnet_group
+}
+
+resource "aws_ssm_parameter" "private_security_group_id_output" {
+  name  = "circulate-security-group-id"
+  type  = "String"
+  value = module.security_group.security_group_id
 }
