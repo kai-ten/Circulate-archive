@@ -1,9 +1,9 @@
 data "aws_ssm_parameter" "private_subnet_group_name" {
-  name = "circulate-private-subnet-group-name"
+  name = "/${var.name}-${var.env}/private-subnet-group/name"
 }
 
 data "aws_ssm_parameter" "security_group_id" {
-  name = "circulate-security-group-id"
+  name = "/${var.name}-${var.env}/security-group/id"
 }
 
 data "aws_iam_role" "managed_rds_role" {
@@ -19,7 +19,7 @@ resource "random_password" "password" {
 module "db" {
   source = "terraform-aws-modules/rds/aws"
 
-  identifier = var.name
+  identifier = "${var.name}-${var.env}"
 
   engine                = "postgres"
   engine_version        = "14"
@@ -32,10 +32,11 @@ module "db" {
   # NOTE: Do NOT use 'user' as the value for 'username' as it throws:
   # "Error creating DB Instance: InvalidParameterValue: MasterUsername
   # user cannot be used as it is a reserved word used by the engine"
-  db_name  = "circulatedb"
-  username = "root"
-  password = random_password.password.result
-  port     = 5432
+  db_name                             = "circulatedb"
+  username                            = "root"
+  password                            = random_password.password.result
+  port                                = 5432
+  iam_database_authentication_enabled = false // TODO: Implement for improved access control
 
   multi_az               = var.is_multi_az
   db_subnet_group_name   = data.aws_ssm_parameter.private_subnet_group_name.value
@@ -85,15 +86,21 @@ resource "aws_db_instance_role_association" "rds_lambda_iam_assn" {
 }
 
 resource "aws_secretsmanager_secret" "circulate_db_password" {
-  name = "circulate/postgresdb/admin"
+  name = "/${var.name}-${var.env}/postgresdb/admin"
 }
 
 resource "aws_secretsmanager_secret_version" "circulate_db_password_version" {
-  secret_id = aws_secretsmanager_secret.circulate_db_password.id
+  secret_id     = aws_secretsmanager_secret.circulate_db_password.id
   secret_string = <<EOF
    {
     "username": "root",
     "password": "${random_password.password.result}"
    }
 EOF
+}
+
+resource "aws_ssm_parameter" "database_url_output" {
+  name  = "/${var.name}-${var.env}/postgresdb/host"
+  type  = "String"
+  value = module.db.db_instance_endpoint
 }

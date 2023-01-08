@@ -16,7 +16,7 @@ provider "aws" {
   default_tags {
     tags = {
       Project = "Circulate"
-      Module  = "lambda"
+      Module  = "vpc"
     }
   }
 }

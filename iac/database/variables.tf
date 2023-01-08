@@ -3,6 +3,11 @@ variable "name" {
   default = "circulate"
 }
 
+variable "env" {
+  type    = string
+  default = "dev"
+}
+
 variable "is_public" {
   type    = bool
   default = false

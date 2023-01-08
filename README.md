@@ -1,6 +1,6 @@
 # Circulate
 
-Empower everyone on your team to make the most of your data.
+Empower everyone in your cybersecurity org to make the most of your data.
 
 The no-code solution to leverage your data to enhance your Cybersecurity posture. <br />
 Data analysts are great, developers are great, but this leaves a gap to those who are busy solving other problems. <br />
@@ -8,7 +8,7 @@ Circulate is here to solve that exact problem, enabling the whole team to build 
 
 
 - Track your onboarding progress for a new tool
-- Answer difficult questions with the click of a button
+- Answer difficult questions at the click of a button
     - Are all of your servers sharing the same security toolsets? If not, which ones need to be onboarded?
     - Are all of your users being assigned to the correct groups?
     - Are any users missing group assignments that they should have?
