@@ -48,8 +48,9 @@ In order to make this project more automated, must do the following:
 
 ## Okta Users Lambda
 
-- Create TF to deploy Go lambda
+- ~~Create TF to deploy Go lambda~~
 - ~~Create Lambda to retrieve data and write to Postgres~~
+- Convert Lambda into Step Function for future goals (e.g. multi-database support)
 
 <br />
 

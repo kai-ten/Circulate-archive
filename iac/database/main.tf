@@ -85,16 +85,18 @@ resource "aws_db_instance_role_association" "rds_lambda_iam_assn" {
   role_arn               = data.aws_iam_role.managed_rds_role.arn
 }
 
-resource "aws_secretsmanager_secret" "circulate_db_password" {
-  name = "/${var.name}-${var.env}/postgresdb/admin"
+resource "aws_secretsmanager_secret" "circulate_db" {
+  name = "/${var.name}-${var.env}/postgresdb/dbsecret"
 }
 
 resource "aws_secretsmanager_secret_version" "circulate_db_password_version" {
-  secret_id     = aws_secretsmanager_secret.circulate_db_password.id
+  secret_id     = aws_secretsmanager_secret.circulate_db.id
   secret_string = <<EOF
    {
     "username": "root",
-    "password": "${random_password.password.result}"
+    "password": "${random_password.password.result}",
+    "engine": "postgres14",
+    "host": "${module.db.db_instance_endpoint}"
    }
 EOF
 }

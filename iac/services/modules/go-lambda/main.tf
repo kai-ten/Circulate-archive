@@ -3,7 +3,7 @@ data "aws_ssm_parameter" "database_url" {
 }
 
 data "aws_secretsmanager_secret" "circulatedb_user_secret" {
-  name = "/${var.name}/postgresdb/admin"
+  name = "/${var.name}/postgresdb/dbsecret"
 }
 
 data "aws_secretsmanager_secret_version" "circulatedb_user_secret_version" {
@@ -19,7 +19,7 @@ resource "aws_lambda_function" "go_function" {
   function_name = var.lambda_name
   role          = aws_iam_role.lambda.arn
   runtime       = "go1.x"
-  handler       = "main"
+  handler       = "assets/main"
   timeout       = var.timeout
 
   environment {
@@ -35,6 +35,6 @@ resource "aws_lambda_function" "go_function" {
 }
 
 resource "aws_cloudwatch_log_group" "log_group" {
-  name              = "/aws/lambda/${var.name}"
+  name              = "/aws/lambda/${var.lambda_name}"
   retention_in_days = 7
 }

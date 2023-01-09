@@ -1,5 +1,5 @@
 resource "aws_iam_role" "lambda" {
-  name = "${var.name}-lambda"
+  name = "${var.lambda_name}-lambda"
 
   assume_role_policy = jsonencode(
     {
@@ -17,7 +17,7 @@ resource "aws_iam_role" "lambda" {
 }
 
 resource "aws_iam_role_policy" "lambda_policy" {
-  name   = "${var.name}-lambda"
+  name   = "${var.lambda_name}-lambda"
   role   = aws_iam_role.lambda.id
   policy = var.iam_policy_json
 }

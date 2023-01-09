@@ -25,7 +25,10 @@ init-infra-database:
 init-infra-services-okta:
 	cd iac/services/okta && terraform init
 
-init: init-infra-vpc init-infra-database init-infra-services-okta
+init-infra-services-create-database:
+	cd iac/services/utils/database-configurator/create-database && terraform init
+
+init: init-infra-vpc init-infra-database init-infra-services-okta init-infra-services-create-database
 
 
 
@@ -62,7 +65,11 @@ auto-apply-infra-services-okta:
 	cd iac/services/okta && \
 	terraform apply -auto-approve --var-file=env/$(ENV).tfvars
 
-auto-apply: auto-apply-infra-vpc auto-apply-infra-database auto-apply-infra-services-okta
+auto-apply-infra-services-create-database:
+	cd iac/services/utils/database-configurator/create-database && \
+	terraform apply -auto-approve --var-file=env/$(ENV).tfvars
+
+auto-apply: auto-apply-infra-vpc auto-apply-infra-database auto-apply-infra-services-okta auto-apply-infra-services-create-database
 
 
 
