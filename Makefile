@@ -13,6 +13,15 @@ ENV ?= dev
 
 
 ######################
+# Initialize Backend #
+######################
+backend:
+	cd iac/remote-backend && \
+	terraform init && \
+	terraform apply -auto-approve --var-file=env/$(ENV).tfvars
+
+
+######################
 # Initialize Modules #
 ######################
 
@@ -70,6 +79,33 @@ auto-apply-infra-services-create-database:
 	terraform apply -auto-approve --var-file=env/$(ENV).tfvars
 
 auto-apply: auto-apply-infra-vpc auto-apply-infra-database auto-apply-infra-services-okta auto-apply-infra-services-create-database
+
+
+
+#####################
+# Destroy Resources #
+#####################
+
+auto-destroy-infra-vpc:
+	cd iac/vpc && \
+	terraform destroy -auto-approve --var-file=env/$(ENV).tfvars
+
+auto-destroy-infra-database:
+	cd iac/database && \
+	terraform destroy -auto-approve --var-file=env/$(ENV).tfvars
+
+auto-destroy-infra-services-okta:
+	cd iac/services/okta && \
+	terraform destroy -auto-approve --var-file=env/$(ENV).tfvars
+
+auto-destroy-infra-services-create-database:
+	cd iac/services/utils/database-configurator/create-database && \
+	terraform destroy -auto-approve --var-file=env/$(ENV).tfvars
+
+auto-destroy: auto-destroy-infra-services-create-database \
+	auto-destroy-infra-services-okta \
+	auto-destroy-infra-database \
+	auto-destroy-infra-vpc
 
 
 
