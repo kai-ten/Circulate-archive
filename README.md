@@ -37,3 +37,4 @@ aws lambda update-function-code --function-name okta-golang --zip-file fileb://m
     - Updates modify these files that get stored for the account in S3
 
 - Subsequent queries find whether new fields exist or not
+

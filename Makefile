@@ -21,21 +21,41 @@ backend:
 	terraform apply -auto-approve --var-file=env/$(ENV).tfvars
 
 
+
 ######################
 # Initialize Modules #
 ######################
 
+# Generating the provider.tf from a template allows us to utilize environment variables. Terraform does not accept Variables in the backend block.
+# https://developer.hashicorp.com/terraform/language/settings/backends/configuration#using-a-backend-block
+
 init-infra-vpc:
-	cd iac/vpc && terraform init
+	cd iac/vpc && \
+	echo "Generating provider.tf for ${ENV}" && \
+	sed s/ENV/${ENV}/ < provider.tf.template > provider.tf && \
+	cat provider.tf && \
+	terraform init
 
 init-infra-database:
-	cd iac/database && terraform init
+	cd iac/database && \
+	echo "Generating provider.tf for ${ENV}" && \
+	sed s/ENV/${ENV}/ < provider.tf.template > provider.tf && \
+	cat provider.tf && \
+	terraform init
 
 init-infra-services-okta:
-	cd iac/services/okta && terraform init
+	cd iac/services/okta && \
+	echo "Generating provider.tf for ${ENV}" && \
+	sed s/ENV/${ENV}/ < provider.tf.template > provider.tf && \
+	cat provider.tf && \
+	terraform init
 
 init-infra-services-create-database:
-	cd iac/services/utils/database-configurator/create-database && terraform init
+	cd iac/services/utils/database-configurator/create-database && \
+	echo "Generating provider.tf for ${ENV}" && \
+	sed s/ENV/${ENV}/ < provider.tf.template > provider.tf && \
+	cat provider.tf && \
+	terraform init
 
 init: init-infra-vpc init-infra-database init-infra-services-okta init-infra-services-create-database
 
@@ -114,6 +134,9 @@ auto-destroy: auto-destroy-infra-services-create-database \
 ####################
 
 fmt:
+	cd iac/remote-backend && \
+	terraform fmt && \
+	cd - && \
 	cd iac/vpc && \
 	terraform fmt && \
 	cd - && \

@@ -1,6 +1,13 @@
 terraform {
   required_version = ">= 1.3"
 
+  backend "s3" {
+    bucket         = "circulate-dev-terraform-state-backend"
+    key            = "vpc/terraform.tfstate"
+    region         = "us-east-2"
+    dynamodb_table = "terraform_state"
+  }
+
   required_providers {
     aws = {
       source  = "hashicorp/aws"

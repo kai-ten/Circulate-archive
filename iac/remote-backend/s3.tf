@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "state_bucket" {
-  bucket = "${var.name}-${var.env}-terraform-state-backend"
+  bucket              = "${var.name}-${var.env}-terraform-state-backend"
   object_lock_enabled = true
   tags = {
     Name = "Circulate S3 Remote Terraform State Store"

@@ -11,6 +11,7 @@ variable "lambda_name" {
 variable "env_variables" {
   description = "Environments variables for your lambda"
   type        = map(string)
+  default = null
 }
 
 variable "iam_policy_json" {
@@ -27,4 +28,13 @@ variable "timeout" {
   description = "Execution timeout of your lambda"
   default     = 60
   type        = number
+}
+
+variable "vpc_config" {
+  description = "optional vpc of your lambda"
+  type = object({
+    subnet_ids         = list(string)
+    security_group_ids = list(string)
+  })
+  default = null
 }

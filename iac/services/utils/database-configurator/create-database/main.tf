@@ -1,23 +1,27 @@
+data "terraform_remote_state" "vpc_output" {
+  backend = "s3"
+  config = {
+    bucket = "${var.name}-${var.env}-terraform-state-backend"
+    key    = "vpc/terraform.tfstate"
+    region = "us-east-2"
+  }
+}
+
 module "circulate_create_database" {
   source          = "../../../modules/go-lambda"
   name            = "${var.name}-${var.env}"
   lambda_name     = "${var.name}-${var.env}-${var.service}-lamba"
   src_path        = "../../../../../lib/utils/database-configurator/create-database"
-  iam_policy_json = data.aws_iam_policy_document.example-ssm-secrets.json
-  env_variables = {}
+  iam_policy_json = data.aws_iam_policy.AWSLambdaVPCAccessExecutionRole.policy
+  timeout = 5
+  vpc_config = {
+    security_group_ids = [data.terraform_remote_state.vpc_output.outputs.vpc_security_group_id]
+    subnet_ids = data.terraform_remote_state.vpc_output.outputs.vpc_public_subnets
+  }
 }
 
-// TODO: Create empty policy if no further policies are needed, determine whether custom policies are needed or not
-data "aws_iam_policy_document" "example-ssm-secrets" {
-  statement {
-    effect = "Allow"
-    actions = [
-      "none:null"
-    ]
-    resources = [
-      "*"
-    ]
-  }
+data "aws_iam_policy" "AWSLambdaVPCAccessExecutionRole" {
+  arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
 }
 
 # resource "null_resource" "db_setup" {

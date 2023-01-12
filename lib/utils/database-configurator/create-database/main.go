@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"net/url"
 	"os"
 
 	"github.com/aws/aws-lambda-go/lambda"
@@ -12,7 +13,7 @@ import (
 
 func dbTx(ctx context.Context, conn *pgx.Conn) error {
 	err := pgx.BeginTxFunc(context.Background(), conn, pgx.TxOptions{}, func(tx pgx.Tx) error {
-
+		log.Print("okok")
 		createDbSchema := `
 			CREATE DATABASE IF NOT EXISTS circulatedb;
 			USE circulatedb;
@@ -38,19 +39,26 @@ func dbTx(ctx context.Context, conn *pgx.Conn) error {
 }
 
 func handleRequest(lambdaCtx context.Context) {
+
 	host := os.Getenv("DB_CLIENT")
 	username := os.Getenv("DB_USER")
 	password := os.Getenv("DB_PASS")
-	dsn := fmt.Sprintf("postgres://%s:%s@%s/circulatedb", username, password, host)
+	encodedPassword := url.QueryEscape(password)
+	dsn := fmt.Sprintf("postgres://%s:%s@%s/circulatedb", username, encodedPassword, host)
+
+	log.Print(dsn)
 
 	// TODO: https://github.com/jackc/pgx/wiki/Getting-started-with-pgx#using-a-connection-pool
 	// Use RDS Proxy to assist with this
 	// https://github.com/jackc/pgx/issues/923
 	conn, err := pgx.Connect(context.Background(), dsn)
 	if err != nil {
-		log.Fatal("Failed to connect database", err)
+		log.Fatal("Failed to connect database: ", err)
 	}
+	log.Print("LOSER")
 	defer conn.Close(context.Background())
+
+	log.Print("LOSER")
 
 	dbTx(context.Background(), conn)
 

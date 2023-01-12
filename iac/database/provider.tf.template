@@ -2,7 +2,7 @@ terraform {
   required_version = ">= 1.3"
 
   backend "s3" {
-    bucket         = "circulate-dev-terraform-state-backend"
+    bucket         = "circulate-ENV-terraform-state-backend"
     key            = "postgresdb/terraform.tfstate"
     region         = "us-east-2"
     dynamodb_table = "terraform_state"

@@ -28,9 +28,8 @@ module "security_group" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "~> 4.0"
 
-  name        = "${var.name}-${var.env}"
-  description = "Complete PostgreSQL example security group"
-  vpc_id      = module.vpc.vpc_id
+  name   = "${var.name}-${var.env}_sg_id"
+  vpc_id = module.vpc.vpc_id
 
   ingress_with_cidr_blocks = [
     {
@@ -43,43 +42,19 @@ module "security_group" {
   ]
 }
 
-module "endpoints" {
-  source = "terraform-aws-modules/vpc/aws//modules/vpc-endpoints"
+# module "endpoints" {
+#   source = "terraform-aws-modules/vpc/aws//modules/vpc-endpoints"
 
-  vpc_id             = module.vpc.vpc_id
-  security_group_ids = [module.security_group.security_group_id]
-  subnet_ids         = module.vpc.database_subnets
+#   vpc_id             = module.vpc.vpc_id
+#   security_group_ids = [module.security_group.security_group_id]
+#   subnet_ids         = module.vpc.database_subnets
 
-  endpoints = {
-    lambda = {
-      service = "lambda"
-      tags    = { Name = "${var.name}-${var.env}-lambda-vpc-endpoint" }
-    }
-  }
-}
 
-resource "aws_ssm_parameter" "private_subnet_group_name_output" {
-  name  = "/${var.name}-${var.env}/private-subnet-group/name"
-  type  = "String"
-  value = module.vpc.database_subnet_group
-}
-
-resource "aws_ssm_parameter" "private_security_group_id_output" {
-  name  = "/${var.name}-${var.env}/security-group/id"
-  type  = "String"
-  value = module.security_group.security_group_id
-}
-
-resource "aws_secretsmanager_secret" "circulate_api" {
-  name = "/${var.name}-${var.env}/api/integrations"
-}
-
-resource "aws_secretsmanager_secret_version" "circulate_api_version" {
-  secret_id     = aws_secretsmanager_secret.circulate_api.id
-  secret_string = <<EOF
-   {
-    "okta_url": "",
-    "okta_api_key": ""
-   }
-EOF
-}
+#   endpoints = {
+#     lambda = {
+#       service = "lambda"
+#       tags    = { Name = "${var.name}-${var.env}-lambda-vpc-endpoint" }
+#       private_dns_enabled = true
+#     }
+#   }
+# }

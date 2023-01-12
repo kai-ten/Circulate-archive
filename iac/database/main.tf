@@ -1,9 +1,10 @@
-data "aws_ssm_parameter" "private_subnet_group_name" {
-  name = "/${var.name}-${var.env}/private-subnet-group/name"
-}
-
-data "aws_ssm_parameter" "security_group_id" {
-  name = "/${var.name}-${var.env}/security-group/id"
+data "terraform_remote_state" "vpc_output" {
+  backend = "s3"
+  config = {
+    bucket = "${var.name}-${var.env}-terraform-state-backend"
+    key    = "vpc/terraform.tfstate"
+    region = "us-east-2"
+  }
 }
 
 data "aws_iam_role" "managed_rds_role" {
@@ -39,8 +40,8 @@ module "db" {
   iam_database_authentication_enabled = false // TODO: Implement for improved access control
 
   multi_az               = var.is_multi_az
-  db_subnet_group_name   = data.aws_ssm_parameter.private_subnet_group_name.value
-  vpc_security_group_ids = [data.aws_ssm_parameter.security_group_id.value]
+  db_subnet_group_name   = data.terraform_remote_state.vpc_output.outputs.vpc_database_subnet_group
+  vpc_security_group_ids = [data.terraform_remote_state.vpc_output.outputs.vpc_security_group_id]
   publicly_accessible    = var.is_public
 
   maintenance_window              = "Mon:00:00-Mon:03:00"
@@ -86,7 +87,7 @@ resource "aws_db_instance_role_association" "rds_lambda_iam_assn" {
 }
 
 resource "aws_secretsmanager_secret" "circulate_db" {
-  name = "/${var.name}-${var.env}/postgresdb/dbsecret"
+  name = "/${var.name}-${var.env}/postgresdb/creds"
 }
 
 resource "aws_secretsmanager_secret_version" "circulate_db_password_version" {
@@ -99,10 +100,4 @@ resource "aws_secretsmanager_secret_version" "circulate_db_password_version" {
     "host": "${module.db.db_instance_endpoint}"
    }
 EOF
-}
-
-resource "aws_ssm_parameter" "database_url_output" {
-  name  = "/${var.name}-${var.env}/postgresdb/host"
-  type  = "String"
-  value = module.db.db_instance_endpoint
 }

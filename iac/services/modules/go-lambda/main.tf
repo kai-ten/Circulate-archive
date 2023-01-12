@@ -1,18 +1,10 @@
-data "aws_ssm_parameter" "database_url" {
-  name = "/${var.name}/postgresdb/host"
-}
-
-data "aws_secretsmanager_secret" "circulatedb_user_secret" {
-  name = "/${var.name}/postgresdb/dbsecret"
-}
-
-data "aws_secretsmanager_secret_version" "circulatedb_user_secret_version" {
-  secret_id     = data.aws_secretsmanager_secret.circulatedb_user_secret.id
+locals {
+  environment_map = var.env_variables[*]
 }
 
 resource "aws_lambda_function" "go_function" {
   depends_on    = [
-    aws_cloudwatch_log_group.log_group, 
+    aws_cloudwatch_log_group.log_group,
     null_resource.gobuild
   ]
   filename      = "${var.src_path}/assets/${random_uuid.lambda_src_hash.result}.zip"
@@ -22,15 +14,19 @@ resource "aws_lambda_function" "go_function" {
   handler       = "assets/main"
   timeout       = var.timeout
 
-  environment {
-    variables = merge(
-        {
-            DB_CLIENT = "${data.aws_ssm_parameter.database_url.value}"
-            DB_USER = "${jsondecode(data.aws_secretsmanager_secret_version.circulatedb_user_secret_version.secret_string)["username"]}"
-            DB_PASS = "${jsondecode(data.aws_secretsmanager_secret_version.circulatedb_user_secret_version.secret_string)["password"]}"
-        }, 
-        var.env_variables
-    )
+  dynamic "environment" {
+    for_each = local.environment_map
+    content {
+      variables = environment.value
+    }
+  }
+
+  dynamic "vpc_config" {
+    for_each = var.vpc_config == null ? [] : [0]
+    content {
+      security_group_ids = var.vpc_config.security_group_ids
+      subnet_ids         = var.vpc_config.subnet_ids
+    }
   }
 }
 
