@@ -1,5 +1,11 @@
 # Circulate
 
+### Answer the difficult questions.
+
+- How much of a tool are we using?
+- How much of a tool **aren't** we using? And what do we need to focus on to use it?
+
+
 Empower everyone in your cybersecurity org to make the most of your data.
 
 The no-code solution to leverage your data to enhance your Cybersecurity posture. <br />

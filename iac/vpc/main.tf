@@ -4,6 +4,7 @@ locals {
   azs = slice(data.aws_availability_zones.available.names, 0, 3)
 }
 
+# Example - https://github.com/terraform-aws-modules/terraform-aws-vpc/blob/master/examples/complete-vpc/main.tf
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "~> 3.0"
@@ -38,23 +39,43 @@ module "security_group" {
       protocol    = "tcp"
       description = "PostgreSQL access from within VPC"
       cidr_blocks = module.vpc.vpc_cidr_block
+    },
+    {
+      from_port   = 443
+      to_port     = 443
+      protocol    = "tcp"
+      description = "SSL Traffic"
+      cidr_blocks = module.vpc.vpc_cidr_block
+    }
+  ]
+
+  egress_with_cidr_blocks = [
+    {
+      from_port   = 443
+      to_port     = 443
+      protocol    = "tcp"
+      description = "PostgreSQL access from within VPC"
+      cidr_blocks = "0.0.0.0/0"
     }
   ]
 }
 
-# module "endpoints" {
-#   source = "terraform-aws-modules/vpc/aws//modules/vpc-endpoints"
+module "endpoints" {
+  source = "terraform-aws-modules/vpc/aws//modules/vpc-endpoints"
 
-#   vpc_id             = module.vpc.vpc_id
-#   security_group_ids = [module.security_group.security_group_id]
-#   subnet_ids         = module.vpc.database_subnets
+  vpc_id             = module.vpc.vpc_id
+  security_group_ids = [module.security_group.security_group_id]
 
-
-#   endpoints = {
-#     lambda = {
-#       service = "lambda"
-#       tags    = { Name = "${var.name}-${var.env}-lambda-vpc-endpoint" }
-#       private_dns_enabled = true
-#     }
-#   }
-# }
+  endpoints = {
+    ssm = {
+      service             = "secretsmanager"
+      private_dns_enabled = true
+      subnet_ids          = module.vpc.public_subnets
+    }
+    # lambda = {
+    #   service = "lambda"
+    #   tags    = { Name = "${var.name}-${var.env}-lambda-vpc-endpoint" }
+    #   private_dns_enabled = true
+    # }
+  }
+}
