@@ -21,8 +21,8 @@ module "vpc" {
   create_database_subnet_route_table     = var.is_public
   create_database_internet_gateway_route = var.is_public
 
-  enable_dns_hostnames = var.is_public
-  enable_dns_support   = var.is_public
+  enable_dns_hostnames = true
+  enable_dns_support   = true
 }
 
 module "security_group" {
@@ -53,6 +53,13 @@ module "security_group" {
     {
       from_port   = 443
       to_port     = 443
+      protocol    = "tcp"
+      description = "PostgreSQL access from within VPC"
+      cidr_blocks = "0.0.0.0/0"
+    },
+    {
+      from_port   = 5432
+      to_port     = 5432
       protocol    = "tcp"
       description = "PostgreSQL access from within VPC"
       cidr_blocks = "0.0.0.0/0"

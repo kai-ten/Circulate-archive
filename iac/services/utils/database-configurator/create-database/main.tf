@@ -55,21 +55,21 @@ module "circulate_create_database" {
   }
 }
 
-# resource "null_resource" "db_setup" {
-#   triggers = {
-#     file = filesha1("../../../../../lib/utils/database-configurator/create-database/assets/main")
-#   }
-#   provisioner "local-exec" {
-#     command = <<-EOF
-# 			aws lambda invoke --function-name "$FUNCTION_NAME" /dev/stdout 2>/dev/null
-# 			EOF
-#     environment = {
-#       FUNCTION_NAME     = module.circulate_create_database.lambda_function.function_name
-#     }
-#     interpreter = ["bash", "-c"]
-#   }
+resource "null_resource" "db_setup" {
+  triggers = {
+    file = filesha1("../../../../../lib/utils/database-configurator/create-database/assets/main")
+  }
+  provisioner "local-exec" {
+    command = <<-EOF
+			aws lambda invoke --function-name "$FUNCTION_NAME" /dev/stdout 2>/dev/null
+			EOF
+    environment = {
+      FUNCTION_NAME     = module.circulate_create_database.lambda_function.function_name
+    }
+    interpreter = ["bash", "-c"]
+  }
 
-#   depends_on = [
-#     module.circulate_create_database
-#   ]
-# }
+  depends_on = [
+    module.circulate_create_database
+  ]
+}
