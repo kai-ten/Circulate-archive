@@ -57,7 +57,7 @@ module "circulate_create_database" {
 
 resource "null_resource" "db_setup" {
   triggers = {
-    file = filesha1("../../../../../lib/utils/database-configurator/create-database/assets/main")
+    resource = module.circulate_create_table.lambda_function.function_name # build triggers after resource exists
   }
   provisioner "local-exec" {
     command = <<-EOF

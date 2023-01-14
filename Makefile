@@ -57,24 +57,18 @@ init-infra-services-create-database:
 	cat provider.tf && \
 	terraform init
 
-init: init-infra-vpc init-infra-database init-infra-services-okta init-infra-services-create-database
+init-infra-services-create-table:
+	cd iac/services/utils/database-configurator/create-table && \
+	echo "Generating provider.tf for ${ENV}" && \
+	sed s/ENV/${ENV}/ < provider.tf.template > provider.tf && \
+	cat provider.tf && \
+	terraform init
 
-
-
-###################
-# Apply Resources #
-###################
-
-apply-infra-vpc:
-	cd iac/vpc && \
-	terraform apply --var-file=env/$(ENV).tfvars
-
-apply-infra-database:
-	cd iac/database && \
-	terraform apply --var-file=env/$(ENV).tfvars
-
-apply: apply-infra-vpc apply-infra-database
-
+init: init-infra-vpc \
+	init-infra-database \
+	init-infra-services-okta \
+	init-infra-services-create-database \
+	init-infra-services-create-table
 
 
 
@@ -98,7 +92,15 @@ auto-apply-infra-services-create-database:
 	cd iac/services/utils/database-configurator/create-database && \
 	terraform apply -auto-approve --var-file=env/$(ENV).tfvars
 
-auto-apply: auto-apply-infra-vpc auto-apply-infra-database auto-apply-infra-services-okta auto-apply-infra-services-create-database
+auto-apply-infra-services-create-table:
+	cd iac/services/utils/database-configurator/create-table && \
+	terraform apply -auto-approve --var-file=env/$(ENV).tfvars	
+
+auto-apply: auto-apply-infra-vpc \
+	auto-apply-infra-database \
+	auto-apply-infra-services-okta \
+	auto-apply-infra-services-create-database \
+	auto-apply-infra-services-create-table
 
 
 
@@ -122,7 +124,12 @@ auto-destroy-infra-services-create-database:
 	cd iac/services/utils/database-configurator/create-database && \
 	terraform destroy -auto-approve --var-file=env/$(ENV).tfvars
 
-auto-destroy: auto-destroy-infra-services-create-database \
+auto-destroy-infra-services-create-table:
+	cd iac/services/utils/database-configurator/create-table && \
+	terraform destroy -auto-approve --var-file=env/$(ENV).tfvars
+
+auto-destroy: auto-destroy-infra-services-create-table \
+	auto-destroy-infra-services-create-database \
 	auto-destroy-infra-services-okta \
 	auto-destroy-infra-database \
 	auto-destroy-infra-vpc
