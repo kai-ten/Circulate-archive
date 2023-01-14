@@ -1,20 +1,11 @@
 # Circulate
 
-### Answer the difficult questions.
-
-- How much of a tool are we using?
-- How much of a tool **aren't** we using? And what do we need to focus on to better leverage our toolset?
-
-
-Empower everyone in your cybersecurity org to make the most of your data.
-
-The no-code solution to leverage your data to enhance your Cybersecurity posture. <br />
-Data analysts are great, developers are great, but this leaves a gap to those who are busy solving the operational challenges. <br />
-Circulate is here to solve that exact problem, enabling the whole team to build reports, metrics, and more immediately.
+Onboard all of your existing data into one platform.
+The no-code solution to leverage the full power of your Cybersecurity posture. 
 
 
 - Track your onboarding progress for a new tool
-- Answer difficult questions at the click of a button
+- Answer difficult questions with the click of a button
     - Are all of your servers sharing the same security toolsets? If not, which ones need to be onboarded?
     - Are all of your users being assigned to the correct groups?
     - Are any users missing group assignments that they should have?
@@ -44,3 +35,19 @@ aws lambda update-function-code --function-name okta-golang --zip-file fileb://m
 
 - Subsequent queries find whether new fields exist or not
 
+## Resources
+
+- [Okta Golang SDK GitHub](https://github.com/okta/okta-sdk-golang)
+- [AWS Lambda Golang](https://docs.aws.amazon.com/lambda/latest/dg/lambda-golang.html)
+
+Not every endpoint has a method, must create struct for these:
+- https://github.com/okta/okta-sdk-golang#call-other-api-endpoints
+
+OKTA TYPES
+- https://github.com/okta/okta-sdk-golang/tree/e9ca83359ec20bbd5785067ac6a1d45c765a52b4/okta
+
+OKTA USER SCHEMA
+- https://developer.okta.com/docs/reference/api/schemas/#user-profile-subschemas
+
+AWS SuperSet Example:
+- https://aws.amazon.com/solutions/implementations/apache-superset/

@@ -5,10 +5,24 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"net/url"
+	"os"
 
 	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/aws/aws-secretsmanager-caching-go/secretcache"
 	"github.com/jackc/pgx/v5"
 	"github.com/okta/okta-sdk-golang/v2/okta"
+)
+
+type Secret struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+	Engine   string `json:"engine"`
+	Host     string `json:"host"`
+}
+
+var (
+	secretCache, _ = secretcache.New()
 )
 
 // Base Okta Profile fields - https://developer.okta.com/docs/reference/api/schemas/#user-profile-base-subschema
@@ -277,7 +291,14 @@ func dbTx(ctx context.Context, conn *pgx.Conn, client okta.Client, users []*okta
 }
 
 func handleRequest(lambdaCtx context.Context) {
-	dsn := "postgres://root:TsyFzgSdGrEsWOoTn78E@circulate-postgresql.cfnt2r7lvj4b.us-east-2.rds.amazonaws.com:5432/circulatedb"
+	database_secret := os.Getenv("DATABASE_SECRET")
+	secret, _ := secretCache.GetSecretString(database_secret)
+
+	var secret_result Secret
+	json.Unmarshal([]byte(secret), &secret_result)
+	encodedPassword := url.QueryEscape(secret_result.Password)
+
+	dsn := fmt.Sprintf("postgres://%s:%s@%s/circulatedb", secret_result.Username, encodedPassword, secret_result.Host)
 
 	// TODO: https://github.com/jackc/pgx/wiki/Getting-started-with-pgx#using-a-connection-pool
 	// Use RDS Proxy to assist with this
@@ -306,7 +327,7 @@ func handleRequest(lambdaCtx context.Context) {
 	if err != nil {
 		fmt.Printf("Error Getting Users: %v\n", err)
 	}
-	dbTx(context.Background(), conn, *client, users)
+	// dbTx(context.Background(), conn, *client, users)
 
 	hasNextPage := resp.HasNextPage()
 
@@ -317,7 +338,7 @@ func handleRequest(lambdaCtx context.Context) {
 			log.Fatalf("Okta results nextPage: %v", err)
 		}
 
-		dbTx(context.Background(), conn, *client, nextUserSet)
+		// dbTx(context.Background(), conn, *client, nextUserSet)
 		hasNextPage = resp.HasNextPage()
 	}
 

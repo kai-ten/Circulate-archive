@@ -3,5 +3,5 @@ output "database_url" {
 }
 
 output "database_secret_name" {
-    value = aws_secretsmanager_secret.circulate_db.name
+  value = aws_secretsmanager_secret.circulate_db.name
 }

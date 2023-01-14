@@ -4,38 +4,10 @@ In order to make this project more automated, must do the following:
 
 <br />
 
-
-## VPC:
-- ~~Deploy VPC with public and private subnets into us-east-2~~
-- ~~Create VPC endpoint for Lambda deployment region~~
-    - ~~Assign to private subnets that database gets deployed to~~
-
-<br />
-
-
 ## RDS Postgres Instance(s):
 
-- ~~Deploy RDS with Terraform~~
-    - ~~If dev environment, make publicly accessible to access locally~~
-    - ~~In Security group, add home IP address if in dev~~
-- ~~Store root user credentials in AWS Secrets Manager~~
-- ~~AWSServiceRoleForRDS IAM role for instance~~
-- ~~Ensure there is an easy way to deploy Multi-AZ via TF~~
 - [Research] Deploy RDS Proxy
 - [Research] Look into replication across regions (RDS Proxy help with failover?)
-
-<br />
-
-## Database Configurator
-
-- Store .sql files in S3
-- Depends on RDS instance
-- Create TF to deploy Python lambda with IAM access to RDS
-- Create lambda that signs into RDS instance
-    - Retrieves .sql files from S3
-    - Create Schema
-    - Create Table
-- Create SNS topic to trigger this lambda when file named "init.txt" is loaded
 
 <br />
 
@@ -54,7 +26,7 @@ In order to make this project more automated, must do the following:
 
 <br />
 
-## EKS
+## EKS / Consider 
 
 - Create TF to deploy an EKS cluster
 - [Research] Deploying SuperSet into EKS

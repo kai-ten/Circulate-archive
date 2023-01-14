@@ -43,8 +43,15 @@ init-infra-database:
 	cat provider.tf && \
 	terraform init
 
+init-infra-data-lake:
+	cd iac/data-lake && \
+	echo "Generating provider.tf for ${ENV}" && \
+	sed s/ENV/${ENV}/ < provider.tf.template > provider.tf && \
+	cat provider.tf && \
+	terraform init
+
 init-infra-services-okta:
-	cd iac/services/okta && \
+	cd iac/services/okta/users && \
 	echo "Generating provider.tf for ${ENV}" && \
 	sed s/ENV/${ENV}/ < provider.tf.template > provider.tf && \
 	cat provider.tf && \
@@ -65,6 +72,7 @@ init-infra-services-create-table:
 	terraform init
 
 init: init-infra-vpc \
+	init-infra-data-lake \
 	init-infra-database \
 	init-infra-services-okta \
 	init-infra-services-create-database \
@@ -84,8 +92,12 @@ auto-apply-infra-database:
 	cd iac/database && \
 	terraform apply -auto-approve --var-file=env/$(ENV).tfvars
 
+auto-apply-infra-data-lake:
+	cd iac/data-lake && \
+	terraform apply -auto-approve --var-file=env/$(ENV).tfvars
+
 auto-apply-infra-services-okta:
-	cd iac/services/okta && \
+	cd iac/services/okta/users && \
 	terraform apply -auto-approve --var-file=env/$(ENV).tfvars
 
 auto-apply-infra-services-create-database:
@@ -98,6 +110,7 @@ auto-apply-infra-services-create-table:
 
 auto-apply: auto-apply-infra-vpc \
 	auto-apply-infra-database \
+	auto-apply-infra-data-lake \
 	auto-apply-infra-services-okta \
 	auto-apply-infra-services-create-database \
 	auto-apply-infra-services-create-table
@@ -117,7 +130,7 @@ auto-destroy-infra-database:
 	terraform destroy -auto-approve --var-file=env/$(ENV).tfvars
 
 auto-destroy-infra-services-okta:
-	cd iac/services/okta && \
+	cd iac/services/okta/users && \
 	terraform destroy -auto-approve --var-file=env/$(ENV).tfvars
 
 auto-destroy-infra-services-create-database:
@@ -150,5 +163,14 @@ fmt:
 	cd iac/database && \
 	terraform fmt && \
 	cd - && \
-	cd iac/services/okta && \
+	cd iac/data-lake && \
+	terraform fmt && \
+	cd - && \
+	cd iac/services/okta/users && \
+	terraform fmt
+	cd - && \
+	cd iac/services/utils/database-configurator/create-database && \
+	terraform fmt
+	cd - && \
+	cd iac/services/utils/database-configurator/create-table && \
 	terraform fmt

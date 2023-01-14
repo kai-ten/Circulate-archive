@@ -13,6 +13,7 @@ resource "aws_lambda_function" "go_function" {
   runtime       = "go1.x"
   handler       = "assets/main"
   timeout       = var.timeout
+  publish = true
 
   dynamic "environment" {
     for_each = local.environment_map
