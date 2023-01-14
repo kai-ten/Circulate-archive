@@ -68,8 +68,4 @@ resource "null_resource" "db_setup" {
     }
     interpreter = ["bash", "-c"]
   }
-
-  depends_on = [
-    module.circulate_create_table.lamba_function
-  ]
 }
