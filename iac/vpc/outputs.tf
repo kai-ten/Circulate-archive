@@ -13,3 +13,7 @@ output "vpc_database_subnet_group" {
 output "vpc_security_group_id" {
   value = module.security_group.security_group_id
 }
+
+output "api_secrets_name" {
+  value = aws_secretsmanager_secret.circulate_api.name
+}

@@ -51,7 +51,7 @@ init-infra-data-lake:
 	terraform init
 
 init-infra-services-okta:
-	cd iac/services/okta/users && \
+	cd iac/services/okta/users/api && \
 	echo "Generating provider.tf for ${ENV}" && \
 	sed s/ENV/${ENV}/ < provider.tf.template > provider.tf && \
 	cat provider.tf && \
@@ -97,7 +97,7 @@ auto-apply-infra-data-lake:
 	terraform apply -auto-approve --var-file=env/$(ENV).tfvars
 
 auto-apply-infra-services-okta:
-	cd iac/services/okta/users && \
+	cd iac/services/okta/users/api && \
 	terraform apply -auto-approve --var-file=env/$(ENV).tfvars
 
 auto-apply-infra-services-create-database:
