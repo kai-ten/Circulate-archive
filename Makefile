@@ -50,13 +50,6 @@ init-infra-data-lake:
 	cat provider.tf && \
 	terraform init
 
-init-infra-services-okta:
-	cd iac/services/okta/users/api && \
-	echo "Generating provider.tf for ${ENV}" && \
-	sed s/ENV/${ENV}/ < provider.tf.template > provider.tf && \
-	cat provider.tf && \
-	terraform init
-
 init-infra-services-create-database:
 	cd iac/services/utils/database-configurator/create-database && \
 	echo "Generating provider.tf for ${ENV}" && \
@@ -71,12 +64,19 @@ init-infra-services-create-table:
 	cat provider.tf && \
 	terraform init
 
+init-infra-services-okta-api:
+	cd iac/services/okta/users/api && \
+	echo "Generating provider.tf for ${ENV}" && \
+	sed s/ENV/${ENV}/ < provider.tf.template > provider.tf && \
+	cat provider.tf && \
+	terraform init
+
 init: init-infra-vpc \
 	init-infra-data-lake \
 	init-infra-database \
-	init-infra-services-okta \
 	init-infra-services-create-database \
-	init-infra-services-create-table
+	init-infra-services-create-table \
+	init-infra-services-okta-api
 
 
 
@@ -96,10 +96,6 @@ auto-apply-infra-data-lake:
 	cd iac/data-lake && \
 	terraform apply -auto-approve --var-file=env/$(ENV).tfvars
 
-auto-apply-infra-services-okta:
-	cd iac/services/okta/users/api && \
-	terraform apply -auto-approve --var-file=env/$(ENV).tfvars
-
 auto-apply-infra-services-create-database:
 	cd iac/services/utils/database-configurator/create-database && \
 	terraform apply -auto-approve --var-file=env/$(ENV).tfvars
@@ -108,12 +104,16 @@ auto-apply-infra-services-create-table:
 	cd iac/services/utils/database-configurator/create-table && \
 	terraform apply -auto-approve --var-file=env/$(ENV).tfvars	
 
+auto-apply-infra-services-okta-api:
+	cd iac/services/okta/users/api && \
+	terraform apply -auto-approve --var-file=env/$(ENV).tfvars
+
 auto-apply: auto-apply-infra-vpc \
 	auto-apply-infra-database \
 	auto-apply-infra-data-lake \
-	auto-apply-infra-services-okta \
 	auto-apply-infra-services-create-database \
-	auto-apply-infra-services-create-table
+	auto-apply-infra-services-create-table \
+	auto-apply-infra-services-okta-api
 
 
 
@@ -129,10 +129,6 @@ auto-destroy-infra-database:
 	cd iac/database && \
 	terraform destroy -auto-approve --var-file=env/$(ENV).tfvars
 
-auto-destroy-infra-services-okta:
-	cd iac/services/okta/users && \
-	terraform destroy -auto-approve --var-file=env/$(ENV).tfvars
-
 auto-destroy-infra-services-create-database:
 	cd iac/services/utils/database-configurator/create-database && \
 	terraform destroy -auto-approve --var-file=env/$(ENV).tfvars
@@ -141,9 +137,13 @@ auto-destroy-infra-services-create-table:
 	cd iac/services/utils/database-configurator/create-table && \
 	terraform destroy -auto-approve --var-file=env/$(ENV).tfvars
 
-auto-destroy: auto-destroy-infra-services-create-table \
+auto-destroy-infra-services-okta-api:
+	cd iac/services/okta/users/api && \
+	terraform destroy -auto-approve --var-file=env/$(ENV).tfvars
+
+auto-destroy: auto-destroy-infra-services-okta \
+	auto-destroy-infra-services-create-table \
 	auto-destroy-infra-services-create-database \
-	auto-destroy-infra-services-okta \
 	auto-destroy-infra-database \
 	auto-destroy-infra-vpc
 
@@ -166,7 +166,7 @@ fmt:
 	cd iac/data-lake && \
 	terraform fmt && \
 	cd - && \
-	cd iac/services/okta/users && \
+	cd iac/services/okta/users/api && \
 	terraform fmt
 	cd - && \
 	cd iac/services/utils/database-configurator/create-database && \

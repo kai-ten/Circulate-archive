@@ -2,7 +2,7 @@ module "circulate_data_lake" {
   source = "terraform-aws-modules/s3-bucket/aws"
 
 
-  bucket = "${var.name}-${var.env}-data"
+  bucket            = "${var.name}-${var.env}-data"
   block_public_acls = true
 
   server_side_encryption_configuration = {
