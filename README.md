@@ -44,3 +44,10 @@ aws lambda update-function-code --function-name okta-golang --zip-file fileb://m
 
 - Subsequent queries find whether new fields exist or not
 
+
+
+
+TODO:
+- Break apart api lambda, database lambda, step function logic
+- 
+

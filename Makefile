@@ -16,9 +16,10 @@ ENV ?= dev
 # Initialize Backend #
 ######################
 backend:
-	cd iac/remote-backend && \
+	cd environment/remote-backend && \
 	terraform init && \
-	terraform apply -auto-approve --var-file=env/$(ENV).tfvars
+	terraform apply -auto-approve --var-file=env/$(ENV).tfvars && \
+	cd - && \
 
 
 
@@ -29,54 +30,64 @@ backend:
 # Generating the provider.tf from a template allows us to utilize environment variables. Terraform does not accept Variables in the backend block.
 # https://developer.hashicorp.com/terraform/language/settings/backends/configuration#using-a-backend-block
 
-init-infra-vpc:
-	cd iac/vpc && \
+init-environment:
+	cd environment/remote-backend && \
+	terraform init && \
+	terraform apply -auto-approve --var-file=env/$(ENV).tfvars && \
+	cd ../vpc && \
+	echo "Generating provider.tf for ${ENV}" && \
+	sed s/ENV/${ENV}/ < provider.tf.template > provider.tf && \
+	cat provider.tf && \
+	terraform init && \
+	cd ../data-lake && \
 	echo "Generating provider.tf for ${ENV}" && \
 	sed s/ENV/${ENV}/ < provider.tf.template > provider.tf && \
 	cat provider.tf && \
 	terraform init
 
-init-infra-database:
-	cd iac/database && \
+init-integrations-sources:
+	cd integrations/sources/okta/iac/okta/users && \
 	echo "Generating provider.tf for ${ENV}" && \
 	sed s/ENV/${ENV}/ < provider.tf.template > provider.tf && \
 	cat provider.tf && \
 	terraform init
 
-init-infra-data-lake:
-	cd iac/data-lake && \
+init-integrations-targets:
+	cd integrations/targets/okta/iac/okta/users && \
 	echo "Generating provider.tf for ${ENV}" && \
 	sed s/ENV/${ENV}/ < provider.tf.template > provider.tf && \
 	cat provider.tf && \
 	terraform init
 
-init-infra-services-create-database:
-	cd iac/services/utils/database-configurator/create-database && \
+init-integrations-unions:
+	cd integrations/unions/okta && \
 	echo "Generating provider.tf for ${ENV}" && \
 	sed s/ENV/${ENV}/ < provider.tf.template > provider.tf && \
 	cat provider.tf && \
 	terraform init
 
-init-infra-services-create-table:
-	cd iac/services/utils/database-configurator/create-table && \
+init-dashboard:
+	cd dashboard/postgres && \
+	echo "Generating provider.tf for ${ENV}" && \
+	sed s/ENV/${ENV}/ < provider.tf.template > provider.tf && \
+	cat provider.tf && \
+	terraform init && \
+	cd utils/create-database && \
+	echo "Generating provider.tf for ${ENV}" && \
+	sed s/ENV/${ENV}/ < provider.tf.template > provider.tf && \
+	cat provider.tf && \
+	terraform init && \
+	cd ../create-table && \
 	echo "Generating provider.tf for ${ENV}" && \
 	sed s/ENV/${ENV}/ < provider.tf.template > provider.tf && \
 	cat provider.tf && \
 	terraform init
 
-init-infra-services-okta-api:
-	cd iac/services/okta/users/api && \
-	echo "Generating provider.tf for ${ENV}" && \
-	sed s/ENV/${ENV}/ < provider.tf.template > provider.tf && \
-	cat provider.tf && \
-	terraform init
-
-init: init-infra-vpc \
-	init-infra-data-lake \
-	init-infra-database \
-	init-infra-services-create-database \
-	init-infra-services-create-table \
-	init-infra-services-okta-api
+init: init-environment \
+	init-integrations-sources \
+	init-integrations-targets \
+	init-integrations-unions \
+	init-dashboard
 
 
 
@@ -141,9 +152,7 @@ auto-destroy-infra-services-okta-api:
 	cd iac/services/okta/users/api && \
 	terraform destroy -auto-approve --var-file=env/$(ENV).tfvars
 
-auto-destroy: auto-destroy-infra-services-okta \
-	auto-destroy-infra-services-create-table \
-	auto-destroy-infra-services-create-database \
+auto-destroy: auto-destroy-infra-services-okta-api \
 	auto-destroy-infra-database \
 	auto-destroy-infra-vpc
 
