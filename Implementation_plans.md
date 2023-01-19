@@ -63,3 +63,15 @@ In order to make this project more automated, must do the following:
 - Delinea
 - Ping
 
+
+
+## Generic Postgres target + dbt
+
+- The Source API should pass the log type and the s3 key to the postgres lambda
+- Each log type will have a corresponding S3 file that contains the model for that log type
+- The target will then store JSON directly
+- DBT will then be used to create views over the JSON
+- Logs will also be stored in a downstream S3 bucket (converted to Parquet) to leverage Data Bricks
+
+- https://speakerdeck.com/nicor88/dbt-serverless-how-to-run-dbt-in-your-aws-account?slide=19
+- https://github.com/nicor88/dbt-serverless 

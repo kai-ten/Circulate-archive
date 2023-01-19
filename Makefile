@@ -22,7 +22,6 @@ backend:
 	cd - && \
 
 
-
 ######################
 # Initialize Modules #
 ######################
@@ -46,18 +45,18 @@ init-environment:
 	terraform init
 
 init-integrations-sources:
-	cd integrations/sources/okta/iac/okta/users && \
+	cd integrations/sources/okta/iac/users && \
 	echo "Generating provider.tf for ${ENV}" && \
 	sed s/ENV/${ENV}/ < provider.tf.template > provider.tf && \
 	cat provider.tf && \
 	terraform init
 
-init-integrations-targets:
-	cd integrations/targets/okta/iac/okta/users && \
-	echo "Generating provider.tf for ${ENV}" && \
-	sed s/ENV/${ENV}/ < provider.tf.template > provider.tf && \
-	cat provider.tf && \
-	terraform init
+# init-integrations-targets:
+# 	cd integrations/targets/postgres/okta/iac/users && \
+# 	echo "Generating provider.tf for ${ENV}" && \
+# 	sed s/ENV/${ENV}/ < provider.tf.template > provider.tf && \
+# 	cat provider.tf && \
+# 	terraform init
 
 init-integrations-unions:
 	cd integrations/unions/okta && \
@@ -70,22 +69,10 @@ init-dashboard:
 	cd dashboard/postgres && \
 	echo "Generating provider.tf for ${ENV}" && \
 	sed s/ENV/${ENV}/ < provider.tf.template > provider.tf && \
-	cat provider.tf && \
-	terraform init && \
-	cd utils/create-database && \
-	echo "Generating provider.tf for ${ENV}" && \
-	sed s/ENV/${ENV}/ < provider.tf.template > provider.tf && \
-	cat provider.tf && \
-	terraform init && \
-	cd ../create-table && \
-	echo "Generating provider.tf for ${ENV}" && \
-	sed s/ENV/${ENV}/ < provider.tf.template > provider.tf && \
-	cat provider.tf && \
-	terraform init
+	cat provider.tf
 
 init: init-environment \
 	init-integrations-sources \
-	init-integrations-targets \
 	init-integrations-unions \
 	init-dashboard
 

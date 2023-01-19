@@ -86,12 +86,12 @@ resource "aws_db_instance_role_association" "rds_lambda_iam_assn" {
   role_arn               = data.aws_iam_role.managed_rds_role.arn
 }
 
-data "aws_sec" "" {
-  name = "${data.terraform_remote_state.vpc_output.outputs.okta_secret_name}"
+data "aws_secretsmanager_secret" "database_secret" {
+  name = "${data.terraform_remote_state.vpc_output.outputs.database_secret_name}"
 }
 
 resource "aws_secretsmanager_secret_version" "circulate_db_password_version" {
-  secret_id     = aws_secretsmanager_secret.circulate_db.id
+  secret_id     = data.aws_secretsmanager_secret.database_secret.id
   secret_string = <<EOF
    {
     "username": "root",
