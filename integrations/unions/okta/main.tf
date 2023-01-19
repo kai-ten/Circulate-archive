@@ -31,7 +31,7 @@ locals {
       "OutputPath": "$.Payload",
       "Parameters": {
         "Payload.$": "$",
-        "FunctionName": "${data.terraform_remote_state.okta_sources.outputs.lambda_function.arn}:$LATEST"
+        "FunctionName": "${data.terraform_remote_state.okta_sources.outputs.okta_api_lambda.arn}:$LATEST"
       },
       "Retry": [
         {
@@ -81,13 +81,13 @@ EOF
 module "step_function" {
   source = "terraform-aws-modules/step-functions/aws"
 
-  name       = var.service
+  name       = var.sfn_name
   definition = local.definition_template
 
   service_integrations = {
     lambda = {
       lambda = [
-        "${module.okta_api.lambda_function.arn}:*",
+        "${data.terraform_remote_state.okta_sources.outputs.okta_api_lambda.arn}:*",
         # "${module.okta_database.lambda_function.arn}:*",
       ]
     }

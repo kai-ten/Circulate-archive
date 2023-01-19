@@ -8,7 +8,7 @@ variable "env" {
   type        = string
 }
 
-variable "service" {
+variable "sfn_name" {
   description = "Service name for your lambda"
   type        = string
 }

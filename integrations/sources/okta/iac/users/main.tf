@@ -16,6 +16,10 @@ data "terraform_remote_state" "data_lake_output" {
   }
 }
 
+data "aws_secretsmanager_secret" "okta_secret" {
+  name = "${data.terraform_remote_state.vpc_output.outputs.okta_secret_name}"
+}
+
 data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
@@ -23,7 +27,7 @@ module "okta_api" {
   source          = "../../../../modules/go-lambda"
   name            = "${var.name}-${var.env}-${var.service}"
   lambda_name     = "${var.name}-${var.env}-${var.service}"
-  src_path        = "../../lib/okta/users/api"
+  src_path        = "../../lib/users"
   iam_policy_json = data.aws_iam_policy_document.lambda_policy.json
   env_variables = {
     AWS_S3_BUCKET = "${data.terraform_remote_state.data_lake_output.outputs.data_lake_s3.s3_bucket_id}"
@@ -60,7 +64,7 @@ data "aws_iam_policy_document" "lambda_policy" {
       "secretsmanager:ListSecrets"
     ]
     resources = [
-      "${data.aws_secretsmanager_secret.vpc_secret.arn}"
+      "${data.aws_secretsmanager_secret.okta_secret.arn}"
     ]
   }
 }

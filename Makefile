@@ -12,9 +12,9 @@ ENV ?= dev
 
 
 
-######################
-# Initialize Backend #
-######################
+#################################
+# Initialize and Deploy Backend #
+#################################
 backend:
 	cd environment/remote-backend && \
 	terraform init && \
@@ -82,37 +82,23 @@ init: init-environment \
 # Auto-apply Resources #
 ########################
 
-auto-apply-infra-vpc:
-	cd iac/vpc && \
+auto-apply-environment:
+	cd environment/vpc && \
+	terraform apply -auto-approve --var-file=env/$(ENV).tfvars && \
+	cd ../data-lake && \
 	terraform apply -auto-approve --var-file=env/$(ENV).tfvars
 
-auto-apply-infra-database:
-	cd iac/database && \
+auto-apply-integrations:
+	cd integrations/sources/okta/iac/users && \
+	terraform apply -auto-approve --var-file=env/$(ENV).tfvars && \
+	cd - && \
+	cd integrations/unions/okta && \
 	terraform apply -auto-approve --var-file=env/$(ENV).tfvars
 
-auto-apply-infra-data-lake:
-	cd iac/data-lake && \
-	terraform apply -auto-approve --var-file=env/$(ENV).tfvars
+# auto-apply-dashboard
 
-auto-apply-infra-services-create-database:
-	cd iac/services/utils/database-configurator/create-database && \
-	terraform apply -auto-approve --var-file=env/$(ENV).tfvars
-
-auto-apply-infra-services-create-table:
-	cd iac/services/utils/database-configurator/create-table && \
-	terraform apply -auto-approve --var-file=env/$(ENV).tfvars	
-
-auto-apply-infra-services-okta-api:
-	cd iac/services/okta/users/api && \
-	terraform apply -auto-approve --var-file=env/$(ENV).tfvars
-
-auto-apply: auto-apply-infra-vpc \
-	auto-apply-infra-database \
-	auto-apply-infra-data-lake \
-	auto-apply-infra-services-create-database \
-	auto-apply-infra-services-create-table \
-	auto-apply-infra-services-okta-api
-
+auto-apply: auto-apply-environment \
+	auto-apply-integrations
 
 
 #####################
