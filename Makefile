@@ -66,7 +66,7 @@ init-integrations-unions:
 	terraform init
 
 init-dashboard:
-	cd dashboard/postgres && \
+	cd dashboard/postgres/iac && \
 	echo "Generating provider.tf for ${ENV}" && \
 	sed s/ENV/${ENV}/ < provider.tf.template > provider.tf && \
 	cat provider.tf
@@ -95,7 +95,9 @@ auto-apply-integrations:
 	cd integrations/unions/okta && \
 	terraform apply -auto-approve --var-file=env/$(ENV).tfvars
 
-# auto-apply-dashboard
+auto-apply-dashboard:
+	cd dashboard/postgres/iac && \
+	terraform apply -auto-approve --var-file=env/$(ENV).tfvars
 
 auto-apply: auto-apply-environment \
 	auto-apply-integrations
@@ -105,29 +107,26 @@ auto-apply: auto-apply-environment \
 # Destroy Resources #
 #####################
 
-auto-destroy-infra-vpc:
-	cd iac/vpc && \
+destroy-environment:
+	cd environment/vpc && \
+	terraform destroy -auto-approve --var-file=env/$(ENV).tfvars && \
+	cd ../data-lake && \
 	terraform destroy -auto-approve --var-file=env/$(ENV).tfvars
 
-auto-destroy-infra-database:
-	cd iac/database && \
+destroy-integrations:
+	cd integrations/sources/okta/iac/users && \
+	terraform destroy -auto-approve --var-file=env/$(ENV).tfvars && \
+	cd - && \
+	cd integrations/unions/okta && \
 	terraform destroy -auto-approve --var-file=env/$(ENV).tfvars
 
-auto-destroy-infra-services-create-database:
-	cd iac/services/utils/database-configurator/create-database && \
+apply-dashboard:
+	cd dashboard/postgres/iac && \
 	terraform destroy -auto-approve --var-file=env/$(ENV).tfvars
 
-auto-destroy-infra-services-create-table:
-	cd iac/services/utils/database-configurator/create-table && \
-	terraform destroy -auto-approve --var-file=env/$(ENV).tfvars
-
-auto-destroy-infra-services-okta-api:
-	cd iac/services/okta/users/api && \
-	terraform destroy -auto-approve --var-file=env/$(ENV).tfvars
-
-auto-destroy: auto-destroy-infra-services-okta-api \
-	auto-destroy-infra-database \
-	auto-destroy-infra-vpc
+auto-destroy: auto-destroy-dashboard \
+	auto-destroy-integrations \
+	auto-destroy-environment
 
 
 
