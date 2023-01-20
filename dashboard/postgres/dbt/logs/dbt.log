@@ -1,0 +1,10 @@
+
+
+============================== 2023-01-20 03:14:37.669541 | e5783824-6eb7-4e21-95c8-ccb49233a129 ==============================
+[0m03:14:37.669561 [info ] [MainThread]: Running with dbt=1.3.1
+[0m03:14:37.670061 [debug] [MainThread]: running dbt with arguments {'write_json': True, 'use_colors': True, 'printer_width': 80, 'version_check': True, 'partial_parse': True, 'static_parser': True, 'profiles_dir': '/Users/kai3000/.dbt', 'send_anonymous_usage_stats': True, 'event_buffer_size': 100000, 'quiet': False, 'no_print': False, 'skip_profile_setup': False, 'which': 'init', 'indirect_selection': 'eager'}
+[0m03:14:37.670282 [debug] [MainThread]: Tracking: tracking
+[0m03:14:37.702255 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10b90d6a0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10b912d00>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10b912c10>]}
+[0m03:14:37.704437 [info ] [MainThread]: Setting up your profile.
+[0m03:14:43.642179 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10b912dc0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10b912340>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10b9122e0>]}
+[0m03:14:43.642733 [debug] [MainThread]: Flushing usage events

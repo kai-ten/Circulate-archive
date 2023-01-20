@@ -1,0 +1,12 @@
+circulate:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: 'circulate-dev.cfnt2r7lvj4b.us-east-2.rds.amazonaws.com'
+      user: root
+      password: <password>
+      port: 5432
+      dbname: circulatedb
+      schema: cs
+      threads: 4

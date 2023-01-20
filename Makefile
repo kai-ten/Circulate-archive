@@ -66,10 +66,16 @@ init-integrations-unions:
 	terraform init
 
 init-dashboard:
-	cd dashboard/postgres/iac && \
+	cd dashboard/postgres/iac/db && \
 	echo "Generating provider.tf for ${ENV}" && \
 	sed s/ENV/${ENV}/ < provider.tf.template > provider.tf && \
-	cat provider.tf
+	cat provider.tf && \
+	terraform init && \
+	cd ../create-schema && \
+	echo "Generating provider.tf for ${ENV}" && \
+	sed s/ENV/${ENV}/ < provider.tf.template > provider.tf && \
+	cat provider.tf && \
+	terraform init
 
 init: init-environment \
 	init-integrations-sources \
@@ -96,7 +102,9 @@ auto-apply-integrations:
 	terraform apply -auto-approve --var-file=env/$(ENV).tfvars
 
 auto-apply-dashboard:
-	cd dashboard/postgres/iac && \
+	cd dashboard/postgres/iac/db && \
+	terraform apply -auto-approve --var-file=env/$(ENV).tfvars && \
+	cd ../create-schema && \
 	terraform apply -auto-approve --var-file=env/$(ENV).tfvars
 
 auto-apply: auto-apply-environment \
