@@ -36,7 +36,7 @@ module "circulate_create_database" {
   lambda_name     = "${var.name}-${var.env}-${var.service}"
   src_path        = "../../lib/create-schema"
   iam_policy_json = data.aws_iam_policy_document.create_database_policy.json
-  timeout = 5
+  timeout = 30
   vpc_config = {
     security_group_ids = [data.terraform_remote_state.vpc_output.outputs.vpc_security_group_id]
     subnet_ids = data.terraform_remote_state.vpc_output.outputs.vpc_public_subnets

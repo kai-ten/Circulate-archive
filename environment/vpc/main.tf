@@ -78,11 +78,12 @@ module "endpoints" {
       service             = "secretsmanager"
       private_dns_enabled = true
       subnet_ids          = module.vpc.public_subnets
+      tags    = { Name = "${var.name}-${var.env}-ssm" }
     }
-    # lambda = {
-    #   service = "lambda"
-    #   tags    = { Name = "${var.name}-${var.env}-lambda-vpc-endpoint" }
-    #   private_dns_enabled = true
-    # }
+    s3 = {
+      service             = "s3"
+      subnet_ids          = module.vpc.public_subnets
+      tags    = { Name = "${var.name}-${var.env}-s3" }
+    }
   }
 }

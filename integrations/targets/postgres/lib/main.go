@@ -2,9 +2,15 @@ package main
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 	"log"
+	"net/url"
+	"os"
 
 	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/aws/aws-secretsmanager-caching-go/secretcache"
+	"github.com/jackc/pgx/v5"
 )
 
 type Secret struct {
@@ -18,9 +24,9 @@ type Request struct {
 	KeyList []string
 }
 
-// var (
-// 	secretCache, _ = secretcache.New()
-// )
+var (
+	secretCache, _ = secretcache.New()
+)
 
 // // Base Okta Profile fields - https://developer.okta.com/docs/reference/api/schemas/#user-profile-base-subschema
 // // TODO: Handle custom fields by orgs with a separate UI
@@ -291,53 +297,28 @@ func handleRequest(lambdaCtx context.Context, data Request) {
 
 	log.Print(data.KeyList)
 
-	// database_secret := os.Getenv("DATABASE_SECRET")
-	// secret, _ := secretCache.GetSecretString(database_secret)
+	database_secret := os.Getenv("DATABASE_SECRET")
+	secret, _ := secretCache.GetSecretString(database_secret)
 
-	// var secret_result Secret
-	// json.Unmarshal([]byte(secret), &secret_result)
-	// encodedPassword := url.QueryEscape(secret_result.Password)
+	var secret_result Secret
+	json.Unmarshal([]byte(secret), &secret_result)
+	encodedPassword := url.QueryEscape(secret_result.Password)
 
-	// dsn := fmt.Sprintf("postgres://%s:%s@%s/circulatedb", secret_result.Username, encodedPassword, secret_result.Host)
+	dsn := fmt.Sprintf("postgres://%s:%s@%s/circulatedb", secret_result.Username, encodedPassword, secret_result.Host)
 
-	// // TODO: https://github.com/jackc/pgx/wiki/Getting-started-with-pgx#using-a-connection-pool
-	// // Use RDS Proxy to assist with this
-	// // https://github.com/jackc/pgx/issues/923
-	// conn, err := pgx.Connect(context.Background(), dsn)
-	// if err != nil {
-	// 	log.Fatal("Failed to connect database", err)
-	// }
-	// defer conn.Close(context.Background())
+	// TODO: https://github.com/jackc/pgx/wiki/Getting-started-with-pgx#using-a-connection-pool
+	// Use RDS Proxy to assist with this
+	// https://github.com/jackc/pgx/issues/923
+	conn, err := pgx.Connect(context.Background(), dsn)
+	if err != nil {
+		log.Fatal("Failed to connect database", err)
+	}
+	defer conn.Close(context.Background())
 
-	// ctx, client, err := okta.NewClient(
-	// 	context.TODO(),
-	// 	okta.WithOrgUrl(oktaDomain),
-	// 	okta.WithToken(apiToken),
-	// )
+	// Download S3 File(s)
+	// For each S3 file, gz unzip, convert json to bytes, and write to postgres
 
-	// if err != nil {
-	// 	log.Printf("Error connecting to Okta Client: %v\n", err)
-	// }
-
-	// // Default queries 200 users per page
-	// users, resp, err := client.User.ListUsers(ctx, nil)
-	// if err != nil {
-	// 	fmt.Printf("Error Getting Users: %v\n", err)
-	// }
-	// // dbTx(context.Background(), conn, *client, users)
-
-	// hasNextPage := resp.HasNextPage()
-
-	// for hasNextPage {
-	// 	var nextUserSet []*okta.User
-	// 	resp, err = resp.Next(ctx, &nextUserSet)
-	// 	if err != nil {
-	// 		log.Fatalf("Okta results nextPage: %v", err)
-	// 	}
-
-	// 	// dbTx(context.Background(), conn, *client, nextUserSet)
-	// 	hasNextPage = resp.HasNextPage()
-	// }
+	// dbTx(context.Background(), conn, *client, users)
 
 }
 
