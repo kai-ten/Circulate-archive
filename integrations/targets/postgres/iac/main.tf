@@ -16,30 +16,21 @@ data "terraform_remote_state" "data_lake_output" {
   }
 }
 
-data "terraform_remote_state" "postgresdb_output" {
-  backend = "s3"
-  config = {
-    bucket = "${var.name}-${var.env}-terraform-state-backend"
-    key    = "postgresdb/terraform.tfstate"
-    region = "us-east-2"
-  }
-}
-
-data "aws_secretsmanager_secret" "vpc_secret" {
-  name = data.terraform_remote_state.vpc_output.outputs.okta_secret_name
+data "aws_secretsmanager_secret" "postgres_secret" {
+  name = "${data.terraform_remote_state.vpc_output.outputs.database_secret_name}"
 }
 
 data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
-module "okta_database" {
+module "json_writer" {
   source          = "../../../modules/go-lambda"
-  name            = "${var.name}-${var.env}-database"
-  lambda_name     = "${var.name}-${var.env}-database"
-  src_path        = "../../../../../lib/okta/users/database"
+  name            = "${var.name}-${var.env}-${var.service}"
+  lambda_name     = "${var.name}-${var.env}-${var.service}"
+  src_path        = "../lib"
   iam_policy_json = data.aws_iam_policy_document.lambda_policy.json
   env_variables = {
-    DATABASE_SECRET = "${data.terraform_remote_state.postgresdb_output.outputs.database_secret_name}"
+    DATABASE_SECRET = "${data.terraform_remote_state.vpc_output.outputs.database_secret_name}"
   }
 }
 
@@ -71,19 +62,7 @@ data "aws_iam_policy_document" "lambda_policy" {
       "secretsmanager:ListSecrets"
     ]
     resources = [
-      "${data.aws_secretsmanager_secret.vpc_secret.arn}"
-    ]
-  }
-}
-
-data "aws_iam_policy_document" "db_lambda_policy" {
-  statement {
-    effect = "Allow"
-    actions = [
-      "none:null"
-    ]
-    resources = [
-      "*"
+      "${data.aws_secretsmanager_secret.postgres_secret.arn}"
     ]
   }
 }

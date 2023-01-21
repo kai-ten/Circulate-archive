@@ -7,12 +7,16 @@ import (
 	"github.com/aws/aws-lambda-go/lambda"
 )
 
-// type Secret struct {
-// 	Username string `json:"username"`
-// 	Password string `json:"password"`
-// 	Engine   string `json:"engine"`
-// 	Host     string `json:"host"`
-// }
+type Secret struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+	Engine   string `json:"engine"`
+	Host     string `json:"host"`
+}
+
+type Request struct {
+	KeyList []string
+}
 
 // var (
 // 	secretCache, _ = secretcache.New()
@@ -283,9 +287,9 @@ import (
 // 	return nil
 // }
 
-func handleRequest(lambdaCtx context.Context) {
+func handleRequest(lambdaCtx context.Context, data Request) {
 
-	log.Print(lambdaCtx)
+	log.Print(data.KeyList)
 
 	// database_secret := os.Getenv("DATABASE_SECRET")
 	// secret, _ := secretCache.GetSecretString(database_secret)
@@ -304,9 +308,6 @@ func handleRequest(lambdaCtx context.Context) {
 	// 	log.Fatal("Failed to connect database", err)
 	// }
 	// defer conn.Close(context.Background())
-
-	// apiToken := "00qSTBCo2QJiEvM_SHqZS3P0fBSgqySScCja3BKkv7"
-	// oktaDomain := "https://dev-52108562.okta.com"
 
 	// ctx, client, err := okta.NewClient(
 	// 	context.TODO(),

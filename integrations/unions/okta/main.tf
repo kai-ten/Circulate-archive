@@ -7,14 +7,14 @@ data "terraform_remote_state" "okta_sources" {
   }
 }
 
-# data "terraform_remote_state" "postgresdb_output" {
-#   backend = "s3"
-#   config = {
-#     bucket = "${var.name}-${var.env}-terraform-state-backend"
-#     key    = "postgresdb/terraform.tfstate"
-#     region = "us-east-2"
-#   }
-# }
+data "terraform_remote_state" "postgres_json_writer_output" {
+  backend = "s3"
+  config = {
+    bucket = "${var.name}-${var.env}-terraform-state-backend"
+    key    = "postgres-json-writer/terraform.tfstate"
+    region = "us-east-2"
+  }
+}
 
 data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
@@ -46,6 +46,29 @@ locals {
           "BackoffRate": 2
         }
       ],
+      "Next": "Postgres Json Writer"
+    },
+    "Postgres Json Writer": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "OutputPath": "$.Payload",
+      "Parameters": {
+        "Payload.$": "$",
+        "FunctionName": "${data.terraform_remote_state.postgres_json_writer_output.outputs.postgres_json_writer.arn}:$LATEST"
+      },
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "Lambda.ServiceException",
+            "Lambda.AWSLambdaException",
+            "Lambda.SdkClientException",
+            "Lambda.TooManyRequestsException"
+          ],
+          "IntervalSeconds": 2,
+          "MaxAttempts": 6,
+          "BackoffRate": 2
+        }
+      ],
       "End": true
     }
   }
@@ -53,30 +76,6 @@ locals {
 EOF
 }
 
-# "Next": "Okta Users Database"
-# "Okta Users Database": {
-#   "Type": "Task",
-#   "Resource": "arn:aws:states:::lambda:invoke",
-#   "OutputPath": "$.Payload",
-#   "Parameters": {
-#     "Payload.$": "$",
-#     "FunctionName": "${module.okta_database.lambda_function.arn}:$LATEST"
-#   },
-#   "Retry": [
-#     {
-#       "ErrorEquals": [
-#         "Lambda.ServiceException",
-#         "Lambda.AWSLambdaException",
-#         "Lambda.SdkClientException",
-#         "Lambda.TooManyRequestsException"
-#       ],
-#       "IntervalSeconds": 2,
-#       "MaxAttempts": 6,
-#       "BackoffRate": 2
-#     }
-#   ],
-#   "End": true
-# }
 
 module "step_function" {
   source = "terraform-aws-modules/step-functions/aws"
@@ -88,7 +87,7 @@ module "step_function" {
     lambda = {
       lambda = [
         "${data.terraform_remote_state.okta_sources.outputs.okta_api_lambda.arn}:*",
-        # "${module.okta_database.lambda_function.arn}:*",
+        "${data.terraform_remote_state.postgres_json_writer_output.outputs.postgres_json_writer.arn}:*",
       ]
     }
 

@@ -3,7 +3,7 @@ terraform {
 
   backend "s3" {
     bucket         = "circulate-ENV-terraform-state-backend"
-    key            = "okta/terraform.tfstate"
+    key            = "postgres-json-writer/terraform.tfstate"
     region         = "us-east-2"
     dynamodb_table = "terraform_state"
   }

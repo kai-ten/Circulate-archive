@@ -26,6 +26,10 @@ type Secret struct {
 	OktaApiKey string `json:"okta_api_key"`
 }
 
+type Response struct {
+	KeyList []string
+}
+
 var (
 	secretCache, _ = secretcache.New()
 )
@@ -85,7 +89,6 @@ func uploadFile(context context.Context, session *session.Session, data []byte) 
 		ContentEncoding:      aws.String("gzip"),
 		ContentDisposition:   aws.String("attachment"),
 		ServerSideEncryption: aws.String("AES256"),
-		ChecksumAlgorithm:    aws.String("sha256"),
 	})
 	if err != nil {
 		log.Fatalf("Could not upload file to S3: %v", err)
@@ -93,7 +96,7 @@ func uploadFile(context context.Context, session *session.Session, data []byte) 
 	return s3UploadKey
 }
 
-func handleRequest(lambdaCtx context.Context) ([]string, error) {
+func handleRequest(lambdaCtx context.Context) (Response, error) {
 
 	keyList := []string{}
 
@@ -151,7 +154,7 @@ func handleRequest(lambdaCtx context.Context) ([]string, error) {
 		hasNextPage = resp.HasNextPage()
 	}
 
-	return keyList, nil
+	return Response{keyList}, nil
 }
 
 func main() {

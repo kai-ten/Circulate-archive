@@ -1,3 +1,3 @@
-output "postgres_lambda" {
-  value = module.okta_database.lambda_function
+output "postgres_json_writer" {
+  value = module.json_writer.lambda_function
 }
