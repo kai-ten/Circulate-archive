@@ -74,6 +74,7 @@ func uploadFile(context context.Context, session *session.Session, data []byte) 
 	now := time.Now().UTC()
 	date := now.Format(YYYYMMDD)
 	s3UploadKey := "okta/users/date=" + date + "/hour=" + strconv.Itoa(now.Hour()) + "/" + uuid.NewString() + ".json.gz"
+
 	_, err = s3.New(session).PutObject(&s3.PutObjectInput{
 		Bucket:               aws.String(AWS_S3_BUCKET),
 		Key:                  aws.String(s3UploadKey),
@@ -84,6 +85,7 @@ func uploadFile(context context.Context, session *session.Session, data []byte) 
 		ContentEncoding:      aws.String("gzip"),
 		ContentDisposition:   aws.String("attachment"),
 		ServerSideEncryption: aws.String("AES256"),
+		ChecksumAlgorithm:    aws.String("sha256"),
 	})
 	if err != nil {
 		log.Fatalf("Could not upload file to S3: %v", err)

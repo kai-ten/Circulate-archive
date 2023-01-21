@@ -75,6 +75,11 @@ init-dashboard:
 	echo "Generating provider.tf for ${ENV}" && \
 	sed s/ENV/${ENV}/ < provider.tf.template > provider.tf && \
 	cat provider.tf && \
+	terraform init && \
+	cd ../create-lnd-table && \
+	echo "Generating provider.tf for ${ENV}" && \
+	sed s/ENV/${ENV}/ < provider.tf.template > provider.tf && \
+	cat provider.tf && \
 	terraform init
 
 init: init-environment \
@@ -105,6 +110,8 @@ auto-apply-dashboard:
 	cd dashboard/postgres/iac/db && \
 	terraform apply -auto-approve --var-file=env/$(ENV).tfvars && \
 	cd ../create-schema && \
+	terraform apply -auto-approve --var-file=env/$(ENV).tfvars && \
+	cd ../create-lnd-table && \
 	terraform apply -auto-approve --var-file=env/$(ENV).tfvars
 
 auto-apply: auto-apply-environment \
