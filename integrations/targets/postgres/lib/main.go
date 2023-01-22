@@ -1,14 +1,24 @@
 package main
 
 import (
+	"bytes"
+	"compress/gzip"
 	"context"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/url"
 	"os"
+	"path/filepath"
+	"strings"
+	"time"
 
 	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/feature/s3/manager"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-secretsmanager-caching-go/secretcache"
 	"github.com/jackc/pgx/v5"
 )
@@ -24,43 +34,32 @@ type Request struct {
 	KeyList []string
 }
 
+// filename TEXT COLLATE pg_catalog."default" NOT NULL,
+// md5sum VARCHAR(40) COLLATE pg_catalog."default" NOT NULL,
+// data jsonb NOT NULL,
+// load_dt timestamp without time zone NOT NULL
+type postgresObject struct {
+	S3File   string
+	FileID   string
+	Data     []byte
+	LoadDate time.Time
+}
+
 var (
 	secretCache, _ = secretcache.New()
 )
 
-// // Base Okta Profile fields - https://developer.okta.com/docs/reference/api/schemas/#user-profile-base-subschema
-// // TODO: Handle custom fields by orgs with a separate UI
-// type Profile struct {
-// 	Login               string `json:"login"`
-// 	FirstName           string `json:"firstName"`
-// 	LastName            string `json:"lastName"`
-// 	Email               string `json:"email"`
-// 	EmailVerified       bool   `json:"emailVerified"`
-// 	SecondEmail         string `json:"secondEmail"`
-// 	SecondEmailVerified bool   `json:"secondEmailVerified"`
-// 	Phone               string `json:"phone"`
-// 	PhoneVerified       bool   `json:"phoneVerified"`
-// 	SecondPhone         string `json:"secondPhone"`
-// 	SecondPhoneVerified bool   `json:"secondPhoneVerified"`
-// 	DisplayName         string `json:"displayName"`
-// 	NickName            string `json:"nickName"`
-// 	ProfileUrl          string `json:"profileUrl"`
-// 	Title               string `json:"title"`
-// 	UserType            string `json:"userType"`
-// 	PreferredLanguage   string `json:"preferredLanguage"`
-// 	PreferredTimeZone   string `json:"preferredTimeZone"`
-// 	Locale              string `json:"locale"`
-// 	TimeZone            string `json:"timeZone"`
-// 	Organization        string `json:"organization"`
-// 	CostCenter          string `json:"costCenter"`
-// 	Department          string `json:"department"`
-// 	Division            string `json:"division"`
-// 	EmployeeNumber      string `json:"employeeNumber"`
-// 	EmployeeType        string `json:"employeeType"`
-// 	Manager             string `json:"manager"`
-// 	ManagerId           string `json:"managerId"`
-// 	PrimaryRelationship string `json:"primaryRelationship"`
-// }
+var s3Client *s3.Client
+
+func configS3() {
+	region := os.Getenv("AWS_REGION")
+	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion(region))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	s3Client = s3.NewFromConfig(cfg)
+}
 
 // // These links help describe the method
 // // https://blog.devgenius.io/performing-bulk-insert-using-pgx-and-copyfrom-ce34c8b12bac
@@ -280,22 +279,92 @@ var (
 // 	return nil
 // }
 
-// func dbTx(ctx context.Context, conn *pgx.Conn, client okta.Client, users []*okta.User) error {
-// 	err := pgx.BeginTxFunc(context.Background(), conn, pgx.TxOptions{}, func(tx pgx.Tx) error {
-// 		return upsertUsers(context.Background(), tx, client, users)
-// 	})
-// 	if err == nil {
-// 		log.Println("Users upsert completed.")
-// 	} else {
-// 		log.Fatal("error: ", err)
-// 	}
+func dbTx(ctx context.Context, conn *pgx.Conn, keyList []string) error {
+	err := pgx.BeginTxFunc(context.Background(), conn, pgx.TxOptions{}, func(tx pgx.Tx) error {
+		// return upsertUsers(context.Background(), tx, client, users)
+		return processFiles(context.Background(), tx, keyList)
+	})
+	if err == nil {
+		log.Println("Users upsert completed.")
+	} else {
+		log.Fatal("error: ", err)
+	}
 
-// 	return nil
-// }
+	return nil
+}
+
+func processFiles(ctx context.Context, tx pgx.Tx, keyList []string) error {
+	for _, key := range keyList {
+		s3BucketName := os.Getenv("S3_BUCKET")
+		var postgresObj postgresObject
+
+		postgresObj.S3File = key
+		postgresObj.LoadDate = time.Now()
+
+		log.Print(key)
+
+		headObj := s3.HeadObjectInput{
+			Bucket: aws.String(s3BucketName),
+			Key:    aws.String(key),
+		}
+		log.Print(headObj)
+		result, err := s3Client.HeadObject(context.Background(), &headObj)
+		if err != nil {
+			log.Fatalf("Could not read S3 header: %v", err)
+		}
+
+		log.Print("here")
+
+		s := strings.Split(key, "/")
+		filename := s[len(s)-1]
+		folder := "/tmp"
+		filepath := filepath.Join(folder, filename)
+
+		log.Print(filename)
+
+		file, err := os.Create(filepath)
+		if err != nil {
+			log.Fatalf("Could not create file: %v", err)
+		}
+		defer file.Close()
+
+		log.Print("here")
+
+		postgresObj.FileID = *result.ETag
+
+		downloader := manager.NewDownloader(s3Client)
+		numBytes, err := downloader.Download(context.TODO(), file, &s3.GetObjectInput{
+			Bucket: aws.String(s3BucketName),
+			Key:    aws.String(key),
+		})
+		if err != nil {
+			log.Fatalf("Failed to download S3 file: %v", err)
+		}
+
+		if numBytes > 0 {
+			fileBytes, _ := os.ReadFile(filepath)
+			gr, err := gzip.NewReader(bytes.NewBuffer(fileBytes))
+			if err != nil {
+				log.Fatalf("Could not unzip file: %v", err)
+			}
+			data, err := ioutil.ReadAll(gr)
+			if err != nil {
+				log.Fatalf("Could not read file: %v", err)
+			}
+			postgresObj.Data = data
+		}
+
+		log.Print(postgresObj)
+		// dbTx(context.Background(), conn, *client, users)
+	}
+	return nil
+}
 
 func handleRequest(lambdaCtx context.Context, data Request) {
 
 	log.Print(data.KeyList)
+	configS3()
+	log.Print("MADE IT HERE")
 
 	database_secret := os.Getenv("DATABASE_SECRET")
 	secret, _ := secretCache.GetSecretString(database_secret)
@@ -318,7 +387,7 @@ func handleRequest(lambdaCtx context.Context, data Request) {
 	// Download S3 File(s)
 	// For each S3 file, gz unzip, convert json to bytes, and write to postgres
 
-	// dbTx(context.Background(), conn, *client, users)
+	dbTx(context.Background(), conn, data.KeyList)
 
 }
 

@@ -118,7 +118,8 @@ auto-apply-dashboard:
 	terraform apply -auto-approve --var-file=env/$(ENV).tfvars
 
 auto-apply: auto-apply-environment \
-	auto-apply-integrations
+	auto-apply-integrations \
+	auto-apply-dashboard
 
 
 #####################

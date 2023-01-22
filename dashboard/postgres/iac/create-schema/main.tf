@@ -30,7 +30,7 @@ data "aws_iam_policy_document" "create_database_policy" {
   }
 }
 
-module "circulate_create_database" {
+module "circulate_create_schema" {
   source          = "../../../../integrations/modules/go-lambda"
   name            = "${var.name}-${var.env}"
   lambda_name     = "${var.name}-${var.env}-${var.service}"
@@ -47,19 +47,19 @@ module "circulate_create_database" {
 }
 
 resource "null_resource" "db_setup" {
-#   triggers = {
-#     resource = module.circulate_create_table # build triggers after resource exists
-#   }
+  triggers = {
+    resource = module.circulate_create_schema.lambda_function.function_name # build triggers after resource exists
+  }
   provisioner "local-exec" {
     command = <<-EOF
 			aws lambda invoke --function-name "$FUNCTION_NAME" /dev/stdout 2>/dev/null
 			EOF
     environment = {
-      FUNCTION_NAME     = module.circulate_create_database.lambda_function.function_name
+      FUNCTION_NAME     = module.circulate_create_schema.lambda_function.function_name
     }
     interpreter = ["bash", "-c"]
   }
   depends_on = [
-    module.circulate_create_database
+    module.circulate_create_schema
   ]
 }

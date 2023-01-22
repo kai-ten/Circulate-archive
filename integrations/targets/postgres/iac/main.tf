@@ -21,7 +21,6 @@ data "aws_secretsmanager_secret" "postgres_secret" {
 }
 
 data "aws_caller_identity" "current" {}
-data "aws_region" "current" {}
 
 module "json_writer" {
   source          = "../../../modules/go-lambda"
@@ -29,12 +28,14 @@ module "json_writer" {
   lambda_name     = "${var.name}-${var.env}-${var.service}"
   src_path        = "../lib"
   iam_policy_json = data.aws_iam_policy_document.lambda_policy.json
+  timeout = 5
   vpc_config = {
     security_group_ids = [data.terraform_remote_state.vpc_output.outputs.vpc_security_group_id]
     subnet_ids = data.terraform_remote_state.vpc_output.outputs.vpc_public_subnets
   }
   env_variables = {
     DATABASE_SECRET = "${data.terraform_remote_state.vpc_output.outputs.database_secret_name}"
+    S3_BUCKET = "${data.terraform_remote_state.data_lake_output.outputs.data_lake_s3.s3_bucket_id}"
   }
 }
 

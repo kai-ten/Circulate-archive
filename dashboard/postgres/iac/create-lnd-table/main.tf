@@ -47,15 +47,15 @@ module "circulate_create_lnd_table" {
 }
 
 resource "null_resource" "db_setup" {
-#   triggers = {
-#     resource = module.circulate_create_table # build triggers after resource exists
-#   }
+  triggers = {
+    resource = module.circulate_create_lnd_table.lambda_function.function_name # build triggers after resource exists
+  }
   provisioner "local-exec" {
     command = <<-EOF
 			aws lambda invoke --function-name "$FUNCTION_NAME" /dev/stdout 2>/dev/null
 			EOF
     environment = {
-      FUNCTION_NAME     = module.circulate_create_database.lambda_function.function_name
+      FUNCTION_NAME     = module.circulate_create_lnd_table.lambda_function.function_name
     }
     interpreter = ["bash", "-c"]
   }

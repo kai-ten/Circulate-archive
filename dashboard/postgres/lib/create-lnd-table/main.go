@@ -28,10 +28,11 @@ func dbTx(ctx context.Context, conn *pgx.Conn) error {
 	err := pgx.BeginTxFunc(context.Background(), conn, pgx.TxOptions{}, func(tx pgx.Tx) error {
 		createDbTable := `
 		CREATE TABLE IF NOT EXISTS cs.lnd_okta_user (
-			filename TEXT COLLATE pg_catalog."default" NOT NULL,
-			md5sum VARCHAR(40) COLLATE pg_catalog."default" NOT NULL,
+			s3_file TEXT NOT NULL,
+			file_id VARCHAR(68) NOT NULL,
 			data jsonb NOT NULL,
-			load_dt timestamp without time zone NOT NULL
+			load_dt timestamp without time zone NOT NULL,
+			UNIQUE(file_id)
 		);
 		`
 		_, err := tx.Exec(context.Background(), createDbTable)

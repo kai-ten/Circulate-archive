@@ -1,4 +1,5 @@
 data "aws_availability_zones" "available" {}
+data "aws_region" "current" {}
 
 locals {
   azs = slice(data.aws_availability_zones.available.names, 0, 3)
@@ -71,19 +72,29 @@ module "endpoints" {
   source = "terraform-aws-modules/vpc/aws//modules/vpc-endpoints"
 
   vpc_id             = module.vpc.vpc_id
-  security_group_ids = [module.security_group.security_group_id]
 
   endpoints = {
     ssm = {
       service             = "secretsmanager"
+      security_group_ids = [module.security_group.security_group_id]
       private_dns_enabled = true
       subnet_ids          = module.vpc.public_subnets
       tags    = { Name = "${var.name}-${var.env}-ssm" }
     }
-    s3 = {
-      service             = "s3"
-      subnet_ids          = module.vpc.public_subnets
-      tags    = { Name = "${var.name}-${var.env}-s3" }
-    }
+    # s3 = {
+    #   service             = "com.amazonaws.${data.aws_region.current.name}.s3"
+    #   route_table_ids     = module.vpc.public_route_table_ids
+    #   tags    = { Name = "${var.name}-${var.env}-s3" }
+    # }
+  }
+}
+
+resource "aws_vpc_endpoint" "s3" {
+  vpc_id          = module.vpc.vpc_id
+  service_name    = "com.amazonaws.${data.aws_region.current.name}.s3"
+  route_table_ids = module.vpc.public_route_table_ids
+
+  tags = {
+    Name = "${var.name}-${var.env}-s3"
   }
 }
