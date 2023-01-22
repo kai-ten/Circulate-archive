@@ -48,7 +48,7 @@ module "circulate_create_schema" {
 
 resource "null_resource" "db_setup" {
   triggers = {
-    resource = module.circulate_create_schema.lambda_function.function_name # build triggers after resource exists
+    resource = module.circulate_create_schema.lambda_function.version # build triggers after resource exists
   }
   provisioner "local-exec" {
     command = <<-EOF
