@@ -70,30 +70,34 @@ func Compress(data []byte) ([]byte, error) {
 
 func uploadFile(context context.Context, session *session.Session, data []byte) string {
 
-	compressed, err := Compress(data)
-	if err != nil {
-		fmt.Println("Error:", err)
+	if !bytes.Equal(data, []byte("[]")) && data != nil {
+		compressed, err := Compress(data)
+		if err != nil {
+			fmt.Println("Error:", err)
+		}
+
+		now := time.Now().UTC()
+		date := now.Format(YYYYMMDD)
+		s3UploadKey := "okta/users/date=" + date + "/hour=" + strconv.Itoa(now.Hour()) + "/" + uuid.NewString() + ".json.gz"
+
+		_, err = s3.New(session).PutObject(&s3.PutObjectInput{
+			Bucket:               aws.String(AWS_S3_BUCKET),
+			Key:                  aws.String(s3UploadKey),
+			ACL:                  aws.String("private"),
+			Body:                 bytes.NewReader(compressed),
+			ContentLength:        aws.Int64(int64(len(compressed))),
+			ContentType:          aws.String("application/json"),
+			ContentEncoding:      aws.String("gzip"),
+			ContentDisposition:   aws.String("attachment"),
+			ServerSideEncryption: aws.String("AES256"),
+		})
+		if err != nil {
+			log.Fatalf("Could not upload file to S3: %v", err)
+		}
+		return s3UploadKey
 	}
 
-	now := time.Now().UTC()
-	date := now.Format(YYYYMMDD)
-	s3UploadKey := "okta/users/date=" + date + "/hour=" + strconv.Itoa(now.Hour()) + "/" + uuid.NewString() + ".json.gz"
-
-	_, err = s3.New(session).PutObject(&s3.PutObjectInput{
-		Bucket:               aws.String(AWS_S3_BUCKET),
-		Key:                  aws.String(s3UploadKey),
-		ACL:                  aws.String("private"),
-		Body:                 bytes.NewReader(compressed),
-		ContentLength:        aws.Int64(int64(len(compressed))),
-		ContentType:          aws.String("application/json"),
-		ContentEncoding:      aws.String("gzip"),
-		ContentDisposition:   aws.String("attachment"),
-		ServerSideEncryption: aws.String("AES256"),
-	})
-	if err != nil {
-		log.Fatalf("Could not upload file to S3: %v", err)
-	}
-	return s3UploadKey
+	return ""
 }
 
 func handleRequest(lambdaCtx context.Context) (Response, error) {
@@ -120,8 +124,10 @@ func handleRequest(lambdaCtx context.Context) (Response, error) {
 	}
 
 	// Return up to 1000 users per request
-	query := query.NewQueryParams(query.WithLimit(1000))
+	// TODO: Retrieve last completed date from DDB
+	query := query.NewQueryParams(query.WithLimit(1), query.WithFilter("lastUpdated ge \"2023-01-19T00:00:00.000Z\""))
 	users, resp, err := client.User.ListUsers(ctx, query)
+
 	if err != nil {
 		fmt.Printf("Error Getting Users: %v\n", err)
 	}
@@ -132,7 +138,9 @@ func handleRequest(lambdaCtx context.Context) (Response, error) {
 
 	// Upload first page
 	s3UploadKey := uploadFile(context.Background(), session, jsonUsers)
-	keyList = append(keyList, s3UploadKey)
+	if s3UploadKey != "" {
+		keyList = append(keyList, s3UploadKey)
+	}
 
 	hasNextPage := resp.HasNextPage()
 
@@ -149,7 +157,9 @@ func handleRequest(lambdaCtx context.Context) (Response, error) {
 
 		// Upload n page
 		nextS3UploadKey := uploadFile(context.Background(), session, nextJsonUsers)
-		keyList = append(keyList, nextS3UploadKey)
+		if nextS3UploadKey != "" {
+			keyList = append(keyList, nextS3UploadKey)
+		}
 
 		hasNextPage = resp.HasNextPage()
 	}

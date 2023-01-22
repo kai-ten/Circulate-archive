@@ -172,7 +172,11 @@ func handleRequest(lambdaCtx context.Context, data Request) {
 	}
 	defer conn.Close(context.Background())
 
-	dbTx(context.Background(), conn, data.KeyList)
+	keyList := data.KeyList
+
+	if len(keyList) > 0 {
+		dbTx(context.Background(), conn, data.KeyList)
+	}
 }
 
 func main() {
