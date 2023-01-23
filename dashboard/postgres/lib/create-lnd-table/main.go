@@ -29,10 +29,9 @@ func dbTx(ctx context.Context, conn *pgx.Conn) error {
 		createDbTable := `
 		CREATE TABLE IF NOT EXISTS cs.lnd_okta_user (
 			s3_file TEXT NOT NULL,
-			file_id VARCHAR(32) NOT NULL,
-			data jsonb NOT NULL,
-			load_dt timestamp without time zone NOT NULL,
-			UNIQUE(file_id)
+			file_md5 VARCHAR(32) NOT NULL,
+			file_data jsonb NOT NULL,
+			load_dt timestamp without time zone NOT NULL
 		);
 		`
 		_, err := tx.Exec(context.Background(), createDbTable)

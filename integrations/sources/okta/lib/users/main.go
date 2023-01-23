@@ -125,7 +125,7 @@ func handleRequest(lambdaCtx context.Context) (Response, error) {
 
 	// Return up to 1000 users per request
 	// TODO: Retrieve last completed date from DDB
-	query := query.NewQueryParams(query.WithLimit(1), query.WithFilter("lastUpdated ge \"2023-01-19T00:00:00.000Z\""))
+	query := query.NewQueryParams(query.WithLimit(1), query.WithFilter("lastUpdated ge \"2022-01-19T00:00:00.000Z\""))
 	users, resp, err := client.User.ListUsers(ctx, query)
 
 	if err != nil {

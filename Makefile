@@ -1,7 +1,6 @@
 ENV ?= dev
 
 
-
 #########################
 # Configure Environment #
 #########################
@@ -84,6 +83,7 @@ init-dashboard:
 
 init: init-environment \
 	init-integrations-sources \
+	init-integrations-target \
 	init-integrations-unions \
 	init-dashboard
 

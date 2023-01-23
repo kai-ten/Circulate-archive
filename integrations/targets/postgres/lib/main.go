@@ -36,8 +36,8 @@ type Request struct {
 
 type postgresObject struct {
 	S3File   string
-	FileID   string
-	Data     []byte
+	FileMD5  string
+	FileData []byte
 	LoadDate time.Time
 }
 
@@ -65,12 +65,11 @@ func insertFile(ctx context.Context, tx pgx.Tx, pgObj postgresObject) error {
 	_, err := tx.Exec(context.Background(), `
 	INSERT INTO cs.lnd_okta_user (
 		s3_file,
-		file_id,
-		data,
+		file_md5,
+		file_data,
 		load_dt
-	) VALUES ($1, $2, $3, $4) 
-	ON CONFLICT (file_id) DO NOTHING;
-	`, pgObj.S3File, pgObj.FileID, pgObj.Data, pgObj.LoadDate)
+	) VALUES ($1, $2, $3, $4);
+	`, pgObj.S3File, pgObj.FileMD5, pgObj.FileData, pgObj.LoadDate)
 	if err != nil {
 		log.Fatalf("Unable to insert user: %v\n", err)
 	}
@@ -95,7 +94,7 @@ func processFile(ctx context.Context, tx pgx.Tx, key string) error {
 		log.Fatalf("Could not read S3 header: %v", err)
 	}
 
-	postgresObj.FileID = strings.Trim(*result.ETag, "\"")
+	postgresObj.FileMD5 = strings.Trim(*result.ETag, "\"")
 
 	s := strings.Split(key, "/")
 	filename := s[len(s)-1]
@@ -127,7 +126,7 @@ func processFile(ctx context.Context, tx pgx.Tx, key string) error {
 		if err != nil {
 			log.Fatalf("Could not read file: %v", err)
 		}
-		postgresObj.Data = data
+		postgresObj.FileData = data
 	}
 
 	insertFile(context.Background(), tx, postgresObj)

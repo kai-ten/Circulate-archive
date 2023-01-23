@@ -1,10 +1,21 @@
 name: 'circulate'
 
 profile: 'circulate'
-version: 0.1
+version: 0.1.0
 require-dbt-version: '>=1.3.0'
 
 docs-paths: ['docs']
 model-paths: ['models']
 test-paths: ['tests']
+seed-paths: ['seeds']
 snapshot-paths: ['snapshots']
+
+models:
+  cs:
+    staging:
+      +schema: stg
+
+seeds:
+  cs:
+    staging:
+      +schema: stg
