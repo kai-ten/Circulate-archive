@@ -8,3 +8,513 @@
 [0m03:14:37.704437 [info ] [MainThread]: Setting up your profile.
 [0m03:14:43.642179 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10b912dc0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10b912340>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10b9122e0>]}
 [0m03:14:43.642733 [debug] [MainThread]: Flushing usage events
+
+
+============================== 2023-01-24 00:43:11.346345 | 6ff6b860-db6d-4daf-891d-79b627bf7609 ==============================
+[0m00:43:11.346412 [info ] [MainThread]: Running with dbt=1.3.1
+[0m00:43:11.347736 [debug] [MainThread]: running dbt with arguments {'write_json': True, 'use_colors': True, 'printer_width': 80, 'version_check': True, 'partial_parse': True, 'static_parser': True, 'profiles_dir': '/Users/kai3000/.dbt', 'send_anonymous_usage_stats': True, 'event_buffer_size': 100000, 'quiet': False, 'no_print': False, 'which': 'run', 'rpc_method': 'run', 'indirect_selection': 'eager'}
+[0m00:43:11.348063 [debug] [MainThread]: Tracking: tracking
+[0m00:43:11.364448 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x108e05820>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x108e05700>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x108e056d0>]}
+[0m00:43:11.384815 [info ] [MainThread]: Partial parse save file not found. Starting full parse.
+[0m00:43:11.385317 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'partial_parser', 'label': '6ff6b860-db6d-4daf-891d-79b627bf7609', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x108df73d0>]}
+[0m00:43:11.429016 [debug] [MainThread]: Parsing macros/timestamps.sql
+[0m00:43:11.434814 [debug] [MainThread]: Parsing macros/catalog.sql
+[0m00:43:11.438371 [debug] [MainThread]: Parsing macros/relations.sql
+[0m00:43:11.440405 [debug] [MainThread]: Parsing macros/adapters.sql
+[0m00:43:11.475265 [debug] [MainThread]: Parsing macros/materializations/incremental_strategies.sql
+[0m00:43:11.476831 [debug] [MainThread]: Parsing macros/materializations/snapshot_merge.sql
+[0m00:43:11.479186 [debug] [MainThread]: Parsing macros/utils/dateadd.sql
+[0m00:43:11.480118 [debug] [MainThread]: Parsing macros/utils/listagg.sql
+[0m00:43:11.482212 [debug] [MainThread]: Parsing macros/utils/datediff.sql
+[0m00:43:11.491514 [debug] [MainThread]: Parsing macros/utils/any_value.sql
+[0m00:43:11.492244 [debug] [MainThread]: Parsing macros/utils/last_day.sql
+[0m00:43:11.494045 [debug] [MainThread]: Parsing macros/utils/split_part.sql
+[0m00:43:11.495578 [debug] [MainThread]: Parsing macros/materializations/hooks.sql
+[0m00:43:11.501071 [debug] [MainThread]: Parsing macros/materializations/configs.sql
+[0m00:43:11.504442 [debug] [MainThread]: Parsing macros/materializations/snapshots/snapshot_merge.sql
+[0m00:43:11.506803 [debug] [MainThread]: Parsing macros/materializations/snapshots/strategies.sql
+[0m00:43:11.529702 [debug] [MainThread]: Parsing macros/materializations/snapshots/helpers.sql
+[0m00:43:11.547789 [debug] [MainThread]: Parsing macros/materializations/snapshots/snapshot.sql
+[0m00:43:11.564504 [debug] [MainThread]: Parsing macros/materializations/tests/test.sql
+[0m00:43:11.570856 [debug] [MainThread]: Parsing macros/materializations/tests/helpers.sql
+[0m00:43:11.573368 [debug] [MainThread]: Parsing macros/materializations/tests/where_subquery.sql
+[0m00:43:11.575946 [debug] [MainThread]: Parsing macros/materializations/models/incremental/column_helpers.sql
+[0m00:43:11.587341 [debug] [MainThread]: Parsing macros/materializations/models/incremental/merge.sql
+[0m00:43:11.608875 [debug] [MainThread]: Parsing macros/materializations/models/incremental/is_incremental.sql
+[0m00:43:11.611014 [debug] [MainThread]: Parsing macros/materializations/models/incremental/strategies.sql
+[0m00:43:11.620911 [debug] [MainThread]: Parsing macros/materializations/models/incremental/incremental.sql
+[0m00:43:11.635751 [debug] [MainThread]: Parsing macros/materializations/models/incremental/on_schema_change.sql
+[0m00:43:11.658963 [debug] [MainThread]: Parsing macros/materializations/models/table/table.sql
+[0m00:43:11.666614 [debug] [MainThread]: Parsing macros/materializations/models/table/create_table_as.sql
+[0m00:43:11.671634 [debug] [MainThread]: Parsing macros/materializations/models/view/view.sql
+[0m00:43:11.679205 [debug] [MainThread]: Parsing macros/materializations/models/view/helpers.sql
+[0m00:43:11.681080 [debug] [MainThread]: Parsing macros/materializations/models/view/create_or_replace_view.sql
+[0m00:43:11.685816 [debug] [MainThread]: Parsing macros/materializations/models/view/create_view_as.sql
+[0m00:43:11.689151 [debug] [MainThread]: Parsing macros/materializations/seeds/seed.sql
+[0m00:43:11.699007 [debug] [MainThread]: Parsing macros/materializations/seeds/helpers.sql
+[0m00:43:11.725061 [debug] [MainThread]: Parsing macros/get_custom_name/get_custom_alias.sql
+[0m00:43:11.727182 [debug] [MainThread]: Parsing macros/get_custom_name/get_custom_schema.sql
+[0m00:43:11.730668 [debug] [MainThread]: Parsing macros/get_custom_name/get_custom_database.sql
+[0m00:43:11.732927 [debug] [MainThread]: Parsing macros/generic_test_sql/relationships.sql
+[0m00:43:11.734186 [debug] [MainThread]: Parsing macros/generic_test_sql/not_null.sql
+[0m00:43:11.735377 [debug] [MainThread]: Parsing macros/generic_test_sql/unique.sql
+[0m00:43:11.736380 [debug] [MainThread]: Parsing macros/generic_test_sql/accepted_values.sql
+[0m00:43:11.738336 [debug] [MainThread]: Parsing macros/etc/statement.sql
+[0m00:43:11.745946 [debug] [MainThread]: Parsing macros/etc/datetime.sql
+[0m00:43:11.757704 [debug] [MainThread]: Parsing macros/utils/except.sql
+[0m00:43:11.758942 [debug] [MainThread]: Parsing macros/utils/replace.sql
+[0m00:43:11.760748 [debug] [MainThread]: Parsing macros/utils/concat.sql
+[0m00:43:11.762218 [debug] [MainThread]: Parsing macros/utils/length.sql
+[0m00:43:11.763635 [debug] [MainThread]: Parsing macros/utils/dateadd.sql
+[0m00:43:11.765471 [debug] [MainThread]: Parsing macros/utils/intersect.sql
+[0m00:43:11.766718 [debug] [MainThread]: Parsing macros/utils/escape_single_quotes.sql
+[0m00:43:11.768293 [debug] [MainThread]: Parsing macros/utils/right.sql
+[0m00:43:11.770101 [debug] [MainThread]: Parsing macros/utils/listagg.sql
+[0m00:43:11.773399 [debug] [MainThread]: Parsing macros/utils/datediff.sql
+[0m00:43:11.775233 [debug] [MainThread]: Parsing macros/utils/safe_cast.sql
+[0m00:43:11.776867 [debug] [MainThread]: Parsing macros/utils/hash.sql
+[0m00:43:11.778474 [debug] [MainThread]: Parsing macros/utils/cast_bool_to_text.sql
+[0m00:43:11.780044 [debug] [MainThread]: Parsing macros/utils/any_value.sql
+[0m00:43:11.781447 [debug] [MainThread]: Parsing macros/utils/position.sql
+[0m00:43:11.783095 [debug] [MainThread]: Parsing macros/utils/literal.sql
+[0m00:43:11.784522 [debug] [MainThread]: Parsing macros/utils/data_types.sql
+[0m00:43:11.794352 [debug] [MainThread]: Parsing macros/utils/array_concat.sql
+[0m00:43:11.795926 [debug] [MainThread]: Parsing macros/utils/bool_or.sql
+[0m00:43:11.797330 [debug] [MainThread]: Parsing macros/utils/last_day.sql
+[0m00:43:11.799993 [debug] [MainThread]: Parsing macros/utils/split_part.sql
+[0m00:43:11.803170 [debug] [MainThread]: Parsing macros/utils/date_trunc.sql
+[0m00:43:11.804738 [debug] [MainThread]: Parsing macros/utils/array_construct.sql
+[0m00:43:11.806941 [debug] [MainThread]: Parsing macros/utils/array_append.sql
+[0m00:43:11.808531 [debug] [MainThread]: Parsing macros/adapters/schema.sql
+[0m00:43:11.811686 [debug] [MainThread]: Parsing macros/adapters/timestamps.sql
+[0m00:43:11.816612 [debug] [MainThread]: Parsing macros/adapters/indexes.sql
+[0m00:43:11.820692 [debug] [MainThread]: Parsing macros/adapters/relation.sql
+[0m00:43:11.841574 [debug] [MainThread]: Parsing macros/adapters/freshness.sql
+[0m00:43:11.844454 [debug] [MainThread]: Parsing macros/adapters/apply_grants.sql
+[0m00:43:11.864328 [debug] [MainThread]: Parsing macros/adapters/persist_docs.sql
+[0m00:43:11.870755 [debug] [MainThread]: Parsing macros/adapters/metadata.sql
+[0m00:43:11.881080 [debug] [MainThread]: Parsing macros/adapters/columns.sql
+[0m00:43:11.895069 [debug] [MainThread]: Parsing macros/python_model/python.sql
+[0m00:43:11.904330 [debug] [MainThread]: Parsing tests/generic/builtin.sql
+[0m00:43:12.325978 [debug] [MainThread]: 1699: static parser successfully parsed staging/okta_users.sql
+[0m00:43:12.391407 [warn ] [MainThread]: [[33mWARNING[0m]: Configuration paths exist in your dbt_project.yml file which do not apply to any resources.
+There are 2 unused configuration paths:
+- models.cs.staging
+- seeds.cs.staging
+
+[0m00:43:12.398454 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'load_project', 'label': '6ff6b860-db6d-4daf-891d-79b627bf7609', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x1067187c0>]}
+[0m00:43:12.408669 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'resource_counts', 'label': '6ff6b860-db6d-4daf-891d-79b627bf7609', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x108e2df40>]}
+[0m00:43:12.409175 [info ] [MainThread]: Found 1 model, 0 tests, 0 snapshots, 0 analyses, 289 macros, 0 operations, 0 seed files, 0 sources, 0 exposures, 0 metrics
+[0m00:43:12.409618 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'runnable_timing', 'label': '6ff6b860-db6d-4daf-891d-79b627bf7609', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x108dd7520>]}
+[0m00:43:12.411197 [info ] [MainThread]: 
+[0m00:43:12.412221 [debug] [MainThread]: Acquiring new postgres connection "master"
+[0m00:43:12.413391 [debug] [ThreadPool]: Acquiring new postgres connection "list_circulatedb"
+[0m00:43:12.429905 [debug] [ThreadPool]: Using postgres connection "list_circulatedb"
+[0m00:43:12.430258 [debug] [ThreadPool]: On list_circulatedb: /* {"app": "dbt", "dbt_version": "1.3.1", "profile_name": "circulate", "target_name": "dev", "connection_name": "list_circulatedb"} */
+
+    select distinct nspname from pg_namespace
+  
+[0m00:43:12.430478 [debug] [ThreadPool]: Opening a new connection, currently in state init
+[0m00:43:12.768236 [debug] [ThreadPool]: SQL status: SELECT 5 in 0.34 seconds
+[0m00:43:12.770266 [debug] [ThreadPool]: On list_circulatedb: Close
+[0m00:43:12.772137 [debug] [ThreadPool]: Acquiring new postgres connection "list_circulatedb_cs"
+[0m00:43:12.780172 [debug] [ThreadPool]: Using postgres connection "list_circulatedb_cs"
+[0m00:43:12.780412 [debug] [ThreadPool]: On list_circulatedb_cs: BEGIN
+[0m00:43:12.780606 [debug] [ThreadPool]: Opening a new connection, currently in state closed
+[0m00:43:13.033480 [debug] [ThreadPool]: SQL status: BEGIN in 0.25 seconds
+[0m00:43:13.033814 [debug] [ThreadPool]: Using postgres connection "list_circulatedb_cs"
+[0m00:43:13.034021 [debug] [ThreadPool]: On list_circulatedb_cs: /* {"app": "dbt", "dbt_version": "1.3.1", "profile_name": "circulate", "target_name": "dev", "connection_name": "list_circulatedb_cs"} */
+select
+      'circulatedb' as database,
+      tablename as name,
+      schemaname as schema,
+      'table' as type
+    from pg_tables
+    where schemaname ilike 'cs'
+    union all
+    select
+      'circulatedb' as database,
+      viewname as name,
+      schemaname as schema,
+      'view' as type
+    from pg_views
+    where schemaname ilike 'cs'
+  
+[0m00:43:13.068499 [debug] [ThreadPool]: SQL status: SELECT 1 in 0.03 seconds
+[0m00:43:13.070183 [debug] [ThreadPool]: On list_circulatedb_cs: ROLLBACK
+[0m00:43:13.095786 [debug] [ThreadPool]: On list_circulatedb_cs: Close
+[0m00:43:13.102966 [debug] [MainThread]: Using postgres connection "master"
+[0m00:43:13.103274 [debug] [MainThread]: On master: BEGIN
+[0m00:43:13.103478 [debug] [MainThread]: Opening a new connection, currently in state init
+[0m00:43:13.353131 [debug] [MainThread]: SQL status: BEGIN in 0.25 seconds
+[0m00:43:13.353766 [debug] [MainThread]: Using postgres connection "master"
+[0m00:43:13.354123 [debug] [MainThread]: On master: /* {"app": "dbt", "dbt_version": "1.3.1", "profile_name": "circulate", "target_name": "dev", "connection_name": "master"} */
+with relation as (
+        select
+            pg_rewrite.ev_class as class,
+            pg_rewrite.oid as id
+        from pg_rewrite
+    ),
+    class as (
+        select
+            oid as id,
+            relname as name,
+            relnamespace as schema,
+            relkind as kind
+        from pg_class
+    ),
+    dependency as (
+        select distinct
+            pg_depend.objid as id,
+            pg_depend.refobjid as ref
+        from pg_depend
+    ),
+    schema as (
+        select
+            pg_namespace.oid as id,
+            pg_namespace.nspname as name
+        from pg_namespace
+        where nspname != 'information_schema' and nspname not like 'pg\_%'
+    ),
+    referenced as (
+        select
+            relation.id AS id,
+            referenced_class.name ,
+            referenced_class.schema ,
+            referenced_class.kind
+        from relation
+        join class as referenced_class on relation.class=referenced_class.id
+        where referenced_class.kind in ('r', 'v')
+    ),
+    relationships as (
+        select
+            referenced.name as referenced_name,
+            referenced.schema as referenced_schema_id,
+            dependent_class.name as dependent_name,
+            dependent_class.schema as dependent_schema_id,
+            referenced.kind as kind
+        from referenced
+        join dependency on referenced.id=dependency.id
+        join class as dependent_class on dependency.ref=dependent_class.id
+        where
+            (referenced.name != dependent_class.name or
+             referenced.schema != dependent_class.schema)
+    )
+
+    select
+        referenced_schema.name as referenced_schema,
+        relationships.referenced_name as referenced_name,
+        dependent_schema.name as dependent_schema,
+        relationships.dependent_name as dependent_name
+    from relationships
+    join schema as dependent_schema on relationships.dependent_schema_id=dependent_schema.id
+    join schema as referenced_schema on relationships.referenced_schema_id=referenced_schema.id
+    group by referenced_schema, referenced_name, dependent_schema, dependent_name
+    order by referenced_schema, referenced_name, dependent_schema, dependent_name;
+[0m00:43:13.387163 [debug] [MainThread]: SQL status: SELECT 0 in 0.03 seconds
+[0m00:43:13.389276 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'runnable_timing', 'label': '6ff6b860-db6d-4daf-891d-79b627bf7609', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x108eea370>]}
+[0m00:43:13.389771 [debug] [MainThread]: On master: ROLLBACK
+[0m00:43:13.415166 [debug] [MainThread]: Using postgres connection "master"
+[0m00:43:13.415777 [debug] [MainThread]: On master: BEGIN
+[0m00:43:13.467236 [debug] [MainThread]: SQL status: BEGIN in 0.05 seconds
+[0m00:43:13.467958 [debug] [MainThread]: On master: COMMIT
+[0m00:43:13.468301 [debug] [MainThread]: Using postgres connection "master"
+[0m00:43:13.468556 [debug] [MainThread]: On master: COMMIT
+[0m00:43:13.494117 [debug] [MainThread]: SQL status: COMMIT in 0.03 seconds
+[0m00:43:13.494776 [debug] [MainThread]: On master: Close
+[0m00:43:13.496004 [info ] [MainThread]: Concurrency: 4 threads (target='dev')
+[0m00:43:13.496521 [info ] [MainThread]: 
+[0m00:43:13.520716 [debug] [Thread-1  ]: Began running node model.circulate.okta_users
+[0m00:43:13.521159 [info ] [Thread-1  ]: 1 of 1 START sql view model cs.okta_users ...................................... [RUN]
+[0m00:43:13.522030 [debug] [Thread-1  ]: Acquiring new postgres connection "model.circulate.okta_users"
+[0m00:43:13.522276 [debug] [Thread-1  ]: Began compiling node model.circulate.okta_users
+[0m00:43:13.522504 [debug] [Thread-1  ]: Compiling model.circulate.okta_users
+[0m00:43:13.524690 [debug] [Thread-1  ]: Writing injected SQL for node "model.circulate.okta_users"
+[0m00:43:13.525556 [debug] [Thread-1  ]: finished collecting timing info
+[0m00:43:13.525800 [debug] [Thread-1  ]: Began executing node model.circulate.okta_users
+[0m00:43:13.580804 [debug] [Thread-1  ]: Writing runtime sql for node "model.circulate.okta_users"
+[0m00:43:13.581857 [debug] [Thread-1  ]: Using postgres connection "model.circulate.okta_users"
+[0m00:43:13.582107 [debug] [Thread-1  ]: On model.circulate.okta_users: BEGIN
+[0m00:43:13.582306 [debug] [Thread-1  ]: Opening a new connection, currently in state closed
+[0m00:43:13.832284 [debug] [Thread-1  ]: SQL status: BEGIN in 0.25 seconds
+[0m00:43:13.832631 [debug] [Thread-1  ]: Using postgres connection "model.circulate.okta_users"
+[0m00:43:13.832842 [debug] [Thread-1  ]: On model.circulate.okta_users: /* {"app": "dbt", "dbt_version": "1.3.1", "profile_name": "circulate", "target_name": "dev", "node_id": "model.circulate.okta_users"} */
+
+  create view "circulatedb"."cs"."okta_users__dbt_tmp" as (
+    with
+partitioned as (
+  select
+    file_md5,
+	load_dt,
+    row_number() over(partition by file_md5
+                      order by load_dt desc
+                      ) as row_number
+  from cs.lnd_okta_user
+),
+
+most_recent as (
+  select file_md5, load_dt
+    from partitioned
+   where row_number = 1
+)
+
+select blobs.*
+  from cs.lnd_okta_user blobs,
+       most_recent
+ where blobs.load_dt = most_recent.load_dt;
+  );
+[0m00:43:13.859642 [debug] [Thread-1  ]: Postgres adapter: Postgres error: syntax error at or near ";"
+LINE 24:  where blobs.load_dt = most_recent.load_dt;
+                                                   ^
+
+[0m00:43:13.860064 [debug] [Thread-1  ]: On model.circulate.okta_users: ROLLBACK
+[0m00:43:13.885772 [debug] [Thread-1  ]: finished collecting timing info
+[0m00:43:13.886194 [debug] [Thread-1  ]: On model.circulate.okta_users: Close
+[0m00:43:13.887269 [debug] [Thread-1  ]: Database Error in model okta_users (models/staging/okta_users.sql)
+  syntax error at or near ";"
+  LINE 24:  where blobs.load_dt = most_recent.load_dt;
+                                                     ^
+  compiled Code at target/run/circulate/models/staging/okta_users.sql
+[0m00:43:13.887636 [debug] [Thread-1  ]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '6ff6b860-db6d-4daf-891d-79b627bf7609', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x108ea7580>]}
+[0m00:43:13.888100 [error] [Thread-1  ]: 1 of 1 ERROR creating sql view model cs.okta_users ............................. [[31mERROR[0m in 0.37s]
+[0m00:43:13.888656 [debug] [Thread-1  ]: Finished running node model.circulate.okta_users
+[0m00:43:13.890228 [debug] [MainThread]: Acquiring new postgres connection "master"
+[0m00:43:13.890531 [debug] [MainThread]: Using postgres connection "master"
+[0m00:43:13.890735 [debug] [MainThread]: On master: BEGIN
+[0m00:43:13.890922 [debug] [MainThread]: Opening a new connection, currently in state closed
+[0m00:43:14.132575 [debug] [MainThread]: SQL status: BEGIN in 0.24 seconds
+[0m00:43:14.132956 [debug] [MainThread]: On master: COMMIT
+[0m00:43:14.133175 [debug] [MainThread]: Using postgres connection "master"
+[0m00:43:14.133366 [debug] [MainThread]: On master: COMMIT
+[0m00:43:14.157625 [debug] [MainThread]: SQL status: COMMIT in 0.02 seconds
+[0m00:43:14.158006 [debug] [MainThread]: On master: Close
+[0m00:43:14.158931 [info ] [MainThread]: 
+[0m00:43:14.159317 [info ] [MainThread]: Finished running 1 view model in 0 hours 0 minutes and 1.75 seconds (1.75s).
+[0m00:43:14.159673 [debug] [MainThread]: Connection 'master' was properly closed.
+[0m00:43:14.159860 [debug] [MainThread]: Connection 'model.circulate.okta_users' was properly closed.
+[0m00:43:14.167882 [info ] [MainThread]: 
+[0m00:43:14.168293 [info ] [MainThread]: [31mCompleted with 1 error and 0 warnings:[0m
+[0m00:43:14.168671 [info ] [MainThread]: 
+[0m00:43:14.168993 [error] [MainThread]: [33mDatabase Error in model okta_users (models/staging/okta_users.sql)[0m
+[0m00:43:14.169313 [error] [MainThread]:   syntax error at or near ";"
+[0m00:43:14.169618 [error] [MainThread]:   LINE 24:  where blobs.load_dt = most_recent.load_dt;
+[0m00:43:14.169919 [error] [MainThread]:                                                      ^
+[0m00:43:14.170219 [error] [MainThread]:   compiled Code at target/run/circulate/models/staging/okta_users.sql
+[0m00:43:14.170530 [info ] [MainThread]: 
+[0m00:43:14.170850 [info ] [MainThread]: Done. PASS=0 WARN=0 ERROR=1 SKIP=0 TOTAL=1
+[0m00:43:14.171272 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x108f68670>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x108f68370>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x108ec0220>]}
+[0m00:43:14.171597 [debug] [MainThread]: Flushing usage events
+
+
+============================== 2023-01-24 00:43:41.165498 | 2729cbd0-b5e8-4d02-b4f1-ad114635812f ==============================
+[0m00:43:41.165534 [info ] [MainThread]: Running with dbt=1.3.1
+[0m00:43:41.166446 [debug] [MainThread]: running dbt with arguments {'write_json': True, 'use_colors': True, 'printer_width': 80, 'version_check': True, 'partial_parse': True, 'static_parser': True, 'profiles_dir': '/Users/kai3000/.dbt', 'send_anonymous_usage_stats': True, 'event_buffer_size': 100000, 'quiet': False, 'no_print': False, 'which': 'run', 'rpc_method': 'run', 'indirect_selection': 'eager'}
+[0m00:43:41.166696 [debug] [MainThread]: Tracking: tracking
+[0m00:43:41.184425 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10c6204c0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10c6205e0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10c620610>]}
+[0m00:43:41.260394 [debug] [MainThread]: Partial parsing enabled: 0 files deleted, 0 files added, 1 files changed.
+[0m00:43:41.260966 [debug] [MainThread]: Partial parsing: updated file: circulate://models/staging/okta_users.sql
+[0m00:43:41.280672 [debug] [MainThread]: 1699: static parser successfully parsed staging/okta_users.sql
+[0m00:43:41.320573 [warn ] [MainThread]: [[33mWARNING[0m]: Configuration paths exist in your dbt_project.yml file which do not apply to any resources.
+There are 2 unused configuration paths:
+- models.cs.staging
+- seeds.cs.staging
+
+[0m00:43:41.327657 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'load_project', 'label': '2729cbd0-b5e8-4d02-b4f1-ad114635812f', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10c7ce0d0>]}
+[0m00:43:41.337289 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'resource_counts', 'label': '2729cbd0-b5e8-4d02-b4f1-ad114635812f', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10c79f160>]}
+[0m00:43:41.337785 [info ] [MainThread]: Found 1 model, 0 tests, 0 snapshots, 0 analyses, 289 macros, 0 operations, 0 seed files, 0 sources, 0 exposures, 0 metrics
+[0m00:43:41.338230 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'runnable_timing', 'label': '2729cbd0-b5e8-4d02-b4f1-ad114635812f', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x109fce6d0>]}
+[0m00:43:41.339891 [info ] [MainThread]: 
+[0m00:43:41.340878 [debug] [MainThread]: Acquiring new postgres connection "master"
+[0m00:43:41.342038 [debug] [ThreadPool]: Acquiring new postgres connection "list_circulatedb"
+[0m00:43:41.357930 [debug] [ThreadPool]: Using postgres connection "list_circulatedb"
+[0m00:43:41.358307 [debug] [ThreadPool]: On list_circulatedb: /* {"app": "dbt", "dbt_version": "1.3.1", "profile_name": "circulate", "target_name": "dev", "connection_name": "list_circulatedb"} */
+
+    select distinct nspname from pg_namespace
+  
+[0m00:43:41.358532 [debug] [ThreadPool]: Opening a new connection, currently in state init
+[0m00:43:41.668855 [debug] [ThreadPool]: SQL status: SELECT 5 in 0.31 seconds
+[0m00:43:41.671653 [debug] [ThreadPool]: On list_circulatedb: Close
+[0m00:43:41.673528 [debug] [ThreadPool]: Acquiring new postgres connection "list_circulatedb_cs"
+[0m00:43:41.681451 [debug] [ThreadPool]: Using postgres connection "list_circulatedb_cs"
+[0m00:43:41.681683 [debug] [ThreadPool]: On list_circulatedb_cs: BEGIN
+[0m00:43:41.681877 [debug] [ThreadPool]: Opening a new connection, currently in state closed
+[0m00:43:41.927385 [debug] [ThreadPool]: SQL status: BEGIN in 0.25 seconds
+[0m00:43:41.928044 [debug] [ThreadPool]: Using postgres connection "list_circulatedb_cs"
+[0m00:43:41.928329 [debug] [ThreadPool]: On list_circulatedb_cs: /* {"app": "dbt", "dbt_version": "1.3.1", "profile_name": "circulate", "target_name": "dev", "connection_name": "list_circulatedb_cs"} */
+select
+      'circulatedb' as database,
+      tablename as name,
+      schemaname as schema,
+      'table' as type
+    from pg_tables
+    where schemaname ilike 'cs'
+    union all
+    select
+      'circulatedb' as database,
+      viewname as name,
+      schemaname as schema,
+      'view' as type
+    from pg_views
+    where schemaname ilike 'cs'
+  
+[0m00:43:41.980270 [debug] [ThreadPool]: SQL status: SELECT 1 in 0.05 seconds
+[0m00:43:41.982578 [debug] [ThreadPool]: On list_circulatedb_cs: ROLLBACK
+[0m00:43:42.007916 [debug] [ThreadPool]: On list_circulatedb_cs: Close
+[0m00:43:42.013962 [debug] [MainThread]: Using postgres connection "master"
+[0m00:43:42.014221 [debug] [MainThread]: On master: BEGIN
+[0m00:43:42.014420 [debug] [MainThread]: Opening a new connection, currently in state init
+[0m00:43:42.260305 [debug] [MainThread]: SQL status: BEGIN in 0.25 seconds
+[0m00:43:42.260662 [debug] [MainThread]: Using postgres connection "master"
+[0m00:43:42.260879 [debug] [MainThread]: On master: /* {"app": "dbt", "dbt_version": "1.3.1", "profile_name": "circulate", "target_name": "dev", "connection_name": "master"} */
+with relation as (
+        select
+            pg_rewrite.ev_class as class,
+            pg_rewrite.oid as id
+        from pg_rewrite
+    ),
+    class as (
+        select
+            oid as id,
+            relname as name,
+            relnamespace as schema,
+            relkind as kind
+        from pg_class
+    ),
+    dependency as (
+        select distinct
+            pg_depend.objid as id,
+            pg_depend.refobjid as ref
+        from pg_depend
+    ),
+    schema as (
+        select
+            pg_namespace.oid as id,
+            pg_namespace.nspname as name
+        from pg_namespace
+        where nspname != 'information_schema' and nspname not like 'pg\_%'
+    ),
+    referenced as (
+        select
+            relation.id AS id,
+            referenced_class.name ,
+            referenced_class.schema ,
+            referenced_class.kind
+        from relation
+        join class as referenced_class on relation.class=referenced_class.id
+        where referenced_class.kind in ('r', 'v')
+    ),
+    relationships as (
+        select
+            referenced.name as referenced_name,
+            referenced.schema as referenced_schema_id,
+            dependent_class.name as dependent_name,
+            dependent_class.schema as dependent_schema_id,
+            referenced.kind as kind
+        from referenced
+        join dependency on referenced.id=dependency.id
+        join class as dependent_class on dependency.ref=dependent_class.id
+        where
+            (referenced.name != dependent_class.name or
+             referenced.schema != dependent_class.schema)
+    )
+
+    select
+        referenced_schema.name as referenced_schema,
+        relationships.referenced_name as referenced_name,
+        dependent_schema.name as dependent_schema,
+        relationships.dependent_name as dependent_name
+    from relationships
+    join schema as dependent_schema on relationships.dependent_schema_id=dependent_schema.id
+    join schema as referenced_schema on relationships.referenced_schema_id=referenced_schema.id
+    group by referenced_schema, referenced_name, dependent_schema, dependent_name
+    order by referenced_schema, referenced_name, dependent_schema, dependent_name;
+[0m00:43:42.292258 [debug] [MainThread]: SQL status: SELECT 0 in 0.03 seconds
+[0m00:43:42.293747 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'runnable_timing', 'label': '2729cbd0-b5e8-4d02-b4f1-ad114635812f', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10c7b7730>]}
+[0m00:43:42.294128 [debug] [MainThread]: On master: ROLLBACK
+[0m00:43:42.318284 [debug] [MainThread]: Using postgres connection "master"
+[0m00:43:42.318536 [debug] [MainThread]: On master: BEGIN
+[0m00:43:42.366286 [debug] [MainThread]: SQL status: BEGIN in 0.05 seconds
+[0m00:43:42.366591 [debug] [MainThread]: On master: COMMIT
+[0m00:43:42.366809 [debug] [MainThread]: Using postgres connection "master"
+[0m00:43:42.367012 [debug] [MainThread]: On master: COMMIT
+[0m00:43:42.391275 [debug] [MainThread]: SQL status: COMMIT in 0.02 seconds
+[0m00:43:42.391548 [debug] [MainThread]: On master: Close
+[0m00:43:42.392423 [info ] [MainThread]: Concurrency: 4 threads (target='dev')
+[0m00:43:42.392810 [info ] [MainThread]: 
+[0m00:43:42.396829 [debug] [Thread-1  ]: Began running node model.circulate.okta_users
+[0m00:43:42.397239 [info ] [Thread-1  ]: 1 of 1 START sql view model cs.okta_users ...................................... [RUN]
+[0m00:43:42.398097 [debug] [Thread-1  ]: Acquiring new postgres connection "model.circulate.okta_users"
+[0m00:43:42.398335 [debug] [Thread-1  ]: Began compiling node model.circulate.okta_users
+[0m00:43:42.398573 [debug] [Thread-1  ]: Compiling model.circulate.okta_users
+[0m00:43:42.400816 [debug] [Thread-1  ]: Writing injected SQL for node "model.circulate.okta_users"
+[0m00:43:42.401419 [debug] [Thread-1  ]: finished collecting timing info
+[0m00:43:42.401660 [debug] [Thread-1  ]: Began executing node model.circulate.okta_users
+[0m00:43:42.455789 [debug] [Thread-1  ]: Writing runtime sql for node "model.circulate.okta_users"
+[0m00:43:42.456518 [debug] [Thread-1  ]: Using postgres connection "model.circulate.okta_users"
+[0m00:43:42.456751 [debug] [Thread-1  ]: On model.circulate.okta_users: BEGIN
+[0m00:43:42.456954 [debug] [Thread-1  ]: Opening a new connection, currently in state closed
+[0m00:43:42.723145 [debug] [Thread-1  ]: SQL status: BEGIN in 0.27 seconds
+[0m00:43:42.723724 [debug] [Thread-1  ]: Using postgres connection "model.circulate.okta_users"
+[0m00:43:42.724037 [debug] [Thread-1  ]: On model.circulate.okta_users: /* {"app": "dbt", "dbt_version": "1.3.1", "profile_name": "circulate", "target_name": "dev", "node_id": "model.circulate.okta_users"} */
+
+  create view "circulatedb"."cs"."okta_users__dbt_tmp" as (
+    with
+partitioned as (
+  select
+    file_md5,
+	load_dt,
+    row_number() over(partition by file_md5
+                      order by load_dt desc
+                      ) as row_number
+  from cs.lnd_okta_user
+),
+
+most_recent as (
+  select file_md5, load_dt
+    from partitioned
+   where row_number = 1
+)
+
+select blobs.*
+  from cs.lnd_okta_user blobs,
+       most_recent
+ where blobs.load_dt = most_recent.load_dt
+  );
+[0m00:43:42.765070 [debug] [Thread-1  ]: SQL status: CREATE VIEW in 0.04 seconds
+[0m00:43:42.774418 [debug] [Thread-1  ]: Using postgres connection "model.circulate.okta_users"
+[0m00:43:42.774649 [debug] [Thread-1  ]: On model.circulate.okta_users: /* {"app": "dbt", "dbt_version": "1.3.1", "profile_name": "circulate", "target_name": "dev", "node_id": "model.circulate.okta_users"} */
+alter table "circulatedb"."cs"."okta_users__dbt_tmp" rename to "okta_users"
+[0m00:43:42.802235 [debug] [Thread-1  ]: SQL status: ALTER TABLE in 0.03 seconds
+[0m00:43:42.827003 [debug] [Thread-1  ]: On model.circulate.okta_users: COMMIT
+[0m00:43:42.827246 [debug] [Thread-1  ]: Using postgres connection "model.circulate.okta_users"
+[0m00:43:42.827447 [debug] [Thread-1  ]: On model.circulate.okta_users: COMMIT
+[0m00:43:42.854944 [debug] [Thread-1  ]: SQL status: COMMIT in 0.03 seconds
+[0m00:43:42.900324 [debug] [Thread-1  ]: Using postgres connection "model.circulate.okta_users"
+[0m00:43:42.900604 [debug] [Thread-1  ]: On model.circulate.okta_users: /* {"app": "dbt", "dbt_version": "1.3.1", "profile_name": "circulate", "target_name": "dev", "node_id": "model.circulate.okta_users"} */
+drop view if exists "circulatedb"."cs"."okta_users__dbt_backup" cascade
+[0m00:43:42.927983 [debug] [Thread-1  ]: SQL status: DROP VIEW in 0.03 seconds
+[0m00:43:42.929834 [debug] [Thread-1  ]: finished collecting timing info
+[0m00:43:42.930126 [debug] [Thread-1  ]: On model.circulate.okta_users: Close
+[0m00:43:42.931121 [debug] [Thread-1  ]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '2729cbd0-b5e8-4d02-b4f1-ad114635812f', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10c833e80>]}
+[0m00:43:42.931595 [info ] [Thread-1  ]: 1 of 1 OK created sql view model cs.okta_users ................................. [[32mCREATE VIEW[0m in 0.53s]
+[0m00:43:42.932153 [debug] [Thread-1  ]: Finished running node model.circulate.okta_users
+[0m00:43:42.933720 [debug] [MainThread]: Acquiring new postgres connection "master"
+[0m00:43:42.934003 [debug] [MainThread]: Using postgres connection "master"
+[0m00:43:42.934209 [debug] [MainThread]: On master: BEGIN
+[0m00:43:42.934401 [debug] [MainThread]: Opening a new connection, currently in state closed
+[0m00:43:43.186118 [debug] [MainThread]: SQL status: BEGIN in 0.25 seconds
+[0m00:43:43.186480 [debug] [MainThread]: On master: COMMIT
+[0m00:43:43.186699 [debug] [MainThread]: Using postgres connection "master"
+[0m00:43:43.186901 [debug] [MainThread]: On master: COMMIT
+[0m00:43:43.213094 [debug] [MainThread]: SQL status: COMMIT in 0.03 seconds
+[0m00:43:43.213379 [debug] [MainThread]: On master: Close
+[0m00:43:43.214278 [info ] [MainThread]: 
+[0m00:43:43.214655 [info ] [MainThread]: Finished running 1 view model in 0 hours 0 minutes and 1.87 seconds (1.87s).
+[0m00:43:43.215003 [debug] [MainThread]: Connection 'master' was properly closed.
+[0m00:43:43.215191 [debug] [MainThread]: Connection 'model.circulate.okta_users' was properly closed.
+[0m00:43:43.223147 [info ] [MainThread]: 
+[0m00:43:43.223598 [info ] [MainThread]: [32mCompleted successfully[0m
+[0m00:43:43.223994 [info ] [MainThread]: 
+[0m00:43:43.224334 [info ] [MainThread]: Done. PASS=1 WARN=0 ERROR=0 SKIP=0 TOTAL=1
+[0m00:43:43.224781 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10c8b07f0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10c8b0880>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10c8ad100>]}
+[0m00:43:43.225125 [debug] [MainThread]: Flushing usage events

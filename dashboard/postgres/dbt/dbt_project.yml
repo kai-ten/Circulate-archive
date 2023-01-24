@@ -2,6 +2,7 @@ name: 'circulate'
 
 profile: 'circulate'
 version: 0.1.0
+config-version: 2
 require-dbt-version: '>=1.3.0'
 
 docs-paths: ['docs']

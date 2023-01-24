@@ -1,4 +1,6 @@
-with
+
+  create view "circulatedb"."cs"."okta_users__dbt_tmp" as (
+    with
 partitioned as (
   select
     file_md5,
@@ -19,3 +21,4 @@ select blobs.*
   from cs.lnd_okta_user blobs,
        most_recent
  where blobs.load_dt = most_recent.load_dt
+  );

@@ -63,7 +63,7 @@ In order to make this project more automated, must do the following:
 - Delinea
 - Ping
 
-
+npx create-docusaurus@latest circulate classic
 
 ## Generic Postgres target + dbt
 
