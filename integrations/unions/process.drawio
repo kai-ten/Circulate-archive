@@ -1,10 +1,10 @@
 <mxfile host="65bd71144e">
     <diagram id="F33jILelvyepg5wKvacy" name="Page-1">
-        <mxGraphModel dx="2956" dy="864" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+        <mxGraphModel dx="2042" dy="671" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
-                <mxCell id="10" value="2" style="edgeStyle=none;html=1;" parent="1" source="2" edge="1">
+                <mxCell id="10" value="2" style="edgeStyle=none;html=1;" edge="1" parent="1" source="2">
                     <mxGeometry relative="1" as="geometry">
                         <mxPoint x="-20" y="380" as="targetPoint"/>
                         <Array as="points">
@@ -15,44 +15,44 @@
                         <mxPoint as="offset"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="20" style="edgeStyle=none;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="2" target="15" edge="1">
+                <mxCell id="20" style="edgeStyle=none;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="2" target="15">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="29" value="1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="20" connectable="0" vertex="1">
+                <mxCell id="29" value="1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" connectable="0" vertex="1" parent="20">
                     <mxGeometry x="-0.28" relative="1" as="geometry">
                         <mxPoint as="offset"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="2" value="Okta API Call" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                <mxCell id="2" value="Okta API Call" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
                     <mxGeometry x="135" y="210" width="120" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="4" value="" style="edgeStyle=none;html=1;" parent="1" source="3" target="2" edge="1">
+                <mxCell id="4" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="3" target="2">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="3" value="Cloudwatch Event" style="ellipse;whiteSpace=wrap;html=1;fillColor=#60a917;fontColor=#ffffff;strokeColor=#2D7600;" parent="1" vertex="1">
+                <mxCell id="3" value="Cloudwatch Event" style="ellipse;whiteSpace=wrap;html=1;fillColor=#60a917;fontColor=#ffffff;strokeColor=#2D7600;" vertex="1" parent="1">
                     <mxGeometry x="135" y="90" width="120" height="80" as="geometry"/>
                 </mxCell>
-                <mxCell id="23" value="" style="group" parent="1" connectable="0" vertex="1">
+                <mxCell id="23" value="" style="group" connectable="0" vertex="1" parent="1">
                     <mxGeometry x="-290" y="130" width="270" height="220" as="geometry"/>
                 </mxCell>
-                <mxCell id="24" value="" style="group" parent="23" connectable="0" vertex="1">
+                <mxCell id="24" value="" style="group" connectable="0" vertex="1" parent="23">
                     <mxGeometry x="-10" width="270" height="220" as="geometry"/>
                 </mxCell>
-                <mxCell id="21" value="" style="ellipse;shape=cloud;whiteSpace=wrap;html=1;" parent="24" vertex="1">
+                <mxCell id="21" value="" style="ellipse;shape=cloud;whiteSpace=wrap;html=1;" vertex="1" parent="24">
                     <mxGeometry width="270" height="220" as="geometry"/>
                 </mxCell>
-                <mxCell id="15" value="API X" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" parent="24" vertex="1">
+                <mxCell id="15" value="API X" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" vertex="1" parent="24">
                     <mxGeometry x="115" y="70" width="60" height="80" as="geometry"/>
                 </mxCell>
-                <mxCell id="26" value="Postgres" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" parent="1" vertex="1">
+                <mxCell id="26" value="Postgres" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" vertex="1" parent="1">
                     <mxGeometry x="750" y="380" width="90" height="120" as="geometry"/>
                 </mxCell>
-                <mxCell id="106" value="Event Trigger" style="edgeStyle=none;html=1;" parent="1" source="105" target="107" edge="1">
+                <mxCell id="106" value="Event Trigger" style="edgeStyle=none;html=1;" edge="1" parent="1" source="105" target="107">
                     <mxGeometry relative="1" as="geometry">
                         <mxPoint x="150" y="440" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="105" value="S3 bucket Data Lake" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" parent="1" vertex="1">
+                <mxCell id="105" value="S3 bucket Data Lake" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" vertex="1" parent="1">
                     <mxGeometry x="-60" y="380" width="90" height="120" as="geometry"/>
                 </mxCell>
                 <mxCell id="167" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="107">
@@ -64,19 +64,19 @@
                         </Array>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="107" value="API Response&lt;br&gt;SNS Notification" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;" parent="1" vertex="1">
+                <mxCell id="107" value="API Response&lt;br&gt;SNS Notification" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;" vertex="1" parent="1">
                     <mxGeometry x="150" y="410" width="120" height="60" as="geometry"/>
                 </mxCell>
                 <mxCell id="133" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="112" target="26">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="112" value="Postgres Lambda" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                <mxCell id="112" value="Postgres Lambda" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
                     <mxGeometry x="540" y="410" width="120" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="117" style="edgeStyle=none;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="115" target="107" edge="1">
+                <mxCell id="117" style="edgeStyle=none;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="115" target="107">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="127" style="edgeStyle=none;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="115" target="112" edge="1">
+                <mxCell id="127" style="edgeStyle=none;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="115" target="112">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="168" style="edgeStyle=none;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="115" target="162">
@@ -85,13 +85,13 @@
                 <mxCell id="169" style="edgeStyle=none;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="115" target="163">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="115" value="FIFO SQS Queue" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                <mxCell id="115" value="FIFO SQS Queue" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
                     <mxGeometry x="340" y="410" width="120" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="123" value="Snowflake" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" parent="1" vertex="1">
+                <mxCell id="123" value="Snowflake" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" vertex="1" parent="1">
                     <mxGeometry x="750" y="550" width="90" height="120" as="geometry"/>
                 </mxCell>
-                <mxCell id="125" value="Iceberg / Delta Lake" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" parent="1" vertex="1">
+                <mxCell id="125" value="Iceberg / Delta Lake" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" vertex="1" parent="1">
                     <mxGeometry x="750" y="210" width="90" height="120" as="geometry"/>
                 </mxCell>
                 <mxCell id="142" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="132" target="26">
@@ -115,6 +115,11 @@
                         </Array>
                     </mxGeometry>
                 </mxCell>
+                <mxCell id="146" value="" style="edgeStyle=none;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="132" target="154">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1140" y="440" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
                 <mxCell id="159" style="edgeStyle=none;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" target="154">
                     <mxGeometry relative="1" as="geometry">
                         <mxPoint x="1030" y="439.9999999999998" as="sourcePoint"/>
@@ -134,6 +139,9 @@
                 </mxCell>
                 <mxCell id="138" value="Cloudwatch Trigger" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
                     <mxGeometry x="935" y="160" width="130" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="184" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="154" target="183">
+                    <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="154" value="Postgres" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" vertex="1" parent="1">
                     <mxGeometry x="1150" y="380" width="90" height="120" as="geometry"/>
@@ -199,23 +207,23 @@
                         </Array>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="179" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-                    <mxGeometry x="660" y="70" width="270" height="660" as="geometry"/>
-                </mxCell>
                 <mxCell id="172" value="AWS EC2 Instances API Call" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
                     <mxGeometry x="300" y="210" width="120" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="175" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="174" target="172">
-                    <mxGeometry relative="1" as="geometry"/>
-                </mxCell>
-                <mxCell id="174" value="Cloudwatch Event" style="ellipse;whiteSpace=wrap;html=1;fillColor=#60a917;fontColor=#ffffff;strokeColor=#2D7600;" vertex="1" parent="1">
-                    <mxGeometry x="300" y="90" width="120" height="80" as="geometry"/>
+                <mxCell id="178" value="Analytics Generic stuff" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="320" y="375" width="140" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="177" value="Detections Generic Stuff" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
                     <mxGeometry x="325" y="695" width="150" height="30" as="geometry"/>
                 </mxCell>
-                <mxCell id="178" value="Analytics Generic stuff" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
-                    <mxGeometry x="320" y="375" width="140" height="30" as="geometry"/>
+                <mxCell id="174" value="Cloudwatch Event" style="ellipse;whiteSpace=wrap;html=1;fillColor=#60a917;fontColor=#ffffff;strokeColor=#2D7600;" vertex="1" parent="1">
+                    <mxGeometry x="300" y="90" width="120" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="175" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="174" target="172">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="183" value="Superset" style="whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+                    <mxGeometry x="1340" y="375" width="130" height="130" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>
