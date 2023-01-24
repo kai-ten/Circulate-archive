@@ -33,50 +33,55 @@ init-environment:
 	terraform init && \
 	terraform apply -auto-approve --var-file=env/$(ENV).tfvars && \
 	cd ../vpc && \
-	echo "Generating provider.tf for ${ENV}" && \
+	echo "Generating vpc provider.tf for ${ENV}..." && \
 	sed s/ENV/${ENV}/ < provider.tf.template > provider.tf && \
 	cat provider.tf && \
 	terraform init && \
 	cd ../data-lake && \
-	echo "Generating provider.tf for ${ENV}" && \
+	echo "Generating data-lake provider.tf for ${ENV}..." && \
+	sed s/ENV/${ENV}/ < provider.tf.template > provider.tf && \
+	cat provider.tf && \
+	terraform init && \
+	cd ../integration-state && \
+	echo "Generating integration-state provider.tf for ${ENV}..." && \
 	sed s/ENV/${ENV}/ < provider.tf.template > provider.tf && \
 	cat provider.tf && \
 	terraform init
 
 init-integrations-sources:
 	cd integrations/sources/okta/iac/users && \
-	echo "Generating provider.tf for ${ENV}" && \
+	echo "Generating okta users provider.tf for ${ENV}..." && \
 	sed s/ENV/${ENV}/ < provider.tf.template > provider.tf && \
 	cat provider.tf && \
 	terraform init
 
 init-integrations-targets:
 	cd integrations/targets/postgres/iac && \
-	echo "Generating provider.tf for ${ENV}" && \
+	echo "Generating postgres target provider.tf for ${ENV}" && \
 	sed s/ENV/${ENV}/ < provider.tf.template > provider.tf && \
 	cat provider.tf && \
 	terraform init
 
 init-integrations-unions:
 	cd integrations/unions/okta && \
-	echo "Generating provider.tf for ${ENV}" && \
+	echo "Generating okta unions provider.tf for ${ENV}..." && \
 	sed s/ENV/${ENV}/ < provider.tf.template > provider.tf && \
 	cat provider.tf && \
 	terraform init
 
 init-dashboard:
 	cd dashboard/postgres/iac/db && \
-	echo "Generating provider.tf for ${ENV}" && \
+	echo "Generating dashboard postgres db provider.tf for ${ENV}..." && \
 	sed s/ENV/${ENV}/ < provider.tf.template > provider.tf && \
 	cat provider.tf && \
 	terraform init && \
 	cd ../create-schema && \
-	echo "Generating provider.tf for ${ENV}" && \
+	echo "Generating database schema provider.tf for ${ENV}..." && \
 	sed s/ENV/${ENV}/ < provider.tf.template > provider.tf && \
 	cat provider.tf && \
 	terraform init && \
 	cd ../create-lnd-table && \
-	echo "Generating provider.tf for ${ENV}" && \
+	echo "Generating landing table provider.tf for ${ENV}..." && \
 	sed s/ENV/${ENV}/ < provider.tf.template > provider.tf && \
 	cat provider.tf && \
 	terraform init
@@ -97,6 +102,8 @@ auto-apply-environment:
 	cd environment/vpc && \
 	terraform apply -auto-approve --var-file=env/$(ENV).tfvars && \
 	cd ../data-lake && \
+	terraform apply -auto-approve --var-file=env/$(ENV).tfvars && \
+	cd ../integration-state && \
 	terraform apply -auto-approve --var-file=env/$(ENV).tfvars
 
 auto-apply-integrations:

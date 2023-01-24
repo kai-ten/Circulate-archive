@@ -51,6 +51,8 @@ The Applications API endpoint would be realized in an IaC dir of it's own such a
 - Pagination / Loading in bulk (e.g. 3MB per HTTP request, 1000 objects per request, etc.)
 - JSON Array format
 - Eventually support incremental loads or full data refreshes
+    - Starting with incremental support
+- Use DynamoDB Integration State to be driven by last successful run time / any other audit data
 
 ### My development process:
 

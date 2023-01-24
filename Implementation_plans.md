@@ -75,3 +75,10 @@ npx create-docusaurus@latest circulate classic
 
 - https://speakerdeck.com/nicor88/dbt-serverless-how-to-run-dbt-in-your-aws-account?slide=19
 - https://github.com/nicor88/dbt-serverless 
+
+
+## Plan to create data normalization format
+
+- Create a way to normalize data across tools (comparing and joining disparate data sources together)
+- Use VRL? 
+- Define our own schemas?

@@ -1,50 +1,32 @@
-resource "aws_dynamodb_table" "dynamodb-table" {
-  name           = "${var.name}-${var.env}-${var.table_name}"
-  billing_mode   = var.billing_mode
-  read_capacity  = var.billing_mode == "PAY_PER_REQUEST" ? var.read_capacity : null
-  write_capacity = var.billing_mode == "PAY_PER_REQUEST" ? var.read_capacity : null
-  hash_key       = var.hash_key
-  range_key      = var.range_key
+module "dynamodb_table" {
+  source = "terraform-aws-modules/dynamodb-table/aws"
 
-  dynamic "server_side_encryption" {
-    for_each = var.encryption == null ? [0] : [1]
-    content {
-      enabled = var.encryption.enabled
-      kms_key_arn = var.encryption.kms_key_arn
+  name                           = "${var.name}-${var.env}-${var.table_name}"
+  billing_mode                   = var.billing_mode
+  server_side_encryption_enabled = var.server_side_encryption_enabled
+
+  hash_key = var.hash_key
+
+  attributes = [
+    {
+      name = "id"
+      type = "N"
     }
-  }
-
-  dynamic "attribute" {
-    for_each = var.attributes == null ? [] : [lenth(var.attributes)]
-    content {
-      name = atrribute.value["name"]
-      type = atrribute.value["type"]
-    }
-  }
-
-  dynamic "ttl" {
-    for_each = var.ttl == null ? [0] : [1]
-    content {
-      attribute_name = var.ttl.attribute_name
-      enabled        = var.ttl.enabled
-    }
-  }
-
-  dynamic global_secondary_index {
-    for_each = var.global_secondary_indexes == null ? [] : [length(var.global_secondary_indexes)]
-    content {
-      name               = global_secondary_index.value["name"]
-      hash_key           = global_secondary_index.value["hash_key"]
-      range_key          = global_secondary_index.value["range_key"]
-      write_capacity     = global_secondary_index.value["write_capacity"]
-      read_capacity      = global_secondary_index.value["read_capacity"]
-      projection_type    = global_secondary_index.value["projection_type"]
-      non_key_attributes = global_secondary_index.value["non_key_attributes"]
-    }
-  }
-
-  tags = {
-    Name        = "${var.name}-${var.table_name}-${var.env}"
-    Environment = var.env
-  }
+  ]
 }
+
+# https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/dynamodb_table_item
+# resource "aws_dynamodb_table_item" "example" {
+#   table_name = aws_dynamodb_table.example.name
+#   hash_key   = aws_dynamodb_table.example.hash_key
+
+#   item = <<ITEM
+# {
+#   "exampleHashKey": {"S": "something"},
+#   "one": {"N": "11111"},
+#   "two": {"N": "22222"},
+#   "three": {"N": "33333"},
+#   "four": {"N": "44444"}
+# }
+# ITEM
+# }
