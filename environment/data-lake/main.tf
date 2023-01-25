@@ -26,7 +26,7 @@ module "analytics_sqs" {
   queue_policy_statements = {
     sns = {
       sid     = "SNSPublish"
-      actions = ["sqs:SendMessage"]
+      actions = ["sqs:SendMessage"]      
 
       principals = [
         {

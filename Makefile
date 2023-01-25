@@ -53,6 +53,11 @@ init-integrations-sources:
 	echo "Generating okta users provider.tf for ${ENV}..." && \
 	sed s/ENV/${ENV}/ < provider.tf.template > provider.tf && \
 	cat provider.tf && \
+	terraform init && \
+	cd ../applications && \
+	echo "Generating okta applications provider.tf for ${ENV}..." && \
+	sed s/ENV/${ENV}/ < provider.tf.template > provider.tf && \
+	cat provider.tf && \
 	terraform init
 
 init-integrations-targets:
@@ -108,6 +113,9 @@ auto-apply-environment:
 
 auto-apply-integrations:
 	cd integrations/sources/okta/iac/users && \
+	terraform apply -auto-approve --var-file=env/$(ENV).tfvars && \
+	cd - && \
+	cd integrations/sources/okta/iac/applications && \
 	terraform apply -auto-approve --var-file=env/$(ENV).tfvars && \
 	cd - && \
 	cd integrations/targets/postgres/iac && \

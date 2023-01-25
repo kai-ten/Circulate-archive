@@ -3,7 +3,7 @@ terraform {
 
   backend "s3" {
     bucket         = "circulate-ENV-terraform-state-backend"
-    key            = "okta_sources/terraform.tfstate"
+    key            = "okta_users/terraform.tfstate"
     region         = "us-east-2"
     dynamodb_table = "terraform_state"
   }
@@ -23,7 +23,7 @@ provider "aws" {
   default_tags {
     tags = {
       Project = "Circulate"
-      Module  = "services"
+      Module  = "okta-users-service"
     }
   }
 }

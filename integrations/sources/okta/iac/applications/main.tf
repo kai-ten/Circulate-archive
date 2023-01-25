@@ -23,11 +23,11 @@ data "aws_secretsmanager_secret" "okta_secret" {
 data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
-module "okta_users" {
+module "okta_applications" {
   source          = "../../../../modules/go-lambda"
   name            = "${var.name}-${var.env}-${var.service}-${var.endpoint}"
   lambda_name     = "${var.name}-${var.env}-${var.service}-${var.endpoint}"
-  src_path        = "../../lib/users"
+  src_path        = "../../lib/applications"
   iam_policy_json = data.aws_iam_policy_document.lambda_policy.json
   env_variables = {
     AWS_S3_BUCKET = "${data.terraform_remote_state.data_lake_output.outputs.data_lake_s3.s3_bucket_id}"
