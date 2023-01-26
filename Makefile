@@ -65,6 +65,11 @@ init-integrations-targets:
 	echo "Generating postgres target provider.tf for ${ENV}" && \
 	sed s/ENV/${ENV}/ < provider.tf.template > provider.tf && \
 	cat provider.tf && \
+	terraform init && \
+	cd ../../s3/iac && \
+	echo "Generating s3 target provider.tf for ${ENV}" && \
+	sed s/ENV/${ENV}/ < provider.tf.template > provider.tf && \
+	cat provider.tf && \
 	terraform init
 
 init-integrations-unions:
@@ -119,6 +124,9 @@ auto-apply-integrations:
 	terraform apply -auto-approve --var-file=env/$(ENV).tfvars && \
 	cd - && \
 	cd integrations/targets/postgres/iac && \
+	terraform apply -auto-approve --var-file=env/$(ENV).tfvars && \
+	cd - && \
+	cd integrations/targets/s3/iac && \
 	terraform apply -auto-approve --var-file=env/$(ENV).tfvars && \
 	cd - && \
 	cd integrations/unions/okta && \

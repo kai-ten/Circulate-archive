@@ -1,179 +1,60 @@
 package main
 
 import (
-	"bytes"
-	"compress/gzip"
 	"context"
-	"encoding/json"
 	"fmt"
 	"log"
 	"os"
-	"strconv"
-	"time"
 
 	"github.com/aws/aws-lambda-go/lambda"
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/s3"
-	"github.com/aws/aws-secretsmanager-caching-go/secretcache"
-	"github.com/google/uuid"
-	"github.com/okta/okta-sdk-golang/v2/okta"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
 )
 
-type Secret struct {
-	OktaDomain string `json:"okta_domain"`
-	OktaApiKey string `json:"okta_api_key"`
-}
-
-type Response struct {
+type Request struct {
 	KeyList []string
 }
 
-var (
-	secretCache, _ = secretcache.New()
-)
+var s3Client *s3.Client
 
-const (
-	YYYYMMDD = "2006-01-02"
-)
+var sourceBucket = os.Getenv("TARGET_BUCKET")
+var targetBucket = os.Getenv("SOURCE_BUCKET")
 
-var (
-	AWS_S3_REGION         = os.Getenv("AWS_S3_REGION")
-	AWS_S3_SFN_TMP_BUCKET = os.Getenv("AWS_S3_SFN_TMP_BUCKET")
-	SERVICE               = os.Getenv("CIRCULATE_SERVICE")
-	ENDPOINT              = os.Getenv("CIRCULATE_ENDPOINT")
-)
-
-func getSecret() (secret Secret) {
-	api_secret := os.Getenv("API_SECRETS")
-	secret_string, err := secretCache.GetSecretString(api_secret)
-	if err != nil {
-		log.Fatalf("Error retrieving secret: %v", err)
-	}
-
-	var secret_result Secret
-	json.Unmarshal([]byte(secret_string), &secret_result)
-
-	return secret_result
-}
-
-func Compress(data []byte) ([]byte, error) {
-	var compressed bytes.Buffer
-	w := gzip.NewWriter(&compressed)
-	if _, err := w.Write(data); err != nil {
-		return nil, err
-	}
-	if err := w.Close(); err != nil {
-		return nil, err
-	}
-	return compressed.Bytes(), nil
-}
-
-// Download the files that come in from the request (aka in objects in the tmp bucket)
-//
-
-func uploadFile(context context.Context, session *session.Session, data []byte) string {
-
-	if !bytes.Equal(data, []byte("[]")) && data != nil {
-
-		compressed, err := Compress(data)
-		if err != nil {
-			fmt.Println("Error:", err)
-		}
-
-		now := time.Now().UTC()
-		date := now.Format(YYYYMMDD)
-		s3UploadKey := SERVICE + "/" + ENDPOINT + "/date=" + date + "/hour=" + strconv.Itoa(now.Hour()) + "/" + uuid.NewString() + ".json.gz"
-
-		_, err = s3.New(session).PutObject(&s3.PutObjectInput{
-			Bucket:               aws.String(AWS_S3_SFN_TMP_BUCKET),
-			Key:                  aws.String(s3UploadKey),
-			ACL:                  aws.String("private"),
-			Body:                 bytes.NewReader(compressed),
-			ContentLength:        aws.Int64(int64(len(compressed))),
-			ContentType:          aws.String("application/json"),
-			ContentEncoding:      aws.String("gzip"),
-			ContentDisposition:   aws.String("attachment"),
-			ServerSideEncryption: aws.String("AES256"),
-		})
-		if err != nil {
-			log.Fatalf("Could not upload file to S3: %v", err)
-		}
-		return s3UploadKey
-	}
-
-	return ""
-}
-
-func handleRequest(lambdaCtx context.Context) (Response, error) {
-
-	keyList := []string{}
-
-	session, err := session.NewSession(&aws.Config{Region: aws.String(AWS_S3_REGION)})
+func ConfigS3() {
+	region := os.Getenv("AWS_REGION")
+	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion(region))
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	secret := getSecret()
-	apiToken := secret.OktaApiKey
-	oktaDomain := secret.OktaDomain
+	s3Client = s3.NewFromConfig(cfg)
+}
 
-	ctx, client, err := okta.NewClient(
-		context.TODO(),
-		okta.WithOrgUrl(oktaDomain),
-		okta.WithToken(apiToken),
-	)
-
+// CopyToFolder copies an object in a bucket to a subfolder in the same bucket.
+func CopyToS3Target(objectKey string) error {
+	_, err := s3Client.CopyObject(context.TODO(), &s3.CopyObjectInput{
+		Bucket:     aws.String(targetBucket),
+		CopySource: aws.String(fmt.Sprintf("%v/%v", sourceBucket, objectKey)),
+		Key:        aws.String(objectKey),
+	})
 	if err != nil {
-		log.Printf("Error connecting to Okta Client: %v\n", err)
+		log.Fatalf("Error: Couldn't copy object from %v:%v to %v:%v. Here's why: %v\n",
+			targetBucket, objectKey, sourceBucket, objectKey, err)
 	}
+	return err
+}
 
-	apps, resp, err := client.Application.ListApplications(ctx, nil)
-	if err != nil {
-		fmt.Printf("Error Getting Applications: %v\n", err)
+func HandleRequest(lambdaCtx context.Context, data Request) {
+	ConfigS3()
+
+	keyList := data.KeyList
+
+	for _, key := range keyList {
+		CopyToS3Target(key)
 	}
-
-	if len(apps) == 0 {
-		log.Fatal("No applications were returned in the response")
-	}
-
-	jsonObj, err := json.Marshal(apps)
-
-	if err != nil {
-		log.Fatalf("Error marshalling applications")
-	}
-
-	// Upload first page
-	s3UploadKey := uploadFile(context.Background(), session, jsonObj)
-	if s3UploadKey != "" {
-		keyList = append(keyList, s3UploadKey)
-	}
-
-	hasNextPage := resp.HasNextPage() // what value is this? /type bool
-
-	for hasNextPage {
-		var nextObjSet []*okta.Application
-		resp, err = resp.Next(ctx, &nextObjSet)
-		if err != nil {
-			log.Fatalf("Okta results nextPage: %v", err)
-		}
-		nextJsonObj, err := json.Marshal(nextObjSet)
-		if err != nil {
-			log.Fatalf("Error marshalling object")
-		}
-
-		// Upload n page
-		nextS3UploadKey := uploadFile(context.Background(), session, nextJsonObj)
-		if nextS3UploadKey != "" {
-			keyList = append(keyList, nextS3UploadKey)
-		}
-
-		hasNextPage = resp.HasNextPage()
-	}
-
-	return Response{keyList}, nil
 }
 
 func main() {
-	lambda.Start(handleRequest)
+	lambda.Start(HandleRequest)
 }

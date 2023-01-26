@@ -45,7 +45,7 @@ var (
 	ENDPOINT              = os.Getenv("CIRCULATE_ENDPOINT")
 )
 
-func getSecret() (secret Secret) {
+func GetSecret() (secret Secret) {
 	api_secret := os.Getenv("API_SECRETS")
 	secret_string, err := secretCache.GetSecretString(api_secret)
 	if err != nil {
@@ -70,7 +70,7 @@ func Compress(data []byte) ([]byte, error) {
 	return compressed.Bytes(), nil
 }
 
-func uploadFile(context context.Context, session *session.Session, data []byte) string {
+func UploadFile(context context.Context, session *session.Session, data []byte) string {
 
 	if !bytes.Equal(data, []byte("[]")) && data != nil {
 		compressed, err := Compress(data)
@@ -102,7 +102,7 @@ func uploadFile(context context.Context, session *session.Session, data []byte) 
 	return ""
 }
 
-func handleRequest(lambdaCtx context.Context) (Response, error) {
+func HandleRequest(lambdaCtx context.Context) (Response, error) {
 
 	keyList := []string{}
 
@@ -111,7 +111,7 @@ func handleRequest(lambdaCtx context.Context) (Response, error) {
 		log.Fatal(err)
 	}
 
-	secret := getSecret()
+	secret := GetSecret()
 	apiToken := secret.OktaApiKey
 	oktaDomain := secret.OktaDomain
 
@@ -139,7 +139,7 @@ func handleRequest(lambdaCtx context.Context) (Response, error) {
 	}
 
 	// Upload first page
-	s3UploadKey := uploadFile(context.Background(), session, jsonUsers)
+	s3UploadKey := UploadFile(context.Background(), session, jsonUsers)
 	if s3UploadKey != "" {
 		keyList = append(keyList, s3UploadKey)
 	}
@@ -158,7 +158,7 @@ func handleRequest(lambdaCtx context.Context) (Response, error) {
 		}
 
 		// Upload n page
-		nextS3UploadKey := uploadFile(context.Background(), session, nextJsonUsers)
+		nextS3UploadKey := UploadFile(context.Background(), session, nextJsonUsers)
 		if nextS3UploadKey != "" {
 			keyList = append(keyList, nextS3UploadKey)
 		}
@@ -170,5 +170,5 @@ func handleRequest(lambdaCtx context.Context) (Response, error) {
 }
 
 func main() {
-	lambda.Start(handleRequest)
+	lambda.Start(HandleRequest)
 }

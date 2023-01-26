@@ -16,6 +16,15 @@ data "terraform_remote_state" "postgres_json_writer_output" {
   }
 }
 
+data "terraform_remote_state" "s3_writer_output" {
+  backend = "s3"
+  config = {
+    bucket = "${var.name}-${var.env}-terraform-state-backend"
+    key    = "s3-json-writer/terraform.tfstate"
+    region = "us-east-2"
+  }
+}
+
 data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
@@ -52,10 +61,38 @@ locals {
       "Type": "Parallel",
       "End": true,
       "Branches": [
-       {
-          "StartAt": "Postgres Json Writer",
+        {
+          "StartAt": "S3JsonWriter",
           "States": {
-            "Postgres Json Writer": {
+            "S3JsonWriter": {
+              "Type": "Task",
+              "Resource": "arn:aws:states:::lambda:invoke",
+              "OutputPath": "$.Payload",
+              "Parameters": {
+                "Payload.$": "$",
+                "FunctionName": "${data.terraform_remote_state.postgres_json_writer_output.outputs.s3_writer_output.arn}:$LATEST"
+              },
+              "Retry": [
+                {
+                  "ErrorEquals": [
+                    "Lambda.ServiceException",
+                    "Lambda.AWSLambdaException",
+                    "Lambda.SdkClientException",
+                    "Lambda.TooManyRequestsException"
+                  ],
+                  "IntervalSeconds": 2,
+                  "MaxAttempts": 6,
+                  "BackoffRate": 2
+                }
+              ],
+              "End": true
+            }
+          }
+        },
+        {
+          "StartAt": "PostgresJsonWriter",
+          "States": {
+            "PostgresJsonWriter": {
               "Type": "Task",
               "Resource": "arn:aws:states:::lambda:invoke",
               "OutputPath": "$.Payload",

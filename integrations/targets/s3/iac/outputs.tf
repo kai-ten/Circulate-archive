@@ -1,3 +1,3 @@
-output "postgres_json_writer" {
-  value = module.json_writer.lambda_function
+output "s3_writer" {
+  value = module.s3_writer.lambda_function
 }

@@ -34,7 +34,7 @@ type Request struct {
 	KeyList []string
 }
 
-type postgresObject struct {
+type PostgresObject struct {
 	S3File   string
 	FileMD5  string
 	FileData []byte
@@ -47,7 +47,7 @@ var (
 
 var s3Client *s3.Client
 
-func configS3() {
+func ConfigS3() {
 	region := os.Getenv("AWS_REGION")
 	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion(region))
 	if err != nil {
@@ -60,15 +60,14 @@ func configS3() {
 // These links help describe the method
 // https://blog.devgenius.io/performing-bulk-insert-using-pgx-and-copyfrom-ce34c8b12bac
 // https://github.com/jackc/pgx/issues/992
-func insertFile(ctx context.Context, tx pgx.Tx, pgObj postgresObject) error {
-
+func InsertFile(ctx context.Context, tx pgx.Tx, pgObj PostgresObject) error {
 	_, err := tx.Exec(context.Background(), `
 	INSERT INTO cs.lnd_okta_user (
 		s3_file,
 		file_md5,
 		file_data,
 		load_dt
-	) VALUES ($1, $2, $3, $4);
+	) VALUES ($1, $2, $3, $4) ON CONFLICT (s3_file) DO NOTHING;
 	`, pgObj.S3File, pgObj.FileMD5, pgObj.FileData, pgObj.LoadDate)
 	if err != nil {
 		log.Fatalf("Unable to insert user: %v\n", err)
@@ -78,9 +77,9 @@ func insertFile(ctx context.Context, tx pgx.Tx, pgObj postgresObject) error {
 }
 
 // Refactor this method into multiple smaller methods, where the struct is built as a result of the smaller methods.
-func processFile(ctx context.Context, tx pgx.Tx, key string) error {
+func ProcessFile(ctx context.Context, tx pgx.Tx, key string) error {
 	s3TempBucketName := os.Getenv("AWS_S3_SFN_TMP_BUCKET")
-	var postgresObj postgresObject
+	var postgresObj PostgresObject
 
 	postgresObj.S3File = key
 	postgresObj.LoadDate = time.Now()
@@ -129,15 +128,15 @@ func processFile(ctx context.Context, tx pgx.Tx, key string) error {
 		postgresObj.FileData = data
 	}
 
-	insertFile(context.Background(), tx, postgresObj)
+	InsertFile(context.Background(), tx, postgresObj)
 
 	return nil
 }
 
-func dbTx(ctx context.Context, conn *pgx.Conn, keyList []string) error {
+func DbTx(ctx context.Context, conn *pgx.Conn, keyList []string) error {
 	err := pgx.BeginTxFunc(context.Background(), conn, pgx.TxOptions{}, func(tx pgx.Tx) error {
 		for _, key := range keyList {
-			return processFile(context.Background(), tx, key)
+			return ProcessFile(context.Background(), tx, key)
 		}
 		return nil
 	})
@@ -150,8 +149,8 @@ func dbTx(ctx context.Context, conn *pgx.Conn, keyList []string) error {
 	return nil
 }
 
-func handleRequest(lambdaCtx context.Context, data Request) {
-	configS3()
+func HandleRequest(lambdaCtx context.Context, data Request) {
+	ConfigS3()
 
 	database_secret := os.Getenv("DATABASE_SECRET")
 	secret, _ := secretCache.GetSecretString(database_secret)
@@ -174,10 +173,20 @@ func handleRequest(lambdaCtx context.Context, data Request) {
 	keyList := data.KeyList
 
 	if len(keyList) > 0 {
-		dbTx(context.Background(), conn, data.KeyList)
+		DbTx(context.Background(), conn, data.KeyList)
 	}
 }
 
+// func HandleRequest(lambdaCtx context.Context, data Request) {
+// 	ConfigS3()
+
+// 	keyList := data.KeyList
+
+// 	for _, key := range keyList {
+// 		_, err := CopyToS3Target(key)
+// 	}
+// }
+
 func main() {
-	lambda.Start(handleRequest)
+	lambda.Start(HandleRequest)
 }

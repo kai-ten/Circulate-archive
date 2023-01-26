@@ -3,7 +3,7 @@ terraform {
 
   backend "s3" {
     bucket         = "circulate-ENV-terraform-state-backend"
-    key            = "postgres-json-writer/terraform.tfstate"
+    key            = "s3-json-writer/terraform.tfstate"
     region         = "us-east-2"
     dynamodb_table = "terraform_state"
   }
@@ -23,7 +23,7 @@ provider "aws" {
   default_tags {
     tags = {
       Project = "Circulate"
-      Module  = "services"
+      Module  = "s3-writer"
     }
   }
 }
