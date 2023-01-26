@@ -46,36 +46,46 @@ locals {
           "BackoffRate": 2
         }
       ],
-      "Next": "Postgres Json Writer"
+      "Next": "WriteToTargets"
     },
-    "Postgres Json Writer": {
-      "Type": "Task",
-      "Resource": "arn:aws:states:::lambda:invoke",
-      "OutputPath": "$.Payload",
-      "Parameters": {
-        "Payload.$": "$",
-        "FunctionName": "${data.terraform_remote_state.postgres_json_writer_output.outputs.postgres_json_writer.arn}:$LATEST"
-      },
-      "Retry": [
-        {
-          "ErrorEquals": [
-            "Lambda.ServiceException",
-            "Lambda.AWSLambdaException",
-            "Lambda.SdkClientException",
-            "Lambda.TooManyRequestsException"
-          ],
-          "IntervalSeconds": 2,
-          "MaxAttempts": 6,
-          "BackoffRate": 2
+    "WriteToTargets": {
+      "Type": "Parallel",
+      "End": true,
+      "Branches": [
+       {
+          "StartAt": "Postgres Json Writer",
+          "States": {
+            "Postgres Json Writer": {
+              "Type": "Task",
+              "Resource": "arn:aws:states:::lambda:invoke",
+              "OutputPath": "$.Payload",
+              "Parameters": {
+                "Payload.$": "$",
+                "FunctionName": "${data.terraform_remote_state.postgres_json_writer_output.outputs.postgres_json_writer.arn}:$LATEST"
+              },
+              "Retry": [
+                {
+                  "ErrorEquals": [
+                    "Lambda.ServiceException",
+                    "Lambda.AWSLambdaException",
+                    "Lambda.SdkClientException",
+                    "Lambda.TooManyRequestsException"
+                  ],
+                  "IntervalSeconds": 2,
+                  "MaxAttempts": 6,
+                  "BackoffRate": 2
+                }
+              ],
+              "End": true
+            }
+          }
         }
-      ],
-      "End": true
+      ]
     }
   }
 }
 EOF
 }
-
 
 module "step_function" {
   source = "terraform-aws-modules/step-functions/aws"
