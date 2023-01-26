@@ -18,7 +18,6 @@ import (
 	"github.com/aws/aws-secretsmanager-caching-go/secretcache"
 	"github.com/google/uuid"
 	"github.com/okta/okta-sdk-golang/v2/okta"
-	"github.com/okta/okta-sdk-golang/v2/okta/query"
 )
 
 type Secret struct {
@@ -70,9 +69,13 @@ func Compress(data []byte) ([]byte, error) {
 	return compressed.Bytes(), nil
 }
 
+// Download the files that come in from the request (aka in objects in the tmp bucket)
+//
+
 func uploadFile(context context.Context, session *session.Session, data []byte) string {
 
 	if !bytes.Equal(data, []byte("[]")) && data != nil {
+
 		compressed, err := Compress(data)
 		if err != nil {
 			fmt.Println("Error:", err)
@@ -125,40 +128,42 @@ func handleRequest(lambdaCtx context.Context) (Response, error) {
 		log.Printf("Error connecting to Okta Client: %v\n", err)
 	}
 
-	// Return up to 1000 users per request
-	// TODO: Retrieve last completed date from DDB
-	query := query.NewQueryParams(query.WithLimit(1000), query.WithFilter("lastUpdated ge \"2022-01-19T00:00:00.000Z\""))
-	users, resp, err := client.User.ListUsers(ctx, query)
+	apps, resp, err := client.Application.ListApplications(ctx, nil)
+	if err != nil {
+		fmt.Printf("Error Getting Applications: %v\n", err)
+	}
+
+	if len(apps) == 0 {
+		log.Fatal("No applications were returned in the response")
+	}
+
+	jsonObj, err := json.Marshal(apps)
 
 	if err != nil {
-		fmt.Printf("Error Getting Users: %v\n", err)
-	}
-	jsonUsers, err := json.Marshal(users)
-	if err != nil {
-		log.Fatalf("Error marshalling users")
+		log.Fatalf("Error marshalling applications")
 	}
 
 	// Upload first page
-	s3UploadKey := uploadFile(context.Background(), session, jsonUsers)
+	s3UploadKey := uploadFile(context.Background(), session, jsonObj)
 	if s3UploadKey != "" {
 		keyList = append(keyList, s3UploadKey)
 	}
 
-	hasNextPage := resp.HasNextPage()
+	hasNextPage := resp.HasNextPage() // what value is this? /type bool
 
 	for hasNextPage {
-		var nextUserSet []*okta.User
-		resp, err = resp.Next(ctx, &nextUserSet)
+		var nextObjSet []*okta.Application
+		resp, err = resp.Next(ctx, &nextObjSet)
 		if err != nil {
 			log.Fatalf("Okta results nextPage: %v", err)
 		}
-		nextJsonUsers, err := json.Marshal(nextUserSet)
+		nextJsonObj, err := json.Marshal(nextObjSet)
 		if err != nil {
-			log.Fatalf("Error marshalling users")
+			log.Fatalf("Error marshalling object")
 		}
 
 		// Upload n page
-		nextS3UploadKey := uploadFile(context.Background(), session, nextJsonUsers)
+		nextS3UploadKey := uploadFile(context.Background(), session, nextJsonObj)
 		if nextS3UploadKey != "" {
 			keyList = append(keyList, nextS3UploadKey)
 		}

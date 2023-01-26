@@ -38,10 +38,10 @@ const (
 )
 
 var (
-	AWS_S3_REGION = os.Getenv("AWS_S3_REGION")
-	AWS_S3_BUCKET = os.Getenv("AWS_S3_BUCKET")
-	SERVICE       = os.Getenv("CIRCULATE_SERVICE")
-	ENDPOINT      = os.Getenv("CIRCULATE_ENDPOINT")
+	AWS_S3_REGION         = os.Getenv("AWS_S3_REGION")
+	AWS_S3_SFN_TMP_BUCKET = os.Getenv("AWS_S3_SFN_TMP_BUCKET")
+	SERVICE               = os.Getenv("CIRCULATE_SERVICE")
+	ENDPOINT              = os.Getenv("CIRCULATE_ENDPOINT")
 )
 
 func getSecret() (secret Secret) {
@@ -83,7 +83,7 @@ func uploadFile(context context.Context, session *session.Session, data []byte) 
 		s3UploadKey := SERVICE + "/" + ENDPOINT + "/date=" + date + "/hour=" + strconv.Itoa(now.Hour()) + "/" + uuid.NewString() + ".json.gz"
 
 		_, err = s3.New(session).PutObject(&s3.PutObjectInput{
-			Bucket:               aws.String(AWS_S3_BUCKET),
+			Bucket:               aws.String(AWS_S3_SFN_TMP_BUCKET),
 			Key:                  aws.String(s3UploadKey),
 			ACL:                  aws.String("private"),
 			Body:                 bytes.NewReader(compressed),

@@ -79,14 +79,14 @@ func insertFile(ctx context.Context, tx pgx.Tx, pgObj postgresObject) error {
 
 // Refactor this method into multiple smaller methods, where the struct is built as a result of the smaller methods.
 func processFile(ctx context.Context, tx pgx.Tx, key string) error {
-	s3BucketName := os.Getenv("S3_BUCKET")
+	s3TempBucketName := os.Getenv("AWS_S3_SFN_TMP_BUCKET")
 	var postgresObj postgresObject
 
 	postgresObj.S3File = key
 	postgresObj.LoadDate = time.Now()
 
 	headObj := s3.HeadObjectInput{
-		Bucket: aws.String(s3BucketName),
+		Bucket: aws.String(s3TempBucketName),
 		Key:    aws.String(key),
 	}
 	result, err := s3Client.HeadObject(context.Background(), &headObj)
@@ -109,7 +109,7 @@ func processFile(ctx context.Context, tx pgx.Tx, key string) error {
 
 	downloader := manager.NewDownloader(s3Client)
 	numBytes, err := downloader.Download(context.TODO(), file, &s3.GetObjectInput{
-		Bucket: aws.String(s3BucketName),
+		Bucket: aws.String(s3TempBucketName),
 		Key:    aws.String(key),
 	})
 	if err != nil {

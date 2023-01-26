@@ -36,6 +36,7 @@ module "json_writer" {
   env_variables = {
     DATABASE_SECRET = "${data.terraform_remote_state.vpc_output.outputs.database_secret_name}"
     AWS_S3_SFN_TMP_BUCKET = "${data.terraform_remote_state.data_lake_output.outputs.data_lake_s3_sfn_tmp.s3_bucket_id}"
+    DATA_LAKE_S3_BUCKET = "${data.terraform_remote_state.data_lake_output.outputs.data_lake_s3.s3_bucket_id}"
   }
 }
 
@@ -46,7 +47,7 @@ data "aws_iam_policy_document" "lambda_policy" {
       "s3:ListBucket"
     ]
     resources = [
-      "${data.terraform_remote_state.data_lake_output.outputs.data_lake_s3_sfn_tmp.s3_bucket_arn}"
+      "${data.terraform_remote_state.data_lake_output.outputs.data_lake_s3.s3_bucket_arn}"
     ]
   }
   statement {
@@ -55,7 +56,7 @@ data "aws_iam_policy_document" "lambda_policy" {
       "s3:GetObject"
     ]
     resources = [
-      "${data.terraform_remote_state.data_lake_output.outputs.data_lake_s3_sfn_tmp.s3_bucket_arn}/*"
+      "${data.terraform_remote_state.data_lake_output.outputs.data_lake_s3.s3_bucket_arn}/*"
     ]
   }
   statement {

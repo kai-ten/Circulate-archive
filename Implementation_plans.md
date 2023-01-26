@@ -42,6 +42,13 @@ In order to make this project more automated, must do the following:
 
 ## MORE LAMBDAS
 
+WITH FREE TRIALS:
+
+- https://snyk.io/ 
+- https://go.crowdstrike.com/try-falcon-prevent.html 
+- https://www.pingidentity.com/en/try-ping.html 
+- Cloud SDKs?
+
 - [Okta](https://developer.okta.com/docs/reference/core-okta-api/)
     - Users
     - Groups
@@ -82,3 +89,5 @@ npx create-docusaurus@latest circulate classic
 - Create a way to normalize data across tools (comparing and joining disparate data sources together)
 - Use VRL? 
 - Define our own schemas?
+
+

@@ -30,7 +30,7 @@ module "okta_users" {
   src_path        = "../../lib/users"
   iam_policy_json = data.aws_iam_policy_document.lambda_policy.json
   env_variables = {
-    AWS_S3_BUCKET = "${data.terraform_remote_state.data_lake_output.outputs.data_lake_s3.s3_bucket_id}"
+    AWS_S3_SFN_TMP_BUCKET = "${data.terraform_remote_state.data_lake_output.outputs.data_lake_s3_sfn_tmp.s3_bucket_id}"
     AWS_S3_REGION = "${data.aws_region.current.name}"
     API_SECRETS   = "${data.terraform_remote_state.vpc_output.outputs.okta_secret_name}"
     CIRCULATE_SERVICE = "${var.service}"
@@ -45,7 +45,7 @@ data "aws_iam_policy_document" "lambda_policy" {
       "s3:ListBucket"
     ]
     resources = [
-      "${data.terraform_remote_state.data_lake_output.outputs.data_lake_s3.s3_bucket_arn}"
+      "${data.terraform_remote_state.data_lake_output.outputs.data_lake_s3_sfn_tmp.s3_bucket_arn}"
     ]
   }
   statement {
@@ -56,7 +56,7 @@ data "aws_iam_policy_document" "lambda_policy" {
       "s3:PutObjectAcl"
     ]
     resources = [
-      "${data.terraform_remote_state.data_lake_output.outputs.data_lake_s3.s3_bucket_arn}/*"
+      "${data.terraform_remote_state.data_lake_output.outputs.data_lake_s3_sfn_tmp.s3_bucket_arn}/*"
     ]
   }
   statement {
