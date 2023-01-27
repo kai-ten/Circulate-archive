@@ -3,7 +3,7 @@ terraform {
 
   backend "s3" {
     bucket         = "circulate-ENV-terraform-state-backend"
-    key            = "okta/terraform.tfstate"
+    key            = "okta-users-transform/terraform.tfstate"
     region         = "us-east-2"
     dynamodb_table = "terraform_state"
   }
@@ -13,8 +13,21 @@ terraform {
       source  = "hashicorp/aws"
       version = ">= 4.45"
     }
-    null = {
-      source = "hashicorp/null"
+    docker = {
+      source  = "kreuzwerker/docker"
+      version = "3.0.1"
+    }
+  }
+}
+
+provider "aws" {
+  profile = "default"
+  region  = "us-east-2"
+
+  default_tags {
+    tags = {
+      Project = "Circulate"
+      Module  = "services"
     }
   }
 }

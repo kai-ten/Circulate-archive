@@ -27,7 +27,7 @@ module "okta_users" {
   source          = "../../../../modules/go-lambda"
   name            = "${var.name}-${var.env}-${var.service}-${var.endpoint}"
   lambda_name     = "${var.name}-${var.env}-${var.service}-${var.endpoint}"
-  src_path        = "../../lib/users"
+  src_path        = "../lib"
   iam_policy_json = data.aws_iam_policy_document.lambda_policy.json
   env_variables = {
     AWS_S3_SFN_TMP_BUCKET = "${data.terraform_remote_state.data_lake_output.outputs.data_lake_s3_sfn_tmp.s3_bucket_id}"

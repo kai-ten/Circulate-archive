@@ -32,9 +32,9 @@ locals {
   definition_template = <<EOF
 {
   "Comment": "Retrieve the Okta Users API data",
-  "StartAt": "OktaUsersAPI",
+  "StartAt": "Okta Users API",
   "States": {
-    "OktaUsersAPI": {
+    "Okta Users API": {
       "Type": "Task",
       "Resource": "arn:aws:states:::lambda:invoke",
       "OutputPath": "$.Payload",
@@ -55,16 +55,16 @@ locals {
           "BackoffRate": 2
         }
       ],
-      "Next": "WriteToTargets"
+      "Next": "Write To Targets"
     },
-    "WriteToTargets": {
+    "Write To Targets": {
       "Type": "Parallel",
       "End": true,
       "Branches": [
         {
-          "StartAt": "S3JsonWriter",
+          "StartAt": "S3 Json Writer",
           "States": {
-            "S3JsonWriter": {
+            "S3 Json Writer": {
               "Type": "Task",
               "Resource": "arn:aws:states:::lambda:invoke",
               "OutputPath": "$.Payload",
@@ -90,9 +90,9 @@ locals {
           }
         },
         {
-          "StartAt": "PostgresJsonWriter",
+          "StartAt": "Postgres Json Writer",
           "States": {
-            "PostgresJsonWriter": {
+            "Postgres Json Writer": {
               "Type": "Task",
               "Resource": "arn:aws:states:::lambda:invoke",
               "OutputPath": "$.Payload",
