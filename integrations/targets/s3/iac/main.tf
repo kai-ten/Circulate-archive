@@ -29,34 +29,21 @@ data "aws_iam_policy_document" "lambda_policy" {
       "s3:ListBucket"
     ]
     resources = [
-      "${data.terraform_remote_state.data_lake_output.outputs.data_lake_s3_sfn_tmp.s3_bucket_arn}"
-    ]
-  }
-  statement {
-    effect = "Allow"
-    actions = [
-      "s3:ListObject",
-      "s3:GetObject",
-    ]
-    resources = [
-      "${data.terraform_remote_state.data_lake_output.outputs.data_lake_s3_sfn_tmp.s3_bucket_arn}/*"
-    ]
-  }
-  statement {
-    effect = "Allow"
-    actions = [
-      "s3:ListBucket"
-    ]
-    resources = [
+      "${data.terraform_remote_state.data_lake_output.outputs.data_lake_s3_sfn_tmp.s3_bucket_arn}",
       "${data.terraform_remote_state.data_lake_output.outputs.data_lake_s3.s3_bucket_arn}"
     ]
   }
   statement {
     effect = "Allow"
     actions = [
-      "s3:PutObject"
+      "s3:PutObject",
+      "s3:PutObjectTagging",
+      "s3:GetObject",
+      "s3:GetObjectTagging",
+      "s3:PutObjectAcl",
     ]
     resources = [
+      "${data.terraform_remote_state.data_lake_output.outputs.data_lake_s3_sfn_tmp.s3_bucket_arn}/*",
       "${data.terraform_remote_state.data_lake_output.outputs.data_lake_s3.s3_bucket_arn}/*"
     ]
   }

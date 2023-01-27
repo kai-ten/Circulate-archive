@@ -1,8 +1,8 @@
-data "terraform_remote_state" "okta_sources" {
+data "terraform_remote_state" "okta_users" {
   backend = "s3"
   config = {
     bucket = "${var.name}-${var.env}-terraform-state-backend"
-    key    = "okta_sources/terraform.tfstate"
+    key    = "okta_users/terraform.tfstate"
     region = "us-east-2"
   }
 }
@@ -32,15 +32,15 @@ locals {
   definition_template = <<EOF
 {
   "Comment": "Retrieve the Okta Users API data",
-  "StartAt": "Okta Users API",
+  "StartAt": "OktaUsersAPI",
   "States": {
-    "Okta Users API": {
+    "OktaUsersAPI": {
       "Type": "Task",
       "Resource": "arn:aws:states:::lambda:invoke",
       "OutputPath": "$.Payload",
       "Parameters": {
         "Payload.$": "$",
-        "FunctionName": "${data.terraform_remote_state.okta_sources.outputs.okta_api_lambda.arn}:$LATEST"
+        "FunctionName": "${data.terraform_remote_state.okta_users.outputs.okta_api_lambda.arn}:$LATEST"
       },
       "Retry": [
         {
@@ -70,7 +70,7 @@ locals {
               "OutputPath": "$.Payload",
               "Parameters": {
                 "Payload.$": "$",
-                "FunctionName": "${data.terraform_remote_state.postgres_json_writer_output.outputs.s3_writer_output.arn}:$LATEST"
+                "FunctionName": "${data.terraform_remote_state.s3_writer_output.outputs.s3_writer.arn}:$LATEST"
               },
               "Retry": [
                 {
@@ -133,8 +133,9 @@ module "step_function" {
   service_integrations = {
     lambda = {
       lambda = [
-        "${data.terraform_remote_state.okta_sources.outputs.okta_api_lambda.arn}:*",
+        "${data.terraform_remote_state.okta_users.outputs.okta_api_lambda.arn}:*",
         "${data.terraform_remote_state.postgres_json_writer_output.outputs.postgres_json_writer.arn}:*",
+        "${data.terraform_remote_state.s3_writer_output.outputs.s3_writer.arn}:*",
       ]
     }
 

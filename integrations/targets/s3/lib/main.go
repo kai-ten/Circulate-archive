@@ -18,8 +18,8 @@ type Request struct {
 
 var s3Client *s3.Client
 
-var sourceBucket = os.Getenv("TARGET_BUCKET")
-var targetBucket = os.Getenv("SOURCE_BUCKET")
+var sourceBucket = os.Getenv("SOURCE_BUCKET")
+var targetBucket = os.Getenv("TARGET_BUCKET")
 
 func ConfigS3() {
 	region := os.Getenv("AWS_REGION")
@@ -40,7 +40,7 @@ func CopyToS3Target(objectKey string) error {
 	})
 	if err != nil {
 		log.Fatalf("Error: Couldn't copy object from %v:%v to %v:%v. Here's why: %v\n",
-			targetBucket, objectKey, sourceBucket, objectKey, err)
+			sourceBucket, objectKey, targetBucket, objectKey, err)
 	}
 	return err
 }

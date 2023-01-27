@@ -60,6 +60,8 @@ func ConfigS3() {
 // These links help describe the method
 // https://blog.devgenius.io/performing-bulk-insert-using-pgx-and-copyfrom-ce34c8b12bac
 // https://github.com/jackc/pgx/issues/992
+
+// ON CONFLICT (s3_file) DO NOTHING, must add unique to s3_file
 func InsertFile(ctx context.Context, tx pgx.Tx, pgObj PostgresObject) error {
 	_, err := tx.Exec(context.Background(), `
 	INSERT INTO cs.lnd_okta_user (
@@ -67,7 +69,7 @@ func InsertFile(ctx context.Context, tx pgx.Tx, pgObj PostgresObject) error {
 		file_md5,
 		file_data,
 		load_dt
-	) VALUES ($1, $2, $3, $4) ON CONFLICT (s3_file) DO NOTHING;
+	) VALUES ($1, $2, $3, $4);
 	`, pgObj.S3File, pgObj.FileMD5, pgObj.FileData, pgObj.LoadDate)
 	if err != nil {
 		log.Fatalf("Unable to insert user: %v\n", err)
