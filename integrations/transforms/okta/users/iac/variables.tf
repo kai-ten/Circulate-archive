@@ -8,7 +8,7 @@ variable "env" {
   type        = string
 }
 
-variable "image" {
-  description = "Docker image name"
+variable "service" {
+  description = "Service name for the API"
   type        = string
 }

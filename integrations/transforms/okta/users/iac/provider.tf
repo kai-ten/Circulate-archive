@@ -13,10 +13,6 @@ terraform {
       source  = "hashicorp/aws"
       version = ">= 4.45"
     }
-    docker = {
-      source  = "kreuzwerker/docker"
-      version = "3.0.1"
-    }
   }
 }
 
@@ -27,7 +23,7 @@ provider "aws" {
   default_tags {
     tags = {
       Project = "Circulate"
-      Module  = "services"
+      Module  = "transforms"
     }
   }
 }

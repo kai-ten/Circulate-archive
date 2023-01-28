@@ -105,8 +105,9 @@ init-dashboard:
 
 init: init-environment \
 	init-integrations-sources \
-	init-integrations-target \
+	init-integrations-targets \
 	init-integrations-unions \
+	init-integrations-transforms \
 	init-dashboard
 
 
