@@ -4,6 +4,10 @@ In order to make this project more automated, must do the following:
 
 <br />
 
+- Use config file / dynamodb state to manage the deployment of sources, targets, and unions
+- https://github.com/hashicorp/terraform-exec
+- 
+
 ## Database:
 
 - [Research] Deploy RDS Proxy
@@ -22,13 +26,19 @@ In order to make this project more automated, must do the following:
 
 ## MORE LAMBDAS
 
-WITH FREE TRIALS:
+WITH FREE TRIALS AKA THE ABILITY TO TEST:
 
-- https://snyk.io/ 
+- [Snyk](https://docs.snyk.io/snyk-api-info)
 - https://go.crowdstrike.com/try-falcon-prevent.html 
 - https://www.pingidentity.com/en/try-ping.html 
 - Cloud SDKs?
-- 
+    - AWS Loadbalancers
+    - AWS EC2
+    - AWS Security Groups
+    - AWS WAF & WAF v2
+- [GitHub](https://docs.github.com/en/rest?apiVersion=2022-11-28)
+- [Bitbucket](https://developer.atlassian.com/server/bitbucket/rest/v807/intro/)
+
 
 - [Okta](https://developer.okta.com/docs/reference/core-okta-api/)
     - Users
@@ -49,7 +59,7 @@ WITH FREE TRIALS:
 - Veracode
 - Office365 - API call
 - Delinea
-- Ping
+- KnowBe4
 
 npx create-docusaurus@latest circulate classic
 
