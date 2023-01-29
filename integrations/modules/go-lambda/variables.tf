@@ -38,3 +38,12 @@ variable "vpc_config" {
   })
   default = null
 }
+
+variable "efs_config" {
+  description = "optional efs mount to your lambda"
+  type = object({
+    arn         = string
+    mount_path = string
+  })
+  default = null
+}

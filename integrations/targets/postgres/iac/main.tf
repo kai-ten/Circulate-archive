@@ -28,7 +28,7 @@ module "json_writer" {
   lambda_name     = "${var.name}-${var.env}-${var.service}"
   src_path        = "../lib"
   iam_policy_json = data.aws_iam_policy_document.lambda_policy.json
-  timeout = 5
+  timeout = 60
   vpc_config = {
     security_group_ids = [data.terraform_remote_state.vpc_output.outputs.vpc_security_group_id]
     subnet_ids = data.terraform_remote_state.vpc_output.outputs.vpc_public_subnets

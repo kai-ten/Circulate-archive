@@ -29,6 +29,14 @@ resource "aws_lambda_function" "go_function" {
       subnet_ids         = var.vpc_config.subnet_ids
     }
   }
+
+  dynamic "file_system_config" {
+    for_each = var.vpc_config == null ? [] : [0]
+    content {
+      arn = var.efs_config.arn
+      local_mount_path = var.efs_config.mount_path
+    }
+  }
 }
 
 resource "aws_cloudwatch_log_group" "log_group" {
