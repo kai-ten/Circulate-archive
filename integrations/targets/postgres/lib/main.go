@@ -179,16 +179,6 @@ func HandleRequest(lambdaCtx context.Context, data Request) {
 	}
 }
 
-// func HandleRequest(lambdaCtx context.Context, data Request) {
-// 	ConfigS3()
-
-// 	keyList := data.KeyList
-
-// 	for _, key := range keyList {
-// 		_, err := CopyToS3Target(key)
-// 	}
-// }
-
 func main() {
 	lambda.Start(HandleRequest)
 }

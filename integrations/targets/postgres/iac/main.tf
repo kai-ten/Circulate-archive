@@ -30,8 +30,8 @@ module "json_writer" {
   iam_policy_json = data.aws_iam_policy_document.lambda_policy.json
   timeout = 60
   vpc_config = {
-    security_group_ids = [data.terraform_remote_state.vpc_output.outputs.vpc_security_group_id]
-    subnet_ids = data.terraform_remote_state.vpc_output.outputs.vpc_public_subnets
+    security_group_ids = [data.terraform_remote_state.vpc_output.outputs.integration_security_group_id]
+    subnet_ids = data.terraform_remote_state.vpc_output.outputs.vpc_private_subnets
   }
   env_variables = {
     DATABASE_SECRET = "${data.terraform_remote_state.vpc_output.outputs.database_secret_name}"

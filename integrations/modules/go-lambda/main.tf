@@ -31,7 +31,7 @@ resource "aws_lambda_function" "go_function" {
   }
 
   dynamic "file_system_config" {
-    for_each = var.vpc_config == null ? [] : [0]
+    for_each = var.efs_config == null ? [] : [0]
     content {
       arn = var.efs_config.arn
       local_mount_path = var.efs_config.mount_path

@@ -29,8 +29,10 @@ In order to make this project more automated, must do the following:
 WITH FREE TRIALS AKA THE ABILITY TO TEST:
 
 - [Snyk](https://docs.snyk.io/snyk-api-info)
-- https://go.crowdstrike.com/try-falcon-prevent.html 
-- https://www.pingidentity.com/en/try-ping.html 
+    - Applications
+    - Vulnerability scans per application
+- [Crowdstrike](https://go.crowdstrike.com/try-falcon-prevent.html)
+- [Ping](https://www.pingidentity.com/en/try-ping.html)
 - Cloud SDKs?
     - AWS Loadbalancers
     - AWS EC2
@@ -38,13 +40,13 @@ WITH FREE TRIALS AKA THE ABILITY TO TEST:
     - AWS WAF & WAF v2
 - [GitHub](https://docs.github.com/en/rest?apiVersion=2022-11-28)
 - [Bitbucket](https://developer.atlassian.com/server/bitbucket/rest/v807/intro/)
-
-
 - [Okta](https://developer.okta.com/docs/reference/core-okta-api/)
     - Users
     - Groups
     - Applications
     - Devices
+
+
 - [Proofpoint](https://help.proofpoint.com/Threat_Insight_Dashboard/API_Documentation)
     - Campaign
     - Forensics

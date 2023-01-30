@@ -38,8 +38,8 @@ module "circulate_create_schema" {
   iam_policy_json = data.aws_iam_policy_document.create_database_policy.json
   timeout = 30
   vpc_config = {
-    security_group_ids = [data.terraform_remote_state.vpc_output.outputs.vpc_security_group_id]
-    subnet_ids = data.terraform_remote_state.vpc_output.outputs.vpc_public_subnets
+    security_group_ids = [data.terraform_remote_state.vpc_output.outputs.integration_security_group_id]
+    subnet_ids = data.terraform_remote_state.vpc_output.outputs.vpc_private_subnets
   }
   env_variables = {
     "DATABASE_SECRET" = "${data.terraform_remote_state.vpc_output.outputs.database_secret_name}"

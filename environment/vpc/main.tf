@@ -26,11 +26,11 @@ module "vpc" {
   enable_dns_support   = true
 }
 
-module "security_group" {
+module "integration_security_group" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "~> 4.0"
 
-  name   = "${var.name}-${var.env}_sg_id"
+  name   = "${var.name}-${var.env}_sg_idv2"
   vpc_id = module.vpc.vpc_id
 
   ingress_with_cidr_blocks = [
@@ -76,9 +76,9 @@ module "endpoints" {
   endpoints = {
     ssm = {
       service             = "secretsmanager"
-      security_group_ids = [module.security_group.security_group_id]
+      security_group_ids = [module.integration_security_group.security_group_id]
       private_dns_enabled = true
-      subnet_ids          = module.vpc.public_subnets
+      subnet_ids          = module.vpc.private_subnets
       tags    = { Name = "${var.name}-${var.env}-ssm" }
     }
     # s3 = {
@@ -92,7 +92,7 @@ module "endpoints" {
 resource "aws_vpc_endpoint" "s3" {
   vpc_id          = module.vpc.vpc_id
   service_name    = "com.amazonaws.${data.aws_region.current.name}.s3"
-  route_table_ids = module.vpc.public_route_table_ids
+  route_table_ids = concat(module.vpc.public_route_table_ids, module.vpc.private_route_table_ids)
 
   tags = {
     Name = "${var.name}-${var.env}-s3"

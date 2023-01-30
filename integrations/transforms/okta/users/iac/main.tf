@@ -98,72 +98,28 @@ resource "aws_efs_access_point" "okta_users_dbt_ap" {
 resource "aws_s3_bucket_object" "okta_users_dbt_files" {
   for_each = fileset("../dbt", "**")
   bucket = "${data.terraform_remote_state.data_lake_output.outputs.data_lake_s3_iac.s3_bucket_id}"
-  key = "api/okta/users/dbt/${each.value}"
+  key = "${var.dbt_key}${each.value}"
   source = "../dbt/${each.value}"
   etag = filemd5("../dbt/${each.value}")
 }
 
-module "dbt_profiles_generator" {
-  source          = "../../../../modules/go-lambda"
-  name            = "${var.name}-${var.env}-${var.service}-generator"
-  lambda_name     = "${var.name}-${var.env}-${var.service}-generator"
-  src_path        = "../lib"
-  iam_policy_json = data.aws_iam_policy_document.lambda_policy.json
-  timeout = 5
-  vpc_config = {
-    security_group_ids = [data.terraform_remote_state.vpc_output.outputs.vpc_security_group_id]
-    subnet_ids = data.terraform_remote_state.vpc_output.outputs.vpc_public_subnets
-  }
-  env_variables = {
-    DATABASE_SECRET = "${data.terraform_remote_state.vpc_output.outputs.database_secret_name}"
-    AWS_S3_DATA_LAKE_IAC = "${data.terraform_remote_state.data_lake_output.outputs.data_lake_s3_iac.s3_bucket_id}"
-  }
-  efs_config = {
-    arn = "${data.terraform_remote_state.data_lake_output.outputs.data_lake_efs.arn}"
-    mount_path = "value"
-  }
-}
+# module "dbt_profiles_generator" {
+#   source          = "../../../../modules/dbt-lambda"
+#   lambda_name = "${var.name}-${var.env}-${var.service}-generator"
+#   vpc_config = {
+#     vpc_id = "value"
+#     vpc_security_group_ids = [data.terraform_remote_state.vpc_output.outputs.integration_security_group_id]
+#     vpc_private_subnet_ids = data.terraform_remote_state.vpc_output.outputs.vpc_private_subnets
+#   }
 
-data "aws_iam_policy_document" "lambda_policy" {
-  statement {
-    effect = "Allow"
-    actions = [
-      "s3:ListBucket"
-    ]
-    resources = [
-      "${data.terraform_remote_state.data_lake_output.outputs.data_lake_s3_iac.s3_bucket_arn}"
-    ]
-  }
-  statement {
-    effect = "Allow"
-    actions = [
-      "s3:PutObject",
-      "s3:GetObject",
-      "s3:PutObjectAcl"
-    ]
-    resources = [
-      "${data.terraform_remote_state.data_lake_output.outputs.data_lake_s3_iac.s3_bucket_arn}/*"
-    ]
-  }
-  statement {
-    effect = "Allow"
-    actions = [
-      "secretsmanager:GetSecretValue",
-      "secretsmanager:DescribeSecret",
-      "secretsmanager:ListSecrets"
-    ]
-    resources = [
-      "${data.aws_secretsmanager_secret.postgres_secret.arn}"
-    ]
-  }
-  statement {
-    effect = "Allow"
-    actions = [
-      "elasticfilesystem:ClientMount",
-      "elasticfilesystem:ClientWrite"
-    ]
-    resources = [
-      "${data.terraform_remote_state.data_lake_output.outputs.data_lake_efs.arn}"
-    ]
-  }
-}
+#   data_lake_iac_bucket_arn = "${data.terraform_remote_state.data_lake_output.outputs.data_lake_s3_iac.s3_bucket_arn}"
+#   data_lake_iac_bucket_name = "${data.terraform_remote_state.data_lake_output.outputs.data_lake_s3_iac.s3_bucket_id}"
+#   data_lake_iac_key = var.dbt_key
+
+#   db_secret_arn = "${data.aws_secretsmanager_secret.postgres_secret.arn}"
+#   db_secret_name = "${data.terraform_remote_state.vpc_output.outputs.database_secret_name}"
+
+#   efs_arn = data.terraform_remote_state.data_lake_output.outputs.data_lake_efs.arn
+#   efs_mount_path = aws_efs_access_point.okta_users_dbt_ap.root_directory
+#   access_point_arn = aws_efs_access_point.okta_users_dbt_ap.arn
+# }

@@ -129,34 +129,14 @@ module "efs" {
     ) : k => { subnet_id = v } 
   }
 
-  security_group_description = "Example EFS security group"
+  security_group_name = "${var.name}-${var.env}_efs_sg"
+  security_group_description = "Circulate EFS security group"
   security_group_vpc_id      = data.terraform_remote_state.vpc_output.outputs.vpc_id
   security_group_rules = {
     vpc = {
       # relying on the defaults provdied for EFS/NFS (2049/TCP + ingress)
       description = "NFS ingress from VPC private subnets"
       cidr_blocks = data.terraform_remote_state.vpc_output.outputs.vpc_private_subnet_cidrs
-    }
-  }
-
-  access_points = {
-    posix_user = {
-      name = "posix-user"
-      posix_user = {
-        gid            = 1001
-        uid            = 1001
-        secondary_gids = [1002]
-      }
-    }
-    root_directory = {
-      root_directory = {
-        path = "/dbt-config"
-        creation_info = {
-          owner_gid   = 1001
-          owner_uid   = 1001
-          permissions = "755"
-        }
-      }
     }
   }
 }

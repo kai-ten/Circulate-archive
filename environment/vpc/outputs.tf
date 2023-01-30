@@ -18,8 +18,8 @@ output "vpc_database_subnet_group" {
   value = module.vpc.database_subnet_group
 }
 
-output "vpc_security_group_id" {
-  value = module.security_group.security_group_id
+output "integration_security_group_id" {
+  value = module.integration_security_group.security_group_id
 }
 
 output "okta_secret_name" {

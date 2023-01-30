@@ -20,6 +20,8 @@ Circulate is here to solve that exact problem, enabling the whole team to build 
     - Are any users missing group assignments that they should have?
     - Are any users assigned to groups they shouldn't be?
 
+- Turn Quarterly Business Reports into Daily Business Reports
+
 
 ## Build
 

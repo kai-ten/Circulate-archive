@@ -41,7 +41,7 @@ module "db" {
 
   multi_az               = var.is_multi_az
   db_subnet_group_name   = data.terraform_remote_state.vpc_output.outputs.vpc_database_subnet_group
-  vpc_security_group_ids = [data.terraform_remote_state.vpc_output.outputs.vpc_security_group_id]
+  vpc_security_group_ids = [data.terraform_remote_state.vpc_output.outputs.integration_security_group_id]
   publicly_accessible    = var.is_public
 
   maintenance_window              = "Mon:00:00-Mon:03:00"
