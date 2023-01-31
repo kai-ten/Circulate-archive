@@ -155,6 +155,9 @@ auto-apply: auto-apply-environment \
 	auto-apply-integrations \
 	auto-apply-dashboard
 
+transform:
+	cd integrations/transforms/okta/users/iac && \
+	terraform apply -auto-approve --var-file=env/$(ENV).tfvars
 
 #####################
 # Destroy Resources #

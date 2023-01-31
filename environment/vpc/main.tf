@@ -30,7 +30,7 @@ module "integration_security_group" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "~> 4.0"
 
-  name   = "${var.name}-${var.env}_sg_idv2"
+  name   = "${var.name}-${var.env}_sg_id"
   vpc_id = module.vpc.vpc_id
 
   ingress_with_cidr_blocks = [

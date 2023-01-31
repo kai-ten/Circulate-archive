@@ -1,3 +1,18 @@
+variable "name" {
+  description = "Name of service"
+  type        = string
+}
+
+variable "env" {
+  description = "Env of service"
+  type        = string
+}
+
+variable "region" {
+  description = "Region of the infrastructure"
+  type        = string
+}
+
 variable "lambda_name" {
   description = "Name of your lambda"
   type        = string
@@ -7,8 +22,8 @@ variable "vpc_config" {
   description = "optional vpc of your lambda"
   type = object({
     vpc_id = string
-    private_subnet_ids         = list(string)
-    security_group_ids = list(string)
+    private_subnet_ids = list(string)
+    security_group_id = string
   })
   default = null
 }
@@ -45,6 +60,11 @@ variable "efs_arn" {
 
 variable "efs_mount_path" {
   description = "EFS mount path for dbt files per service"
+  type        = string
+}
+
+variable "efs_sg_id" {
+  description = "EFS security group id"
   type        = string
 }
 

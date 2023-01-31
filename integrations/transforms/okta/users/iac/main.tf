@@ -103,23 +103,27 @@ resource "aws_s3_bucket_object" "okta_users_dbt_files" {
   etag = filemd5("../dbt/${each.value}")
 }
 
-# module "dbt_profiles_generator" {
-#   source          = "../../../../modules/dbt-lambda"
-#   lambda_name = "${var.name}-${var.env}-${var.service}-generator"
-#   vpc_config = {
-#     vpc_id = "value"
-#     vpc_security_group_ids = [data.terraform_remote_state.vpc_output.outputs.integration_security_group_id]
-#     vpc_private_subnet_ids = data.terraform_remote_state.vpc_output.outputs.vpc_private_subnets
-#   }
+module "dbt_profiles_generator" {
+  source          = "../../../../modules/dbt-lambda"
+  name = var.name
+  env = var.env
+  region = "${data.aws_region.current.name}"
+  lambda_name = "${var.name}-${var.env}-${var.service}-generator"
+  vpc_config = {
+    vpc_id = data.terraform_remote_state.vpc_output.outputs.vpc_id
+    security_group_id = data.terraform_remote_state.vpc_output.outputs.integration_security_group_id
+    private_subnet_ids = data.terraform_remote_state.vpc_output.outputs.vpc_private_subnets
+  }
 
-#   data_lake_iac_bucket_arn = "${data.terraform_remote_state.data_lake_output.outputs.data_lake_s3_iac.s3_bucket_arn}"
-#   data_lake_iac_bucket_name = "${data.terraform_remote_state.data_lake_output.outputs.data_lake_s3_iac.s3_bucket_id}"
-#   data_lake_iac_key = var.dbt_key
+  data_lake_iac_bucket_arn = data.terraform_remote_state.data_lake_output.outputs.data_lake_s3_iac.s3_bucket_arn
+  data_lake_iac_bucket_name = data.terraform_remote_state.data_lake_output.outputs.data_lake_s3_iac.s3_bucket_id
+  data_lake_iac_key = "${var.dbt_key}"
 
-#   db_secret_arn = "${data.aws_secretsmanager_secret.postgres_secret.arn}"
-#   db_secret_name = "${data.terraform_remote_state.vpc_output.outputs.database_secret_name}"
+  db_secret_arn = data.aws_secretsmanager_secret.postgres_secret.arn
+  db_secret_name = "${data.terraform_remote_state.vpc_output.outputs.database_secret_name}"
 
-#   efs_arn = data.terraform_remote_state.data_lake_output.outputs.data_lake_efs.arn
-#   efs_mount_path = aws_efs_access_point.okta_users_dbt_ap.root_directory
-#   access_point_arn = aws_efs_access_point.okta_users_dbt_ap.arn
-# }
+  efs_arn = data.terraform_remote_state.data_lake_output.outputs.data_lake_efs.arn
+  efs_mount_path = "/mnt/${var.service}"
+  efs_sg_id = data.terraform_remote_state.data_lake_output.outputs.data_lake_efs.security_group_id
+  access_point_arn = aws_efs_access_point.okta_users_dbt_ap.arn
+}
