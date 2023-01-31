@@ -33,6 +33,7 @@ require (
 	github.com/BurntSushi/toml v1.1.0 // indirect
 	github.com/aws/aws-sdk-go v1.44.180
 	github.com/aws/aws-sdk-go-v2/config v1.18.10
+	github.com/aws/aws-sdk-go-v2/feature/s3/manager v1.11.49
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.30.1
 	github.com/aws/aws-secretsmanager-caching-go v1.1.0
 	github.com/cenkalti/backoff/v4 v4.1.3 // indirect

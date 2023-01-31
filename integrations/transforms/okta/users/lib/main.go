@@ -2,6 +2,9 @@ package main
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 	"strings"
@@ -11,7 +14,46 @@ import (
 	"github.com/aws/aws-sdk-go-v2/feature/s3/manager"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-secretsmanager-caching-go/secretcache"
+	"gopkg.in/yaml.v3"
 )
+
+var (
+	EFS_MOUNT_PATH        = os.Getenv("EFS_MOUNT_PATH")
+	AWS_S3_REGION         = os.Getenv("AWS_S3_REGION")
+	AWS_S3_SFN_TMP_BUCKET = os.Getenv("AWS_S3_SFN_TMP_BUCKET")
+	SERVICE               = os.Getenv("CIRCULATE_SERVICE")
+	ENDPOINT              = os.Getenv("CIRCULATE_ENDPOINT")
+	DATABASE_SECRET       = os.Getenv("DATABASE_SECRET")
+)
+
+var (
+	secretCache, _ = secretcache.New()
+)
+
+type Config struct {
+	Type     string `yaml:"type"`
+	Host     string `yaml:"host"`
+	User     string `yaml:"user"`
+	Password string `yaml:"password"`
+	Port     int    `yaml:"port"`
+	Dbname   string `yaml:"dbname"`
+	Schema   string `yaml:"schema"`
+	Threads  int    `yaml:"threads"`
+}
+
+type Outputs struct {
+	Config Config `yaml:"env"`
+}
+
+type Project struct {
+	Target  string  `yaml:"target"`
+	Outputs Outputs `yaml:"outputs"`
+}
+
+type Profile struct {
+	Project Project `yaml:"circulate"`
+}
 
 var s3Client *s3.Client
 
@@ -25,37 +67,22 @@ func ConfigS3() {
 	s3Client = s3.NewFromConfig(cfg)
 }
 
-// type Secret struct {
-// 	Username string `json:"username"`
-// 	Password string `json:"password"`
-// 	Engine   string `json:"engine"`
-// 	Host     string `json:"host"`
-// }
+type Secret struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+	Engine   string `json:"engine"`
+	Host     string `json:"host"`
+}
 
-// type Response struct {
-// 	KeyList []string
-// }
+func GetSecret() (secret Secret) {
+	database_secret_string := os.Getenv("DATABASE_SECRET")
+	database_secret, _ := secretCache.GetSecretString(database_secret_string)
 
-// var (
-// 	secretCache, _ = secretcache.New()
-// )
+	var secret_result Secret
+	json.Unmarshal([]byte(database_secret), &secret_result)
 
-// var (
-// 	AWS_S3_REGION         = os.Getenv("AWS_S3_REGION")
-// 	AWS_S3_SFN_TMP_BUCKET = os.Getenv("AWS_S3_SFN_TMP_BUCKET")
-// 	SERVICE               = os.Getenv("CIRCULATE_SERVICE")
-// 	ENDPOINT              = os.Getenv("CIRCULATE_ENDPOINT")
-// )
-
-// func GetSecret() (secret Secret) {
-// 	database_secret_string := os.Getenv("DATABASE_SECRET")
-// 	database_secret, _ := secretCache.GetSecretString(database_secret_string)
-
-// 	var secret_result Secret
-// 	json.Unmarshal([]byte(database_secret), &secret_result)
-
-// 	return secret_result
-// }
+	return secret_result
+}
 
 // Download files from S3, list all files in path, then use the path to create file in EFS mount
 // Add these downloaded files to EFS
@@ -77,7 +104,7 @@ func StoreDbtObjects(ctx context.Context, dbtFilesBucketName string, dbtFilesBuc
 	}
 
 	for _, o := range o.Contents {
-		filepath := strings.ReplaceAll(*o.Key, dbtFilesBucketKey, "/mnt/")
+		filepath := strings.ReplaceAll(*o.Key, dbtFilesBucketKey, fmt.Sprintf("%s/", EFS_MOUNT_PATH))
 
 		file, err := os.Create(filepath)
 		if err != nil {
@@ -93,13 +120,44 @@ func StoreDbtObjects(ctx context.Context, dbtFilesBucketName string, dbtFilesBuc
 		if err != nil {
 			log.Fatalf("Failed to download S3 file: %v", err)
 		}
+		log.Print(numBytes)
 	}
 
 	return nil
 }
 
-func GenerateDbtProfile() {
+func GenerateDbtProfile() error {
+	secret := GetSecret()
 
+	profile := Profile{
+		Project: Project{
+			Target: "env",
+			Outputs: Outputs{
+				Config: Config{
+					Type:     "postgres",
+					Host:     secret.Host,
+					User:     "root",
+					Password: secret.Password,
+					Port:     5432,
+					Dbname:   "circulatedb",
+					Schema:   "cs",
+					Threads:  4,
+				},
+			},
+		},
+	}
+
+	data, err := yaml.Marshal(&profile)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err2 := ioutil.WriteFile(fmt.Sprintf("%s/", EFS_MOUNT_PATH), data, 0644)
+	if err2 != nil {
+		log.Fatal(err2)
+	}
+
+	return nil
 }
 
 func HandleRequest(lambdaCtx context.Context) string {
@@ -137,8 +195,6 @@ func HandleRequest(lambdaCtx context.Context) string {
 	// if err != nil {
 	// 	log.Fatal(err)
 	// }
-
-	// secret := GetSecret()
 
 	return "Success"
 

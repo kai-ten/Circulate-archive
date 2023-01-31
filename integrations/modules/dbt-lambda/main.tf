@@ -23,6 +23,24 @@ module "dbt_lambda_security_group" {
   ]
 }
 
+resource "aws_efs_access_point" "dbt_ap" {
+  file_system_id = var.efs_id #data.terraform_remote_state.data_lake_output.outputs.data_lake_efs.id
+
+  posix_user {
+    gid = 1001
+    uid = 1001
+    secondary_gids = [ 1002 ]
+  }
+  root_directory {
+    path = "/${var.service}"
+    creation_info {
+      owner_gid = 1001
+      owner_uid = 1001
+      permissions = "755"
+    }
+  }
+}
+
 module "dbt_profiles_generator" {
   source          = "../go-lambda"
   name            = "${var.lambda_name}"
@@ -39,12 +57,16 @@ module "dbt_profiles_generator" {
     DATABASE_SECRET = "${var.db_secret_name}"
     AWS_S3_DATA_LAKE_IAC_BUCKET = "${var.data_lake_iac_bucket_name}"
     AWS_S3_DATA_LAKE_IAC_KEY = "${var.data_lake_iac_key}"
-    EFS_MOUNT_PATH = "${var.efs_mount_path}"
+    EFS_MOUNT_PATH = "/mnt/${var.service}"
   }
   # efs_config = {
   #   arn = "${var.efs_arn}"
   #   mount_path = "${var.efs_mount_path}"
   # }
+
+  depends_on = [
+    aws_efs_access_point.dbt_ap
+  ]
 }
 
 data "aws_iam_policy_document" "lambda_policy" {

@@ -18,6 +18,11 @@ variable "lambda_name" {
   type        = string
 }
 
+variable "service" {
+  description = "Service name for EFS"
+  type        = string
+}
+
 variable "vpc_config" {
   description = "optional vpc of your lambda"
   type = object({
@@ -53,13 +58,13 @@ variable "data_lake_iac_key" {
   type        = string
 }
 
-variable "efs_arn" {
-  description = "EFS arn for dbt files"
-  type        = string
+variable "efs_id" {
+  description = "The EFS Id to create an Access Point for"
+  type = string
 }
 
-variable "efs_mount_path" {
-  description = "EFS mount path for dbt files per service"
+variable "efs_arn" {
+  description = "EFS arn for dbt files"
   type        = string
 }
 

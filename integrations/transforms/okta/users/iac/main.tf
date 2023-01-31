@@ -77,24 +77,6 @@ docker push ${data.aws_caller_identity.current.account_id}.dkr.ecr.${data.aws_re
 # Build ECS and mount EFS to ECS container/subnet
 # ECS must call docker run like here: https://docs.getdbt.com/docs/get-started/docker-install
 
-resource "aws_efs_access_point" "okta_users_dbt_ap" {
-  file_system_id = data.terraform_remote_state.data_lake_output.outputs.data_lake_efs.id
-
-  posix_user {
-    gid = 1001
-    uid = 1001
-    secondary_gids = [ 1002 ]
-  }
-  root_directory {
-    path = "/${var.service}"
-    creation_info {
-      owner_gid = 1001
-      owner_uid = 1001
-      permissions = "755"
-    }
-  }
-}
-
 resource "aws_s3_bucket_object" "okta_users_dbt_files" {
   for_each = fileset("../dbt", "**")
   bucket = "${data.terraform_remote_state.data_lake_output.outputs.data_lake_s3_iac.s3_bucket_id}"
@@ -108,7 +90,9 @@ module "dbt_profiles_generator" {
   name = var.name
   env = var.env
   region = "${data.aws_region.current.name}"
+  service = "${var.service}"
   lambda_name = "${var.name}-${var.env}-${var.service}-generator"
+  
   vpc_config = {
     vpc_id = data.terraform_remote_state.vpc_output.outputs.vpc_id
     security_group_id = data.terraform_remote_state.vpc_output.outputs.integration_security_group_id
@@ -122,8 +106,8 @@ module "dbt_profiles_generator" {
   db_secret_arn = data.aws_secretsmanager_secret.postgres_secret.arn
   db_secret_name = "${data.terraform_remote_state.vpc_output.outputs.database_secret_name}"
 
+  efs_id = data.terraform_remote_state.data_lake_output.outputs.data_lake_efs.id
   efs_arn = data.terraform_remote_state.data_lake_output.outputs.data_lake_efs.arn
-  efs_mount_path = "/mnt/${var.service}"
   efs_sg_id = data.terraform_remote_state.data_lake_output.outputs.data_lake_efs.security_group_id
   access_point_arn = aws_efs_access_point.okta_users_dbt_ap.arn
 }
