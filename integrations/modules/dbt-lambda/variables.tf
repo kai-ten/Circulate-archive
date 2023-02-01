@@ -72,8 +72,3 @@ variable "efs_sg_id" {
   description = "EFS security group id"
   type        = string
 }
-
-variable "access_point_arn" {
-  description = "EFS AP arn for dbt files"
-  type        = string
-}

@@ -163,26 +163,48 @@ transform:
 # Destroy Resources #
 #####################
 
+# Destroy issues:
+# - Must remove repo images before destroying ECR repo
+# - Force delete secret name
+# - aws secretsmanager delete-secret --secret-id /circulate-dev/postgres/credentials --force-delete-without-recovery --region us-east-2
+# - aws secretsmanager delete-secret --secret-id /circulate-dev/okta/credentials --force-delete-without-recovery --region us-east-2
+
 destroy-environment:
 	cd environment/vpc && \
 	terraform destroy -auto-approve --var-file=env/$(ENV).tfvars && \
-	cd ../data-lake && \
+	cd ../integration-state && \
 	terraform destroy -auto-approve --var-file=env/$(ENV).tfvars
 
 destroy-integrations:
-	cd integrations/sources/okta/iac/users && \
+	cd integrations/unions/okta && \
 	terraform destroy -auto-approve --var-file=env/$(ENV).tfvars && \
 	cd - && \
-	cd integrations/unions/okta && \
+	cd integrations/sources/okta/users/iac && \
+	terraform destroy -auto-approve --var-file=env/$(ENV).tfvars && \
+	cd - && \
+	cd integrations/sources/okta/applications/iac && \
+	terraform destroy -auto-approve --var-file=env/$(ENV).tfvars && \
+	cd - && \
+	cd integrations/targets/postgres/iac && \
+	terraform destroy -auto-approve --var-file=env/$(ENV).tfvars && \
+	cd - && \
+	cd integrations/targets/s3/iac && \
+	terraform destroy -auto-approve --var-file=env/$(ENV).tfvars && \
+	cd - && \
+	cd integrations/transforms/okta/users/iac && \
 	terraform destroy -auto-approve --var-file=env/$(ENV).tfvars
 
-apply-dashboard:
-	cd dashboard/postgres/iac && \
+destroy-dashboard:
+	cd dashboard/postgres/iac/db && \
+	terraform destroy -auto-approve --var-file=env/$(ENV).tfvars && \
+	cd ../create-schema && \
+	terraform destroy -auto-approve --var-file=env/$(ENV).tfvars && \
+	cd ../create-lnd-table && \
 	terraform destroy -auto-approve --var-file=env/$(ENV).tfvars
 
-auto-destroy: auto-destroy-dashboard \
-	auto-destroy-integrations \
-	auto-destroy-environment
+destroy: destroy-dashboard \
+	destroy-integrations \
+	destroy-environment
 
 
 

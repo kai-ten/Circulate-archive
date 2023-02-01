@@ -109,5 +109,4 @@ module "dbt_profiles_generator" {
   efs_id = data.terraform_remote_state.data_lake_output.outputs.data_lake_efs.id
   efs_arn = data.terraform_remote_state.data_lake_output.outputs.data_lake_efs.arn
   efs_sg_id = data.terraform_remote_state.data_lake_output.outputs.data_lake_efs.security_group_id
-  access_point_arn = aws_efs_access_point.okta_users_dbt_ap.arn
 }

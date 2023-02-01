@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/aws/aws-lambda-go/lambda"
@@ -104,23 +105,25 @@ func StoreDbtObjects(ctx context.Context, dbtFilesBucketName string, dbtFilesBuc
 	}
 
 	for _, o := range o.Contents {
-		filepath := strings.ReplaceAll(*o.Key, dbtFilesBucketKey, fmt.Sprintf("%s/", EFS_MOUNT_PATH))
+		// e.g. bucket-name/api/okta/users/dbt/models/staging/okta_users.sql -> /mnt/okta-users-dbt/okta-users-dbt/models/staging/okta_users.sql
+		fp := strings.ReplaceAll(*o.Key, dbtFilesBucketKey, EFS_MOUNT_PATH)
 
-		file, err := os.Create(filepath)
+		if _, err := os.Stat(fp); os.IsNotExist(err) {
+			os.MkdirAll(filepath.Dir(fp), os.ModePerm)
+		}
+		file, err := os.Create(fp)
 		if err != nil {
 			log.Fatalf("Could not create file: %v", err)
 		}
 		defer file.Close()
 
 		downloader := manager.NewDownloader(s3Client)
-		numBytes, err := downloader.Download(context.TODO(), file, &s3.GetObjectInput{
+		if _, err := downloader.Download(context.TODO(), file, &s3.GetObjectInput{
 			Bucket: aws.String(dbtFilesBucketName),
 			Key:    aws.String(*o.Key),
-		})
-		if err != nil {
+		}); err != nil {
 			log.Fatalf("Failed to download S3 file: %v", err)
 		}
-		log.Print(numBytes)
 	}
 
 	return nil
@@ -149,10 +152,10 @@ func GenerateDbtProfile() error {
 
 	data, err := yaml.Marshal(&profile)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Failed to serialize to yaml: %v", err)
 	}
 
-	err2 := ioutil.WriteFile(fmt.Sprintf("%s/", EFS_MOUNT_PATH), data, 0644)
+	err2 := ioutil.WriteFile(EFS_MOUNT_PATH+"profiles.yml", data, 0644)
 	if err2 != nil {
 		log.Fatal(err2)
 	}
@@ -160,7 +163,7 @@ func GenerateDbtProfile() error {
 	return nil
 }
 
-func HandleRequest(lambdaCtx context.Context) string {
+func HandleRequest(lambdaCtx context.Context) {
 	ConfigS3()
 
 	dbtFilesBucketName := os.Getenv("AWS_S3_DATA_LAKE_IAC_BUCKET")
@@ -169,6 +172,24 @@ func HandleRequest(lambdaCtx context.Context) string {
 	err := StoreDbtObjects(context.Background(), dbtFilesBucketName, dbtFilesBucketKey)
 	if err != nil {
 		log.Printf("Error writing to EFS: %v", err)
+	}
+
+	err2 := GenerateDbtProfile()
+	if err2 != nil {
+		log.Fatalf("Could not generate dbt profile: %v", err2)
+	}
+
+	// so the mounting is working
+	err3 := filepath.Walk(EFS_MOUNT_PATH, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			fmt.Println(err)
+			return err
+		}
+		fmt.Printf("dir: %v: name: %s\n", info.IsDir(), path)
+		return nil
+	})
+	if err3 != nil {
+		fmt.Println(err3)
 	}
 
 	// folder := "/tmp"
@@ -195,8 +216,6 @@ func HandleRequest(lambdaCtx context.Context) string {
 	// if err != nil {
 	// 	log.Fatal(err)
 	// }
-
-	return "Success"
 
 }
 

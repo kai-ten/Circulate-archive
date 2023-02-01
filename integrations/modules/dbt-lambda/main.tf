@@ -27,16 +27,16 @@ resource "aws_efs_access_point" "dbt_ap" {
   file_system_id = var.efs_id #data.terraform_remote_state.data_lake_output.outputs.data_lake_efs.id
 
   posix_user {
-    gid = 1001
-    uid = 1001
-    secondary_gids = [ 1002 ]
+    gid = 1000
+    uid = 1000
+    secondary_gids = [ 1001 ]
   }
   root_directory {
     path = "/${var.service}"
     creation_info {
-      owner_gid = 1001
-      owner_uid = 1001
-      permissions = "755"
+      owner_gid = 1000
+      owner_uid = 1000
+      permissions = "777"
     }
   }
 }
@@ -48,21 +48,51 @@ module "dbt_profiles_generator" {
   src_path        = "../lib"
   iam_policy_json = data.aws_iam_policy_document.lambda_policy.json
   timeout = 5
+
   vpc_config = {
     security_group_ids = [module.dbt_lambda_security_group.security_group_id]
     subnet_ids = var.vpc_config.private_subnet_ids
   }
+
   env_variables = {
     AWS_S3_REGION = "${var.region}"
     DATABASE_SECRET = "${var.db_secret_name}"
     AWS_S3_DATA_LAKE_IAC_BUCKET = "${var.data_lake_iac_bucket_name}"
     AWS_S3_DATA_LAKE_IAC_KEY = "${var.data_lake_iac_key}"
-    EFS_MOUNT_PATH = "/mnt/${var.service}"
+    EFS_MOUNT_PATH = "/mnt/${var.service}/${var.service}/"
   }
-  # efs_config = {
-  #   arn = "${var.efs_arn}"
-  #   mount_path = "${var.efs_mount_path}"
-  # }
+
+  ### MOUNT WITH ECS TASK DEF
+  # dir: true: name: /mnt/okta-users-dbt/okta-users-dbt/
+  # dir: false: name: /mnt/okta-users-dbt/okta-users-dbt/dbt_project.yml
+  # dir: true: name: /mnt/okta-users-dbt/okta-users-dbt/docs
+  # dir: false: name: /mnt/okta-users-dbt/okta-users-dbt/docs/README.md
+  # dir: false: name: /mnt/okta-users-dbt/okta-users-dbt/docs/profiles.yml
+  # dir: true: name: /mnt/okta-users-dbt/okta-users-dbt/logs
+  # dir: false: name: /mnt/okta-users-dbt/okta-users-dbt/logs/dbt.log
+  # dir: true: name: /mnt/okta-users-dbt/okta-users-dbt/models
+  # dir: true: name: /mnt/okta-users-dbt/okta-users-dbt/models/staging
+  # dir: false: name: /mnt/okta-users-dbt/okta-users-dbt/models/staging/okta_users.sql
+  # dir: false: name: /mnt/okta-users-dbt/okta-users-dbt/profiles.yml
+  # dir: true: name: /mnt/okta-users-dbt/okta-users-dbt/target
+  # dir: true: name: /mnt/okta-users-dbt/okta-users-dbt/target/compiled
+  # dir: true: name: /mnt/okta-users-dbt/okta-users-dbt/target/compiled/circulate
+  # dir: true: name: /mnt/okta-users-dbt/okta-users-dbt/target/compiled/circulate/models
+  # dir: true: name: /mnt/okta-users-dbt/okta-users-dbt/target/compiled/circulate/models/staging
+  # dir: false: name: /mnt/okta-users-dbt/okta-users-dbt/target/compiled/circulate/models/staging/okta_users.sql
+  # dir: false: name: /mnt/okta-users-dbt/okta-users-dbt/target/graph.gpickle
+  # dir: false: name: /mnt/okta-users-dbt/okta-users-dbt/target/manifest.json
+  # dir: false: name: /mnt/okta-users-dbt/okta-users-dbt/target/partial_parse.msgpack
+  # dir: true: name: /mnt/okta-users-dbt/okta-users-dbt/target/run
+  # dir: true: name: /mnt/okta-users-dbt/okta-users-dbt/target/run/circulate
+  # dir: true: name: /mnt/okta-users-dbt/okta-users-dbt/target/run/circulate/models
+  # dir: true: name: /mnt/okta-users-dbt/okta-users-dbt/target/run/circulate/models/staging
+  # dir: false: name: /mnt/okta-users-dbt/okta-users-dbt/target/run/circulate/models/staging/okta_users.sql
+  # dir: false: name: /mnt/okta-users-dbt/okta-users-dbt/target/run_results.json
+  efs_config = {
+    arn = aws_efs_access_point.dbt_ap.arn
+    mount_path = "/mnt/${var.service}"
+  }
 
   depends_on = [
     aws_efs_access_point.dbt_ap
@@ -127,7 +157,7 @@ data "aws_iam_policy_document" "lambda_policy" {
     condition {
       test = "StringEquals"
       variable = "elasticfilesystem:AccessPointArn"
-      values = ["${var.access_point_arn}"]
+      values = ["${aws_efs_access_point.dbt_ap.arn}"]
     }
   }
 }
