@@ -13,3 +13,7 @@ output "data_lake_s3_iac" {
 output "data_lake_efs" {
   value = module.efs
 }
+
+output "dbt_ecs_cluster" {
+  value = aws_ecs_cluster.circulate_ecs_cluster
+}

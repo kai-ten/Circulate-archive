@@ -72,3 +72,22 @@ variable "efs_sg_id" {
   description = "EFS security group id"
   type        = string
 }
+
+variable "ecs_cluster_id" {
+  type = string
+}
+
+# variable "task_definition" {
+#   type = object({
+#     cpu = string
+#     memory = string
+#     mount_point = string
+#     volume_name = string
+#     port_mappings = list(object({
+#       name = string
+#       protocol = string
+#       containerPort = number
+#       hostPort = number
+#     }))
+#   })
+# }

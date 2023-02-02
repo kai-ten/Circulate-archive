@@ -140,3 +140,7 @@ module "efs" {
     }
   }
 }
+
+resource "aws_ecs_cluster" "circulate_ecs_cluster" {
+  name = "circulate-${var.env}-cluster"
+}

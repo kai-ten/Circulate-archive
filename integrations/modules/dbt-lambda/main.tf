@@ -1,3 +1,6 @@
+data "aws_caller_identity" "current" {}
+data "aws_region" "current" {}
+
 module "dbt_lambda_security_group" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "~> 4.0"
@@ -24,7 +27,7 @@ module "dbt_lambda_security_group" {
 }
 
 resource "aws_efs_access_point" "dbt_ap" {
-  file_system_id = var.efs_id #data.terraform_remote_state.data_lake_output.outputs.data_lake_efs.id
+  file_system_id = var.efs_id
 
   posix_user {
     gid = 1000
@@ -55,7 +58,7 @@ module "dbt_profiles_generator" {
   }
 
   env_variables = {
-    AWS_S3_REGION = "${var.region}"
+    AWS_S3_REGION = "${data.aws_region.current.name}"
     DATABASE_SECRET = "${var.db_secret_name}"
     AWS_S3_DATA_LAKE_IAC_BUCKET = "${var.data_lake_iac_bucket_name}"
     AWS_S3_DATA_LAKE_IAC_KEY = "${var.data_lake_iac_key}"
