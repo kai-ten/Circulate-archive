@@ -82,7 +82,7 @@ resource "aws_ecs_service" "circulate_ecs_service" {
   name            = "${var.service}-${var.env}"
   cluster         = var.ecs_cluster_id
   task_definition = aws_ecs_task_definition.task.arn
-  desired_count   = 1
+  desired_count   = 0
   launch_type = "FARGATE"
 
   network_configuration {
@@ -111,7 +111,7 @@ resource "aws_ecs_task_definition" "task" {
       "memory": 4096,
       "environment": [{ "name": "myvariable", "value": "myvalue" }],
       "healthCheck": {
-        "command": [ "CMD-SHELL", "curl -f http://localhost/ || exit 1" ],
+        "command": [ "CMD-SHELL", "curl -f http://localhost/ || exit 1" ], 
         "interval": 30,
         "retries": 3,
         "startPeriod": 120,
@@ -139,6 +139,8 @@ resource "aws_ecs_task_definition" "task" {
   execution_role_arn = aws_iam_role.circulate_ecs_task_exec_role.arn
   task_role_arn = aws_iam_role.circulate_ecs_task_role.arn
   requires_compatibilities = ["FARGATE"]
+
+  
 
   runtime_platform {
     operating_system_family = "LINUX"

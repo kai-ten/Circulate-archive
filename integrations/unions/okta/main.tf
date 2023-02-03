@@ -1,3 +1,21 @@
+data "terraform_remote_state" "vpc_output" {
+  backend = "s3"
+  config = {
+    bucket = "${var.name}-${var.env}-terraform-state-backend"
+    key    = "vpc/terraform.tfstate"
+    region = "us-east-2"
+  }
+}
+
+data "terraform_remote_state" "data_lake_output" {
+  backend = "s3"
+  config = {
+    bucket = "${var.name}-${var.env}-terraform-state-backend"
+    key    = "data-lake/terraform.tfstate"
+    region = "us-east-2"
+  }
+}
+
 data "terraform_remote_state" "okta_users" {
   backend = "s3"
   config = {
@@ -113,6 +131,21 @@ locals {
                   "BackoffRate": 2
                 }
               ],
+              "Next": "Run dbt"
+            },
+            "Run dbt": {
+              "Type": "Task",
+              "Resource": "arn:aws:states:::ecs:runTask.sync",
+              "Parameters": {
+                "LaunchType": "FARGATE",
+                "Cluster": "${data.terraform_remote_state.data_lake_output.outputs.dbt_ecs_cluster.arn}",
+                "TaskDefinition": "arn:aws:ecs:us-east-2:298203888315:task-definition/okta-users-dbt-dev-task:1",
+                "NetworkConfiguration": {
+                  "AwsvpcConfiguration": {
+                    "Subnets": ${jsonencode(data.terraform_remote_state.vpc_output.outputs.vpc_private_subnets)}
+                  }
+                }
+              },
               "End": true
             }
           }
@@ -123,6 +156,15 @@ locals {
 }
 EOF
 }
+
+            # "Overrides": {
+            #   "ContainerOverrides": [
+            #     {
+            #       "Name": "container-name",
+            #       "Command.$": "$.commands" 
+            #     }
+            #   ]
+            # }
 
 module "step_function" {
   source = "terraform-aws-modules/step-functions/aws"
@@ -137,6 +179,25 @@ module "step_function" {
         "${data.terraform_remote_state.postgres_json_writer_output.outputs.postgres_json_writer.arn}:*",
         "${data.terraform_remote_state.s3_writer_output.outputs.s3_writer.arn}:*",
       ]
+    }
+
+    ecs_Sync = {
+      ecs = [
+        "${data.terraform_remote_state.data_lake_output.outputs.dbt_ecs_cluster.arn}",
+        "arn:aws:ecs:us-east-2:298203888315:task-definition/okta-users-dbt-dev-task:1",
+      ]
+
+      ecs_Wildcard = [
+        "${data.terraform_remote_state.data_lake_output.outputs.dbt_ecs_cluster.arn}",
+        "arn:aws:ecs:us-east-2:298203888315:task-definition/okta-users-dbt-dev-task:1",
+      ]
+
+      iam_PassRole = [
+        "arn:aws:iam::298203888315:role/okta-users-dbt-task-exec-role20230202043811261800000001",
+        "arn:aws:iam::298203888315:role/okta-users-dbt-task-role",
+      ]
+
+      events = true
     }
 
     # TODO: Adjust to use region, account number, and generate step function name AOT

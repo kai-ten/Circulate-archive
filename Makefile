@@ -137,10 +137,10 @@ auto-apply-integrations:
 	cd integrations/targets/s3/iac && \
 	terraform apply -auto-approve --var-file=env/$(ENV).tfvars && \
 	cd - && \
-	cd integrations/unions/okta && \
+	cd integrations/transforms/okta/users/iac && \
 	terraform apply -auto-approve --var-file=env/$(ENV).tfvars && \
 	cd - && \
-	cd integrations/transforms/okta/users/iac && \
+	cd integrations/unions/okta && \
 	terraform apply -auto-approve --var-file=env/$(ENV).tfvars
 
 auto-apply-dashboard:
@@ -157,6 +157,10 @@ auto-apply: auto-apply-environment \
 
 transform:
 	cd integrations/transforms/okta/users/iac && \
+	terraform apply -auto-approve --var-file=env/$(ENV).tfvars
+
+unions:
+	cd integrations/unions/okta && \
 	terraform apply -auto-approve --var-file=env/$(ENV).tfvars
 
 #####################

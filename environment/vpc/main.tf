@@ -68,6 +68,7 @@ module "integration_security_group" {
   ]
 }
 
+# Complete example - https://github.com/terraform-aws-modules/terraform-aws-vpc/blob/v3.19.0/examples/complete-vpc/main.tf
 module "endpoints" {
   source = "terraform-aws-modules/vpc/aws//modules/vpc-endpoints"
 
@@ -80,12 +81,28 @@ module "endpoints" {
       private_dns_enabled = true
       subnet_ids          = module.vpc.private_subnets
       tags    = { Name = "${var.name}-${var.env}-ssm" }
+    },
+    ecr_api = {
+      service             = "ecr.api"
+      security_group_ids = [module.integration_security_group.security_group_id]
+      private_dns_enabled = true
+      subnet_ids          = module.vpc.private_subnets
+      tags    = { Name = "${var.name}-${var.env}-ecr-api" }
+    },
+    ecr_dkr = {
+      service             = "ecr.dkr"
+      security_group_ids = [module.integration_security_group.security_group_id]
+      private_dns_enabled = true
+      subnet_ids          = module.vpc.private_subnets
+      tags    = { Name = "${var.name}-${var.env}-ecr-dkr" }
+    },
+    logs = {
+      service             = "logs"
+      security_group_ids = [module.integration_security_group.security_group_id]
+      private_dns_enabled = true
+      subnet_ids          = module.vpc.private_subnets
+      tags    = { Name = "${var.name}-${var.env}-logs" }
     }
-    # s3 = {
-    #   service             = "com.amazonaws.${data.aws_region.current.name}.s3"
-    #   route_table_ids     = module.vpc.public_route_table_ids
-    #   tags    = { Name = "${var.name}-${var.env}-s3" }
-    # }
   }
 }
 
