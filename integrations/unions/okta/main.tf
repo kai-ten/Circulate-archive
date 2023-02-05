@@ -139,10 +139,11 @@ locals {
               "Parameters": {
                 "LaunchType": "FARGATE",
                 "Cluster": "${data.terraform_remote_state.data_lake_output.outputs.dbt_ecs_cluster.arn}",
-                "TaskDefinition": "arn:aws:ecs:us-east-2:298203888315:task-definition/okta-users-dbt-dev-task:1",
+                "TaskDefinition": "arn:aws:ecs:us-east-2:298203888315:task-definition/okta-users-dbt-dev-task:55",
                 "NetworkConfiguration": {
                   "AwsvpcConfiguration": {
-                    "Subnets": ${jsonencode(data.terraform_remote_state.vpc_output.outputs.vpc_private_subnets)}
+                    "Subnets": ${jsonencode(data.terraform_remote_state.vpc_output.outputs.vpc_private_subnets)},
+                    "SecurityGroups": ["sg-0f761b14cbe87f9a8"]
                   }
                 }
               },
@@ -156,15 +157,6 @@ locals {
 }
 EOF
 }
-
-            # "Overrides": {
-            #   "ContainerOverrides": [
-            #     {
-            #       "Name": "container-name",
-            #       "Command.$": "$.commands" 
-            #     }
-            #   ]
-            # }
 
 module "step_function" {
   source = "terraform-aws-modules/step-functions/aws"
@@ -184,12 +176,12 @@ module "step_function" {
     ecs_Sync = {
       ecs = [
         "${data.terraform_remote_state.data_lake_output.outputs.dbt_ecs_cluster.arn}",
-        "arn:aws:ecs:us-east-2:298203888315:task-definition/okta-users-dbt-dev-task:1",
+        "arn:aws:ecs:us-east-2:298203888315:task-definition/okta-users-dbt-dev-task:55",
       ]
 
       ecs_Wildcard = [
         "${data.terraform_remote_state.data_lake_output.outputs.dbt_ecs_cluster.arn}",
-        "arn:aws:ecs:us-east-2:298203888315:task-definition/okta-users-dbt-dev-task:1",
+        "arn:aws:ecs:us-east-2:298203888315:task-definition/okta-users-dbt-dev-task:55",
       ]
 
       iam_PassRole = [

@@ -22,6 +22,13 @@ module "dbt_lambda_security_group" {
       protocol    = "tcp"
       description = "EFS Outbound Access"
       cidr_blocks = "0.0.0.0/0"
+    },
+    {
+      from_port   = 5432
+      to_port     = 5432
+      protocol    = "tcp"
+      description = "PostgreSQL access from within VPC"
+      cidr_blocks = "10.0.0.0/16"
     }
   ]
 }
@@ -62,7 +69,7 @@ module "dbt_profiles_generator" {
     DATABASE_SECRET = "${var.db_secret_name}"
     AWS_S3_DATA_LAKE_IAC_BUCKET = "${var.data_lake_iac_bucket_name}"
     AWS_S3_DATA_LAKE_IAC_KEY = "${var.data_lake_iac_key}"
-    EFS_MOUNT_PATH = "/mnt/${var.service}/${var.service}/"
+    EFS_MOUNT_PATH = "/mnt/${var.service}/"
   }
 
   ### MOUNT WITH ECS TASK DEF

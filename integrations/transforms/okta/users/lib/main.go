@@ -85,13 +85,9 @@ func GetSecret() (secret Secret) {
 	return secret_result
 }
 
-// Download files from S3, list all files in path, then use the path to create file in EFS mount
-// Add these downloaded files to EFS
-// Use the secret from the Database Secrets Manager
-// Generate a yml file for dbt/profiles.yml, then save that to EFS
-// Profit???
-
 func StoreDbtObjects(ctx context.Context, dbtFilesBucketName string, dbtFilesBucketKey string) error {
+
+	log.Printf("Bucketname: %v, Bucketfilekey: %v", dbtFilesBucketName, dbtFilesBucketKey)
 
 	input := &s3.ListObjectsV2Input{
 		Bucket: &dbtFilesBucketName,
@@ -100,17 +96,25 @@ func StoreDbtObjects(ctx context.Context, dbtFilesBucketName string, dbtFilesBuc
 
 	o, err := s3Client.ListObjectsV2(context.Background(), input)
 	if err != nil {
-		log.Print("Error listing objects")
+		log.Fatalf("Error listing objects")
 		return err
 	}
 
+	log.Println(o.Contents)
+
 	for _, o := range o.Contents {
 		// e.g. bucket-name/api/okta/users/dbt/models/staging/okta_users.sql -> /mnt/okta-users-dbt/okta-users-dbt/models/staging/okta_users.sql
-		fp := strings.ReplaceAll(*o.Key, dbtFilesBucketKey, EFS_MOUNT_PATH)
+		fp := strings.ReplaceAll(*o.Key, dbtFilesBucketKey, "/mnt/okta-users-dbt/")
+		// s3://circulate-dev-iac
+		// /api/okta/users/dbt/logs/dbt.log
+
+		log.Printf("Old Key: %v", *o.Key)
+		log.Printf("New Key: %v", fp)
 
 		if _, err := os.Stat(fp); os.IsNotExist(err) {
 			os.MkdirAll(filepath.Dir(fp), os.ModePerm)
 		}
+
 		file, err := os.Create(fp)
 		if err != nil {
 			log.Fatalf("Could not create file: %v", err)
@@ -138,7 +142,7 @@ func GenerateDbtProfile() error {
 			Outputs: Outputs{
 				Config: Config{
 					Type:     "postgres",
-					Host:     secret.Host,
+					Host:     "circulate-dev.cfnt2r7lvj4b.us-east-2.rds.amazonaws.com",
 					User:     "root",
 					Password: secret.Password,
 					Port:     5432,
@@ -155,7 +159,7 @@ func GenerateDbtProfile() error {
 		log.Fatalf("Failed to serialize to yaml: %v", err)
 	}
 
-	err2 := ioutil.WriteFile(EFS_MOUNT_PATH+"profiles.yml", data, 0644)
+	err2 := ioutil.WriteFile("/mnt/okta-users-dbt/"+"profiles.yml", data, 0644)
 	if err2 != nil {
 		log.Fatal(err2)
 	}
@@ -169,18 +173,20 @@ func HandleRequest(lambdaCtx context.Context) {
 	dbtFilesBucketName := os.Getenv("AWS_S3_DATA_LAKE_IAC_BUCKET")
 	dbtFilesBucketKey := os.Getenv("AWS_S3_DATA_LAKE_IAC_KEY")
 
+	os.RemoveAll("/mnt/okta-users-dbt")
 	err := StoreDbtObjects(context.Background(), dbtFilesBucketName, dbtFilesBucketKey)
+
 	if err != nil {
 		log.Printf("Error writing to EFS: %v", err)
 	}
 
-	err2 := GenerateDbtProfile()
-	if err2 != nil {
-		log.Fatalf("Could not generate dbt profile: %v", err2)
+	err1 := GenerateDbtProfile()
+	if err != nil {
+		log.Fatalf("Could not generate dbt profile: %v", err1)
 	}
 
 	// so the mounting is working
-	err3 := filepath.Walk(EFS_MOUNT_PATH, func(path string, info os.FileInfo, err error) error {
+	err2 := filepath.Walk("/mnt/okta-users-dbt/", func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			fmt.Println(err)
 			return err
@@ -188,9 +194,13 @@ func HandleRequest(lambdaCtx context.Context) {
 		fmt.Printf("dir: %v: name: %s\n", info.IsDir(), path)
 		return nil
 	})
-	if err3 != nil {
-		fmt.Println(err3)
+	if err2 != nil {
+		fmt.Println(err)
 	}
+
+	log.Println(dbtFilesBucketKey)
+	log.Println(EFS_MOUNT_PATH)
+	log.Println("WPOKDSKLD")
 
 	// folder := "/tmp"
 	// filepath := filepath.Join(folder, filename)

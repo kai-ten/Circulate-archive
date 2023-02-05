@@ -78,25 +78,18 @@ resource "aws_iam_role" "circulate_ecs_task_role" {
   }
 }
 
-resource "aws_ecs_service" "circulate_ecs_service" {
-  name            = "${var.service}-${var.env}"
-  cluster         = var.ecs_cluster_id
-  task_definition = aws_ecs_task_definition.task.arn
-  desired_count   = 0
-  launch_type = "FARGATE"
-
-  network_configuration {
-    subnets = var.vpc_config.private_subnet_ids
-    security_groups = [ module.dbt_lambda_security_group.security_group_id ]
-    assign_public_ip = false
-  }
-}
-
 resource "aws_ecs_task_definition" "task" {
   family                = "${var.service}-${var.env}-task"
   # container_definitions = file("task-definitions/service.json")
   container_definitions = jsonencode([
     {
+      "command": [
+        "/bin/sh -c \"pwd && ls /usr/app && mkdir -p /root/.dbt && cp /usr/app/profiles.yml /root/.dbt/profiles.yml && dbt run\""
+      ],
+      "entryPoint": [
+        "sh",
+        "-c"
+      ],
       "name": "${var.service}-${var.env}-task",
       "image": "${aws_ecr_repository.dbt_postgres_ecr_repo.repository_url}:latest",
       "portMappings": [
@@ -155,6 +148,7 @@ resource "aws_ecs_task_definition" "task" {
       # root_directory          = var.efs.root_directory // dir within efs to mount, ignore with auth config
       transit_encryption      = "ENABLED"
       transit_encryption_port = 2999
+      root_directory = "/"
       authorization_config {
         access_point_id = aws_efs_access_point.dbt_ap.id
         iam             = "ENABLED" // iam role must have perms to mount filesystem
