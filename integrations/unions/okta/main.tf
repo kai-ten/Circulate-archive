@@ -152,7 +152,7 @@ locals {
                 "NetworkConfiguration": {
                   "AwsvpcConfiguration": {
                     "Subnets": ${jsonencode(data.terraform_remote_state.vpc_output.outputs.vpc_private_subnets)},
-                    "SecurityGroups": ["sg-0f761b14cbe87f9a8"]
+                    "SecurityGroups": ["${data.terraform_remote_state.okta_users_transform.outputs.security_group_id}"]
                   }
                 }
               },
@@ -194,8 +194,8 @@ module "step_function" {
       ]
 
       iam_PassRole = [
-        "${data.terraform_remote_state.data_lake_output.outputs.task_exec_role_arn}",
-        "${data.terraform_remote_state.data_lake_output.outputs.task_role_arn}",
+        "${data.terraform_remote_state.okta_users_transform.outputs.task_exec_role_arn}",
+        "${data.terraform_remote_state.okta_users_transform.outputs.task_role_arn}",
       ]
 
       events = true
