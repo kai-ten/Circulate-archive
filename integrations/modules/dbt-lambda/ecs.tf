@@ -145,10 +145,8 @@ resource "aws_ecs_task_definition" "task" {
 
     efs_volume_configuration {
       file_system_id          = var.efs_id
-      # root_directory          = var.efs.root_directory // dir within efs to mount, ignore with auth config
       transit_encryption      = "ENABLED"
       transit_encryption_port = 2999
-      root_directory = "/"
       authorization_config {
         access_point_id = aws_efs_access_point.dbt_ap.id
         iam             = "ENABLED" // iam role must have perms to mount filesystem

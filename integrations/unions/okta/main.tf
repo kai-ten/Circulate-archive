@@ -25,6 +25,15 @@ data "terraform_remote_state" "okta_users" {
   }
 }
 
+data "terraform_remote_state" "okta_users_transform" {
+  backend = "s3"
+  config = {
+    bucket = "${var.name}-${var.env}-terraform-state-backend"
+    key    = "okta-users-transform/terraform.tfstate"
+    region = "us-east-2"
+  }
+}
+
 data "terraform_remote_state" "postgres_json_writer_output" {
   backend = "s3"
   config = {
@@ -139,7 +148,7 @@ locals {
               "Parameters": {
                 "LaunchType": "FARGATE",
                 "Cluster": "${data.terraform_remote_state.data_lake_output.outputs.dbt_ecs_cluster.arn}",
-                "TaskDefinition": "arn:aws:ecs:us-east-2:298203888315:task-definition/okta-users-dbt-dev-task:55",
+                "TaskDefinition": "${data.terraform_remote_state.okta_users_transform.outputs.ecs_task_def_arn}",
                 "NetworkConfiguration": {
                   "AwsvpcConfiguration": {
                     "Subnets": ${jsonencode(data.terraform_remote_state.vpc_output.outputs.vpc_private_subnets)},
@@ -176,17 +185,17 @@ module "step_function" {
     ecs_Sync = {
       ecs = [
         "${data.terraform_remote_state.data_lake_output.outputs.dbt_ecs_cluster.arn}",
-        "arn:aws:ecs:us-east-2:298203888315:task-definition/okta-users-dbt-dev-task:55",
+        "${data.terraform_remote_state.okta_users_transform.outputs.ecs_task_def_arn}",
       ]
 
       ecs_Wildcard = [
         "${data.terraform_remote_state.data_lake_output.outputs.dbt_ecs_cluster.arn}",
-        "arn:aws:ecs:us-east-2:298203888315:task-definition/okta-users-dbt-dev-task:55",
+        "${data.terraform_remote_state.okta_users_transform.outputs.ecs_task_def_arn}",
       ]
 
       iam_PassRole = [
-        "arn:aws:iam::298203888315:role/okta-users-dbt-task-exec-role20230202043811261800000001",
-        "arn:aws:iam::298203888315:role/okta-users-dbt-task-role",
+        "${data.terraform_remote_state.data_lake_output.outputs.task_exec_role_arn}",
+        "${data.terraform_remote_state.data_lake_output.outputs.task_role_arn}",
       ]
 
       events = true

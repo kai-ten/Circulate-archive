@@ -24,6 +24,13 @@ In order to make this project more automated, must do the following:
 
 <br />
 
+## Infrastructure
+
+- https://terragrunt.gruntwork.io/docs/getting-started/quick-start/
+- https://terragrunt.gruntwork.io/docs/features/execute-terraform-commands-on-multiple-modules-at-once/
+
+<br />
+
 ## MORE LAMBDAS
 
 WITH FREE TRIALS AKA THE ABILITY TO TEST:
