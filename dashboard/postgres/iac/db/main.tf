@@ -97,7 +97,7 @@ resource "aws_secretsmanager_secret_version" "circulate_db_password_version" {
     "username": "root",
     "password": "${random_password.password.result}",
     "engine": "postgres14",
-    "host": "${module.db.db_instance_endpoint}"
+    "host": "${module.db.db_instance_address}"
    }
 EOF
 }
