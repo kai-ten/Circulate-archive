@@ -32,6 +32,40 @@ resource "aws_s3_bucket_object" "okta_users_dbt_files" {
   etag = filemd5("../dbt/${each.value}")
 }
 
+# TODO: Better practice to generate KMS key to encrypt message in transit - establish pattern to create this key in environment config
+resource "aws_sns_topic" "dbt_generator_topic" {
+  name = "${var.name}-${var.env}-${var.service}-generator-topic"
+  
+  policy = <<POLICY
+  {
+      "Version":"2012-10-17",
+      "Statement":[
+        {
+          "Effect": "Allow",
+          "Principal": {"Service":"s3.amazonaws.com"},
+          "Action": "SNS:Publish",
+          "Resource":  "arn:aws:sns:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:${var.name}-${var.env}-${var.service}-generator-topic",
+          "Condition":{
+              "ArnLike":{"aws:SourceArn":"${data.terraform_remote_state.data_lake_output.outputs.data_lake_s3_iac.s3_bucket_arn}"}
+          }
+        }
+      ]
+  }
+  POLICY
+}
+
+resource "aws_s3_bucket_notification" "s3_notification" {
+  bucket = "${data.terraform_remote_state.data_lake_output.outputs.data_lake_s3_iac.s3_bucket_id}"
+
+  topic {
+    topic_arn = "${aws_sns_topic.dbt_generator_topic.arn}"
+    events = [
+      "s3:ObjectCreated:*",
+      "s3:ObjectRemoved:*",
+    ]
+  }
+}
+
 module "dbt_profiles_generator" {
   source          = "../../../../modules/dbt"
   name = var.name
@@ -57,4 +91,18 @@ module "dbt_profiles_generator" {
   efs_id = data.terraform_remote_state.data_lake_output.outputs.data_lake_efs.id
   efs_arn = data.terraform_remote_state.data_lake_output.outputs.data_lake_efs.arn
   efs_sg_id = data.terraform_remote_state.data_lake_output.outputs.data_lake_efs.security_group_id
+}
+
+resource "aws_lambda_permission" "dbt_generator_sns" {
+    statement_id = "AllowExecutionFromSNS"
+    action = "lambda:InvokeFunction"
+    function_name = "${module.dbt_profiles_generator.lambda_function.arn}"
+    principal = "sns.amazonaws.com"
+    source_arn = "${aws_sns_topic.dbt_generator_topic.arn}"
+}
+
+resource "aws_sns_topic_subscription" "dbt_topic_sub" {
+  topic_arn = "${aws_sns_topic.dbt_generator_topic.arn}"
+  protocol  = "lambda"
+  endpoint  ="${module.dbt_profiles_generator.lambda_function.arn}"
 }

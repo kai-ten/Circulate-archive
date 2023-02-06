@@ -1,5 +1,5 @@
 output "lambda_function" {
-  value = module.dbt_profiles_generator
+  value = module.dbt_profiles_generator.lambda_function
 }
 
 output "ecs_task_def_arn" {

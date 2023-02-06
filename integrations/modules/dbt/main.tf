@@ -72,33 +72,6 @@ module "dbt_profiles_generator" {
     EFS_MOUNT_PATH = "/mnt/${var.service}/"
   }
 
-  ### MOUNT WITH ECS TASK DEF
-  # dir: true: name: /mnt/okta-users-dbt/okta-users-dbt/
-  # dir: false: name: /mnt/okta-users-dbt/okta-users-dbt/dbt_project.yml
-  # dir: true: name: /mnt/okta-users-dbt/okta-users-dbt/docs
-  # dir: false: name: /mnt/okta-users-dbt/okta-users-dbt/docs/README.md
-  # dir: false: name: /mnt/okta-users-dbt/okta-users-dbt/docs/profiles.yml
-  # dir: true: name: /mnt/okta-users-dbt/okta-users-dbt/logs
-  # dir: false: name: /mnt/okta-users-dbt/okta-users-dbt/logs/dbt.log
-  # dir: true: name: /mnt/okta-users-dbt/okta-users-dbt/models
-  # dir: true: name: /mnt/okta-users-dbt/okta-users-dbt/models/staging
-  # dir: false: name: /mnt/okta-users-dbt/okta-users-dbt/models/staging/okta_users.sql
-  # dir: false: name: /mnt/okta-users-dbt/okta-users-dbt/profiles.yml
-  # dir: true: name: /mnt/okta-users-dbt/okta-users-dbt/target
-  # dir: true: name: /mnt/okta-users-dbt/okta-users-dbt/target/compiled
-  # dir: true: name: /mnt/okta-users-dbt/okta-users-dbt/target/compiled/circulate
-  # dir: true: name: /mnt/okta-users-dbt/okta-users-dbt/target/compiled/circulate/models
-  # dir: true: name: /mnt/okta-users-dbt/okta-users-dbt/target/compiled/circulate/models/staging
-  # dir: false: name: /mnt/okta-users-dbt/okta-users-dbt/target/compiled/circulate/models/staging/okta_users.sql
-  # dir: false: name: /mnt/okta-users-dbt/okta-users-dbt/target/graph.gpickle
-  # dir: false: name: /mnt/okta-users-dbt/okta-users-dbt/target/manifest.json
-  # dir: false: name: /mnt/okta-users-dbt/okta-users-dbt/target/partial_parse.msgpack
-  # dir: true: name: /mnt/okta-users-dbt/okta-users-dbt/target/run
-  # dir: true: name: /mnt/okta-users-dbt/okta-users-dbt/target/run/circulate
-  # dir: true: name: /mnt/okta-users-dbt/okta-users-dbt/target/run/circulate/models
-  # dir: true: name: /mnt/okta-users-dbt/okta-users-dbt/target/run/circulate/models/staging
-  # dir: false: name: /mnt/okta-users-dbt/okta-users-dbt/target/run/circulate/models/staging/okta_users.sql
-  # dir: false: name: /mnt/okta-users-dbt/okta-users-dbt/target/run_results.json
   efs_config = {
     arn = aws_efs_access_point.dbt_ap.arn
     mount_path = "/mnt/${var.service}"
