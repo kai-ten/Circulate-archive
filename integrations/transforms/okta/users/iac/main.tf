@@ -33,7 +33,7 @@ resource "aws_s3_bucket_object" "okta_users_dbt_files" {
 }
 
 module "dbt_profiles_generator" {
-  source          = "../../../../modules/dbt-lambda"
+  source          = "../../../../modules/dbt"
   name = var.name
   env = var.env
   region = "${data.aws_region.current.name}"
