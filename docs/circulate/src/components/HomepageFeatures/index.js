@@ -4,8 +4,16 @@ import styles from './styles.module.css';
 
 const FeatureList = [
   {
-    title: 'Easy to Use',
-    Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
+    title: 'Cybersecurity-Minded',
+    description: (
+      <>
+        Extend or customize your website layout by reusing React. Docusaurus can
+        be extended while reusing the same header and footer.
+      </>
+    ),
+  },
+  {
+    title: 'Highly Available',
     description: (
       <>
         Docusaurus was designed from the ground up to be easily installed and
@@ -14,8 +22,7 @@ const FeatureList = [
     ),
   },
   {
-    title: 'Focus on What Matters',
-    Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
+    title: 'Highly Scalable',
     description: (
       <>
         Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
@@ -24,8 +31,25 @@ const FeatureList = [
     ),
   },
   {
-    title: 'Powered by React',
-    Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
+    title: 'Low Maintenance',
+    description: (
+      <>
+        Extend or customize your website layout by reusing React. Docusaurus can
+        be extended while reusing the same header and footer.
+      </>
+    ),
+  },
+  {
+    title: 'Affordable',
+    description: (
+      <>
+        Extend or customize your website layout by reusing React. Docusaurus can
+        be extended while reusing the same header and footer.
+      </>
+    ),
+  },
+  {
+    title: 'Flexible',
     description: (
       <>
         Extend or customize your website layout by reusing React. Docusaurus can
@@ -35,12 +59,12 @@ const FeatureList = [
   },
 ];
 
-function Feature({Svg, title, description}) {
+function Feature({title, description}) {
   return (
     <div className={clsx('col col--4')}>
-      <div className="text--center">
+      {/* <div className="text--center">
         <Svg className={styles.featureSvg} role="img" />
-      </div>
+      </div> */}
       <div className="text--center padding-horiz--md">
         <h3>{title}</h3>
         <p>{description}</p>
@@ -53,6 +77,11 @@ export default function HomepageFeatures() {
   return (
     <section className={styles.features}>
       <div className="container">
+        {/* <header className={clsx('hero', styles.heroBanner)}>
+          <div className="container">
+            <h2 className="hero__title">How Circulate Improves Operational Efficiency</h2>
+          </div>
+        </header> */}
         <div className="row">
           {FeatureList.map((props, idx) => (
             <Feature key={idx} {...props} />
