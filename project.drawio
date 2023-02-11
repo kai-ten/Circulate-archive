@@ -1,0 +1,160 @@
+<mxfile host="65bd71144e">
+    <diagram id="UK8iTttdU-G7dXe-fKMS" name="Page-1">
+        <mxGraphModel dx="2557" dy="2727" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="19" value="Dashboard" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#60a917;fontColor=#ffffff;strokeColor=#2D7600;" parent="1" vertex="1">
+                    <mxGeometry x="320" y="-30" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="20" value="Environment" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#60a917;fontColor=#ffffff;strokeColor=#2D7600;" parent="1" vertex="1">
+                    <mxGeometry x="320" y="40" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="21" value="Data-Lake" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#0050ef;fontColor=#ffffff;strokeColor=#001DBC;" parent="1" vertex="1">
+                    <mxGeometry x="380" y="110" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="22" value="Integration State" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#0050ef;fontColor=#ffffff;strokeColor=#001DBC;" parent="1" vertex="1">
+                    <mxGeometry x="380" y="320" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="23" value="Remote Backend" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#0050ef;fontColor=#ffffff;strokeColor=#001DBC;" parent="1" vertex="1">
+                    <mxGeometry x="380" y="180" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="24" value="VPC" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#0050ef;fontColor=#ffffff;strokeColor=#001DBC;" parent="1" vertex="1">
+                    <mxGeometry x="380" y="250" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="25" value="Integrations" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#60a917;fontColor=#ffffff;strokeColor=#2D7600;" parent="1" vertex="1">
+                    <mxGeometry x="320" y="390" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="26" value="Modules" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1ba1e2;fontColor=#ffffff;strokeColor=#006EAF;" parent="1" vertex="1">
+                    <mxGeometry x="380" y="460" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="27" value="DBT-Lambda" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#0050ef;fontColor=#ffffff;strokeColor=#001DBC;" parent="1" vertex="1">
+                    <mxGeometry x="440" y="530" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="28" value="Go-Lambda" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#0050ef;fontColor=#ffffff;strokeColor=#001DBC;" parent="1" vertex="1">
+                    <mxGeometry x="440" y="600" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="29" value="Sources" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1ba1e2;fontColor=#ffffff;strokeColor=#006EAF;" parent="1" vertex="1">
+                    <mxGeometry x="380" y="670" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="30" value="Okta" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#0050ef;fontColor=#ffffff;strokeColor=#001DBC;" parent="1" vertex="1">
+                    <mxGeometry x="440" y="740" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="31" value="ProofPoint" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#0050ef;fontColor=#ffffff;strokeColor=#001DBC;" parent="1" vertex="1">
+                    <mxGeometry x="440" y="810" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="32" value="Veracode" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#0050ef;fontColor=#ffffff;strokeColor=#001DBC;" parent="1" vertex="1">
+                    <mxGeometry x="440" y="880" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="33" value="Targets" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1ba1e2;fontColor=#ffffff;strokeColor=#006EAF;" parent="1" vertex="1">
+                    <mxGeometry x="380" y="950" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="34" value="Postgres" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#0050ef;fontColor=#ffffff;strokeColor=#001DBC;" parent="1" vertex="1">
+                    <mxGeometry x="440" y="1020" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="35" value="S3" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#0050ef;fontColor=#ffffff;strokeColor=#001DBC;" parent="1" vertex="1">
+                    <mxGeometry x="440" y="1090" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="36" value="Transforms" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1ba1e2;fontColor=#ffffff;strokeColor=#006EAF;" parent="1" vertex="1">
+                    <mxGeometry x="380" y="1160" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="37" value="Unions" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1ba1e2;fontColor=#ffffff;strokeColor=#006EAF;" parent="1" vertex="1">
+                    <mxGeometry x="380" y="1370" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="38" value="Okta" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#0050ef;fontColor=#ffffff;strokeColor=#001DBC;" parent="1" vertex="1">
+                    <mxGeometry x="440" y="1440" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="39" value="Okta" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#0050ef;fontColor=#ffffff;strokeColor=#001DBC;" parent="1" vertex="1">
+                    <mxGeometry x="440" y="1230" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="40" value="Users" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#0050ef;fontColor=#ffffff;strokeColor=#001DBC;" parent="1" vertex="1">
+                    <mxGeometry x="440" y="1300" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="41" value="EFS" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fa6800;fontColor=#000000;strokeColor=#C73500;" parent="1" vertex="1">
+                    <mxGeometry x="540" y="110" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="42" value="ECS Cluster" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fa6800;fontColor=#000000;strokeColor=#C73500;" parent="1" vertex="1">
+                    <mxGeometry x="670" y="110" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="43" value="IAC Bucket" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fa6800;fontColor=#000000;strokeColor=#C73500;" parent="1" vertex="1">
+                    <mxGeometry x="800" y="110" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="44" value="TMP Bucket" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fa6800;fontColor=#000000;strokeColor=#C73500;" parent="1" vertex="1">
+                    <mxGeometry x="930" y="110" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="45" value="Datalake Bucket" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fa6800;fontColor=#000000;strokeColor=#C73500;" parent="1" vertex="1">
+                    <mxGeometry x="1060" y="110" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="46" value="EFS Access Point" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fa6800;fontColor=#000000;strokeColor=#C73500;" parent="1" vertex="1">
+                    <mxGeometry x="600" y="530" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="47" value="ECR Repo" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fa6800;fontColor=#000000;strokeColor=#C73500;" parent="1" vertex="1">
+                    <mxGeometry x="730" y="530" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="48" value="Task Def" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fa6800;fontColor=#000000;strokeColor=#C73500;" parent="1" vertex="1">
+                    <mxGeometry x="860" y="530" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="49" value="IAM Roles" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fa6800;fontColor=#000000;strokeColor=#C73500;" parent="1" vertex="1">
+                    <mxGeometry x="990" y="530" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="50" value="Go-Lambda" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fa6800;fontColor=#000000;strokeColor=#C73500;" parent="1" vertex="1">
+                    <mxGeometry x="600" y="740" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="51" value="SSM Secret" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fa6800;fontColor=#000000;strokeColor=#C73500;" parent="1" vertex="1">
+                    <mxGeometry x="730" y="740" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="52" value="IAM Policy" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fa6800;fontColor=#000000;strokeColor=#C73500;" parent="1" vertex="1">
+                    <mxGeometry x="860" y="740" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="53" value="Go-Lambda" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fa6800;fontColor=#000000;strokeColor=#C73500;" parent="1" vertex="1">
+                    <mxGeometry x="600" y="1020" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="54" value="SSM Secret" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fa6800;fontColor=#000000;strokeColor=#C73500;" parent="1" vertex="1">
+                    <mxGeometry x="730" y="1020" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="55" value="Go-Lambda" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fa6800;fontColor=#000000;strokeColor=#C73500;" parent="1" vertex="1">
+                    <mxGeometry x="600" y="1090" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="56" value="DBT-Lambda" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fa6800;fontColor=#000000;strokeColor=#C73500;" parent="1" vertex="1">
+                    <mxGeometry x="600" y="1300" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="57" value="IAC Bucket" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fa6800;fontColor=#000000;strokeColor=#C73500;" parent="1" vertex="1">
+                    <mxGeometry x="730" y="1300" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="58" value="SSM Secret" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fa6800;fontColor=#000000;strokeColor=#C73500;" parent="1" vertex="1">
+                    <mxGeometry x="860" y="1300" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="59" value="Step Function" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fa6800;fontColor=#000000;strokeColor=#C73500;" parent="1" vertex="1">
+                    <mxGeometry x="600" y="1440" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="60" value="S3 Json Writer State" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fa6800;fontColor=#000000;strokeColor=#C73500;" parent="1" vertex="1">
+                    <mxGeometry x="730" y="1440" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="61" value="Postgres Writer State" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fa6800;fontColor=#000000;strokeColor=#C73500;" parent="1" vertex="1">
+                    <mxGeometry x="860" y="1440" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="63" value="Data-Lake State" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fa6800;fontColor=#000000;strokeColor=#C73500;" parent="1" vertex="1">
+                    <mxGeometry x="990" y="1440" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="64" value="Okta-Users State" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fa6800;fontColor=#000000;strokeColor=#C73500;" parent="1" vertex="1">
+                    <mxGeometry x="1120" y="1440" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="65" value="VPC State" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fa6800;fontColor=#000000;strokeColor=#C73500;" parent="1" vertex="1">
+                    <mxGeometry x="1250" y="1440" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="66" value="VPC" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fa6800;fontColor=#000000;strokeColor=#C73500;" parent="1" vertex="1">
+                    <mxGeometry x="540" y="250" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="67" value="VPC Endpoints" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fa6800;fontColor=#000000;strokeColor=#C73500;" parent="1" vertex="1">
+                    <mxGeometry x="670" y="250" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="68" value="Git Submodules??" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="400" y="1615" width="120" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="71" value="How to separate modules into separate maintainable git projects?" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="275" y="1650" width="370" height="30" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

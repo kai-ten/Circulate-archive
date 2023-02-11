@@ -1,14 +1,3 @@
-data "aws_availability_zones" "available" {}
-
-data "terraform_remote_state" "vpc_output" {
-  backend = "s3"
-  config = {
-    bucket = "${var.name}-${var.env}-terraform-state-backend"
-    key    = "vpc/terraform.tfstate"
-    region = "us-east-2"
-  }
-}
-
 // This bucket is intended for long term storage in S3, used as a data lake before being loaded downstream to other tools. 
 // Must be defined as a target in a union
 module "circulate_data_lake" {
@@ -125,18 +114,18 @@ module "efs" {
   mount_targets              = { 
     for k, v in zipmap(
       slice(data.aws_availability_zones.available.names, 0, 3), 
-      data.terraform_remote_state.vpc_output.outputs.vpc_private_subnets
+      module.vpc.private_subnets
     ) : k => { subnet_id = v } 
   }
 
   security_group_name = "${var.name}-${var.env}_efs_sg"
   security_group_description = "Circulate EFS security group"
-  security_group_vpc_id      = data.terraform_remote_state.vpc_output.outputs.vpc_id
+  security_group_vpc_id      = module.vpc.vpc_id
   security_group_rules = {
     vpc = {
       # relying on the defaults provdied for EFS/NFS (2049/TCP + ingress)
       description = "NFS ingress from VPC private subnets"
-      cidr_blocks = data.terraform_remote_state.vpc_output.outputs.vpc_private_subnet_cidrs
+      cidr_blocks = module.vpc.private_subnets_cidr_blocks
     }
   }
 }
