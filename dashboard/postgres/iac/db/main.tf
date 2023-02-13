@@ -90,14 +90,14 @@ data "aws_secretsmanager_secret" "database_secret" {
   name = "${data.terraform_remote_state.vpc_output.outputs.database_secret_name}"
 }
 
-resource "aws_secretsmanager_secret_version" "circulate_db_password_version" {
-  secret_id     = data.aws_secretsmanager_secret.database_secret.id
-  secret_string = <<EOF
-   {
-    "username": "root",
-    "password": "${random_password.password.result}",
-    "engine": "postgres14",
-    "host": "${module.db.db_instance_address}"
-   }
-EOF
-}
+# resource "aws_secretsmanager_secret_version" "circulate_db_password_version" {
+#   secret_id     = data.aws_secretsmanager_secret.database_secret.id
+#   secret_string = <<EOF
+#    {
+#     "username": "root",
+#     "password": "${random_password.password.result}",
+#     "engine": "postgres14",
+#     "host": "${module.db.db_instance_address}"
+#    }
+# EOF
+# }

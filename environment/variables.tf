@@ -17,3 +17,8 @@ variable "is_public" {
   type    = bool
   default = false
 }
+
+variable "sources" {
+  type = map
+  default = {}
+}

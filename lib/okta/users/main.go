@@ -42,7 +42,6 @@ var (
 	AWS_S3_REGION         = os.Getenv("AWS_S3_REGION")
 	AWS_S3_SFN_TMP_BUCKET = os.Getenv("AWS_S3_SFN_TMP_BUCKET")
 	SERVICE               = os.Getenv("CIRCULATE_SERVICE")
-	ENDPOINT              = os.Getenv("CIRCULATE_ENDPOINT")
 )
 
 func GetSecret() (secret Secret) {
@@ -80,7 +79,7 @@ func UploadFile(context context.Context, session *session.Session, data []byte) 
 
 		now := time.Now().UTC()
 		date := now.Format(YYYYMMDD)
-		s3UploadKey := SERVICE + "/" + ENDPOINT + "/date=" + date + "/hour=" + strconv.Itoa(now.Hour()) + "/" + uuid.NewString() + ".json.gz"
+		s3UploadKey := SERVICE + "/date=" + date + "/hour=" + strconv.Itoa(now.Hour()) + "/" + uuid.NewString() + ".json.gz"
 
 		_, err = s3.New(session).PutObject(&s3.PutObjectInput{
 			Bucket:               aws.String(AWS_S3_SFN_TMP_BUCKET),

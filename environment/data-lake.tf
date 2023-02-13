@@ -5,6 +5,10 @@ module "circulate_data_lake" {
 
   bucket            = "${var.name}-${var.env}-data"
   block_public_acls = true
+  block_public_policy = true
+  ignore_public_acls = true
+  restrict_public_buckets = true
+
 
   server_side_encryption_configuration = {
     rule = {
@@ -19,22 +23,16 @@ module "circulate_data_lake" {
   }
 }
 
-resource "aws_s3_bucket_public_access_block" "circulate_data_lake_private" {
-  bucket = module.circulate_data_lake.s3_bucket_id
-
-  block_public_acls       = true
-  block_public_policy     = true
-  ignore_public_acls      = true
-  restrict_public_buckets = true
-}
-
 // This bucket holds temp data for step functions during the source API call
 // This data is then removed after 3 days
 module "circulate_data_lake_sfn_tmp" {
   source = "terraform-aws-modules/s3-bucket/aws"
 
   bucket            = "${var.name}-${var.env}-sfn-tmp"
-  block_public_acls = true
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
 
   server_side_encryption_configuration = {
     rule = {
@@ -60,20 +58,14 @@ module "circulate_data_lake_sfn_tmp" {
   }
 }
 
-resource "aws_s3_bucket_public_access_block" "circulate_data_lake_sfn_tmp_private" {
-  bucket = module.circulate_data_lake_sfn_tmp.s3_bucket_id
-
-  block_public_acls       = true
-  block_public_policy     = true
-  ignore_public_acls      = true
-  restrict_public_buckets = true
-}
-
 module "circulate_iac" {
   source = "terraform-aws-modules/s3-bucket/aws"
 
   bucket            = "${var.name}-${var.env}-iac"
-  block_public_acls = true
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
 
   server_side_encryption_configuration = {
     rule = {
@@ -86,15 +78,6 @@ module "circulate_iac" {
   versioning = {
     enabled = true
   }
-}
-
-resource "aws_s3_bucket_public_access_block" "circulate_iac_private" {
-  bucket = module.circulate_iac.s3_bucket_id
-
-  block_public_acls       = true
-  block_public_policy     = true
-  ignore_public_acls      = true
-  restrict_public_buckets = true
 }
 
 module "efs" {

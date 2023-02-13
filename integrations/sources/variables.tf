@@ -8,12 +8,12 @@ variable "env" {
   type        = string
 }
 
-variable "service" {
-  description = "Service name for your lambda"
-  type        = string
+variable "sources" {
+  description = "Path to Source lambda code"
+  type        = map
 }
 
-variable "endpoint" {
-  description = "Endpoint name for your lambda"
-  type        = string
+variable "data_lake_sfn_bucket" {
+  description = "Bucket config"
+  type = map
 }
