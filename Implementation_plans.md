@@ -33,6 +33,29 @@ In order to make this project more automated, must do the following:
 
 ## MORE LAMBDAS
 
+End goal: 
+- https://www.recordedfuture.com/threat-intelligence 
+- https://intsights.com/solutions (see solutions examples)
+
+THREAT INTELLIGENCE
+
+SANS - https://isc.sans.edu/api/
+- Threatfeeds - https://isc.sans.edu/api/#threatfeeds
+    - List of Feeds
+    - IPs Per Day
+    - IPs Per Feed Per Day
+    - Threatfeed IPs
+    - Threatfeed Hostnames
+    - IPs in feed category
+
+https://abuse.ch/#platforms
+- Threat Fox
+- URL Haus
+- Malware Bazaar
+- SSL Blacklist
+
+CISA - https://www.cisa.gov/ais
+
 WITH FREE TRIALS AKA THE ABILITY TO TEST:
 
 - [Snyk](https://docs.snyk.io/snyk-api-info)
