@@ -6,6 +6,9 @@ data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
 module "lambda" {
+
+  count = var.enabled == true ? 1 : 0
+
   source          = "../../modules/go-lambda"
   name            = "${var.name}-${var.env}-${var.service}-${var.endpoint}"
   lambda_name     = "${var.name}-${var.env}-${var.service}-${var.endpoint}"

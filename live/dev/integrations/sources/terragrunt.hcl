@@ -19,14 +19,14 @@ inputs = merge(
 
 generate "provider" {
   path = "provider.tf"
-  if_exists = "overwrite_terragrunt"
+  if_exists = "overwrite"
   contents = <<EOF
 provider "aws" {
   region = "us-east-2"
   default_tags {
     tags = {
       Project = "Circulate"
-      Module  = "integrations"
+      Module  = "sources"
     }
   }
 }
@@ -34,5 +34,5 @@ EOF
 }
 
 include "root" {
-  path = "../../../../terragrunt.hcl"
+  path = find_in_parent_folders()
 }

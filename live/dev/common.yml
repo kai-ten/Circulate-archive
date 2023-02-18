@@ -1,0 +1,13 @@
+name: "circulate"
+env: "dev"
+
+sources:
+  - okta:
+    - users:
+        enabled: true
+        endpoint: "users"
+        source_path: "${get_repo_root()}/lib/okta/users/"
+    - applications:
+        enabled: true
+        endpoint: "applications"
+        source_path: "${get_repo_root()}/lib/okta/applications/"

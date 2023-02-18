@@ -8,6 +8,12 @@ variable "env" {
   type        = string
 }
 
+variable "enabled" {
+  description = "Build lambda if enabled"
+  type        = bool
+  default = false
+}
+
 variable "service" {
   description = "Service name for your lambda"
   type        = string
