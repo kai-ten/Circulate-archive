@@ -3,11 +3,11 @@ terraform {
 }
 
 locals {
-  common_vars = read_terragrunt_config("../common.hcl")
+  circulate_vars = read_terragrunt_config("../circulate.hcl")
 }
 
 inputs = merge(
-  local.common_vars.inputs,
+  local.circulate_vars.inputs,
   {
     vpc_cidr = "10.0.0.0/16"
   }

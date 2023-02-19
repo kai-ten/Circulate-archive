@@ -1,5 +1,5 @@
 terraform {
-  source = "${path_relative_from_include()}/integrations//targets/s3"
+  source = "${path_relative_from_include()}/integrations//targets/postgres"
 }
 
 dependency "environment" {
@@ -14,7 +14,9 @@ inputs = merge(
   local.circulate_vars.inputs,
   {
     data_lake_sfn_bucket = dependency.environment.outputs.data_lake_s3_sfn_tmp
-    data_lake_bucket = dependency.environment.outputs.data_lake_s3
+    integration_security_group_id = dependency.environment.outputs.integration_security_group_id
+    vpc_private_subnets = dependency.environment.outputs.vpc_private_subnets
+    database_secret_name = dependency.environment.outputs.database_secret_name
   }
 )
 

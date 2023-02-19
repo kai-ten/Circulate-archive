@@ -7,11 +7,11 @@ dependency "environment" {
 }
 
 locals {
-  common_vars = read_terragrunt_config("../../common.hcl")
+  circulate_vars = read_terragrunt_config("../../circulate.hcl")
 }
 
 inputs = merge(
-  local.common_vars.inputs,
+  local.circulate_vars.inputs,
   {
     data_lake_sfn_bucket = dependency.environment.outputs.data_lake_s3_sfn_tmp
   }

@@ -5,13 +5,13 @@ inputs = {
   sources = {
     okta = [
       {
-        enabled = true
         endpoint = "users"
+        enabled = true
         source_path = "${get_repo_root()}/lib/okta/users/"
       },
       {
-        enabled = true
         endpoint = "applications"
+        enabled = true
         source_path = "${get_repo_root()}/lib/okta/applications/"
       }
     ]
@@ -20,8 +20,14 @@ inputs = {
   targets = {
     s3 = [
       {
-        enabled = true
         endpoint = "s3"
+        enabled = true
+      }
+    ],
+    postgres = [
+      {
+        endpoint = "postgres"
+        enabled = false
       }
     ]
   }

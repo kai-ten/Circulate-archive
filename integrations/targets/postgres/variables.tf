@@ -22,11 +22,17 @@ variable "data_lake_sfn_bucket" {
   }
 }
 
-variable "data_lake_bucket" {
-  description = "Bucket S3 bucket config"
-  type = map
-  default = {
-    name  = ""
-    arn   = ""
-  }
+variable "integration_security_group_id" {
+  description = "Security group for VPC"
+  type        = string
+}
+
+variable "vpc_private_subnets" {
+  description = "Private subnets for VPC"
+  type        = list
+}
+
+variable "database_secret_name" {
+  description = "Postgres DB Secret Name"
+  type        = string
 }
