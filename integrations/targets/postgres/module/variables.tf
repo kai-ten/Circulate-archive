@@ -47,3 +47,8 @@ variable "database_secret_name" {
   description = "Postgres DB Secret Name"
   type        = string
 }
+
+variable "src_path" {
+  description = "Path to your lambda source"
+  type        = string
+}

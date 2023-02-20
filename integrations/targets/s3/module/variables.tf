@@ -27,17 +27,14 @@ variable "endpoint" {
 variable "data_lake_sfn_bucket" {
   description = "Bucket SFN bucket config"
   type = map
-  default = {
-    name  = ""
-    arn   = ""
-  }
 }
 
 variable "data_lake_bucket" {
   description = "Bucket S3 bucket config"
   type = map
-  default = {
-    name  = ""
-    arn   = ""
-  }
+}
+
+variable "src_path" {
+  description = "Path to your lambda source"
+  type        = string
 }

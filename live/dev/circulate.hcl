@@ -7,12 +7,12 @@ inputs = {
       {
         endpoint = "users"
         enabled = true
-        source_path = "${get_repo_root()}/lib/okta/users/"
+        src_path = "${get_repo_root()}/lib/sources/okta/users/"
       },
       {
         endpoint = "applications"
         enabled = true
-        source_path = "${get_repo_root()}/lib/okta/applications/"
+        src_path = "${get_repo_root()}/lib/sources/okta/applications/"
       }
     ]
   }
@@ -22,12 +22,14 @@ inputs = {
       {
         endpoint = "s3"
         enabled = true
+        src_path = "${get_repo_root()}/lib/targets/s3/"
       }
     ],
     postgres = [
       {
         endpoint = "postgres"
         enabled = false
+        src_path = "${get_repo_root()}/lib/targets/postgres/"
       }
     ]
   }

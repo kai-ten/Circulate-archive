@@ -24,7 +24,7 @@ variable "endpoint" {
   type        = string
 }
 
-variable "source_path" {
+variable "src_path" {
   description = "Path to Source lambda code"
   type        = string
   default = ""
