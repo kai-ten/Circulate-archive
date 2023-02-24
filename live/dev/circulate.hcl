@@ -35,6 +35,12 @@ inputs = {
   }
 
   unions = {
-
+    okta_users_s3 = [
+      {
+        source = "okta_users"
+        target = "s3"
+        transform = disabled
+      }
+    ]
   }
 }
